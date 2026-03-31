@@ -58,6 +58,21 @@ var client = new TofuPilotSDK(
 );
 ```
 
+### Custom certificates
+
+```csharp
+using System.Security.Cryptography.X509Certificates;
+using TofuPilot.Utils;
+
+var handler = new HttpClientHandler();
+handler.ClientCertificates.Add(new X509Certificate2("client.pfx", "password"));
+
+var client = new TofuPilotSDK(
+    apiKey: "your-api-key",
+    client: new TofuPilotHttpClient(handler)
+);
+```
+
 ## Available Resources
 
 | Resource | Operations |

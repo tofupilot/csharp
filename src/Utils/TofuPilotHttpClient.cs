@@ -44,6 +44,11 @@ namespace TofuPilot.Utils
             httpClient = new System.Net.Http.HttpClient();
         }
 
+        public TofuPilotHttpClient(HttpMessageHandler handler)
+        {
+            httpClient = new System.Net.Http.HttpClient(handler);
+        }
+
         public virtual async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
         {
             return await httpClient.SendAsync(request);
