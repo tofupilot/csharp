@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <PackageId>TofuPilot</PackageId>
+    <Version>0.1.1</Version>
+    <TargetFramework>net9.0</TargetFramework>
+    <Authors>TofuPilot</Authors>
+    <Copyright>Copyright (c) TofuPilot 2026</Copyright>
+    <PackageProjectUrl>https://tofupilot.com/docs/dashboard/api/v2/runs/create</PackageProjectUrl>
+    <Description>TofuPilot APIv2: TofuPilot REST API for managing runs, units, procedures, and more.</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <NoWarn>1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="newtonsoft.json" Version="13.0.3" />
+    <PackageReference Include="nodatime" Version="3.1.9" />
+  </ItemGroup>
+
+</Project>
