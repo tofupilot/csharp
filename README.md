@@ -2,6 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/)
+[![Tests](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/upview/3c4792a8e7e8e8d0b37e141e95cc885e/raw/csharp-client-tests.json)](https://github.com/tofupilot/csharp-client)
 
 The official C# client for [TofuPilot](https://tofupilot.com). Integrate your hardware test runs into one app with just a few lines of C#.
 
@@ -154,25 +155,20 @@ await client.Units.AddChildAsync("PARENT-001", new UnitAddChildRequestBody
 });
 ```
 
-### Upload attachments
+### Upload and download attachments
 
 ```csharp
-// 1. Initialize upload
-var init = await client.Attachments.InitializeAsync(new AttachmentInitializeRequest { Name = "report.pdf" });
+// Upload a file (one line)
+var attachmentId = await client.Attachments.UploadAsync("report.pdf");
 
-// 2. Upload file to presigned URL
-using var http = new HttpClient();
-var content = new ByteArrayContent(File.ReadAllBytes("report.pdf"));
-await http.PutAsync(init.UploadUrl, content);
-
-// 3. Finalize
-var attachment = await client.Attachments.FinalizeAsync(init.Id);
-
-// 4. Link to a run
+// Link to a run
 await client.Runs.UpdateAsync(runId, new RunUpdateRequestBody
 {
-    Attachments = new List<string> { init.Id },
+    Attachments = new List<string> { attachmentId },
 });
+
+// Download an attachment
+await client.Attachments.DownloadAsync(downloadUrl, "local-copy.pdf");
 ```
 
 ## Error Handling
