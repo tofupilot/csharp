@@ -1,7 +1,7 @@
 # TofuPilot C# Client
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![.NET](https://img.shields.io/badge/.NET-9.0-512BD4)](https://dotnet.microsoft.com/)
+[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](https://dotnet.microsoft.com/)
 [![Tests](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/upview/3c4792a8e7e8e8d0b37e141e95cc885e/raw/csharp-client-tests.json)](https://github.com/tofupilot/csharp)
 
 The official C# client for [TofuPilot](https://tofupilot.com). Integrate your hardware test runs into one app with just a few lines of C#.
@@ -33,6 +33,13 @@ var run = await client.Runs.CreateAsync(new RunCreateRequest
 });
 
 Console.WriteLine($"Run created: {run.Id}");
+```
+
+All async methods support `CancellationToken`:
+
+```csharp
+using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+var run = await client.Runs.CreateAsync(request, cts.Token);
 ```
 
 ## Authentication
@@ -119,8 +126,8 @@ var run = await client.Runs.CreateAsync(new RunCreateRequest
                     Units = new RunCreateUnits { Value = "V" },
                     Validators = new List<RunCreateValidators>
                     {
-                        new() { Operator = ">=", ExpectedValue = new RunCreateExpectedValue { Number = 3.0 } },
-                        new() { Operator = "<=", ExpectedValue = new RunCreateExpectedValue { Number = 3.6 } },
+                        new() { Operator = ">=", ExpectedValue = RunCreateExpectedValue.CreateNumber(3.0) },
+                        new() { Operator = "<=", ExpectedValue = RunCreateExpectedValue.CreateNumber(3.6) },
                     },
                 },
             },
@@ -197,16 +204,15 @@ try
 {
     await client.Runs.GetAsync("nonexistent-id");
 }
-catch (ErrorNOTFOUND ex)
+catch (NotFoundException ex)
 {
     Console.WriteLine($"Not found: {ex.Message}");
 }
-catch (ErrorBADREQUEST ex)
+catch (BadRequestException ex)
 {
     Console.WriteLine($"Bad request: {ex.Message}");
-    // ex.Issues contains validation details
 }
-catch (APIException ex)
+catch (ApiException ex)
 {
     Console.WriteLine($"API error {ex.StatusCode}: {ex.Body}");
 }
@@ -214,20 +220,22 @@ catch (APIException ex)
 
 | Exception | Status Code |
 |-----------|------------|
-| `ErrorBADREQUEST` | 400 |
-| `ErrorUNAUTHORIZED` | 401 |
-| `ErrorFORBIDDEN` | 403 |
-| `ErrorNOTFOUND` | 404 |
-| `ErrorCONFLICT` | 409 |
-| `ErrorUNPROCESSABLECONTENT` | 422 |
-| `ErrorINTERNALSERVERERROR` | 500 |
-| `APIException` | Any other |
+| `BadRequestException` | 400 |
+| `UnauthorizedException` | 401 |
+| `ForbiddenException` | 403 |
+| `NotFoundException` | 404 |
+| `ConflictException` | 409 |
+| `UnprocessableContentException` | 422 |
+| `InternalServerErrorException` | 500 |
+| `ApiException` | Any other |
 
 ## Running Tests
 
 ```bash
-cd clients/csharp-tests
-cp .env.local.example .env.local  # Set your API key and URL
+cd clients/csharp/tests
+# Create .env.local with your API key and URL:
+# TOFUPILOT_URL=http://localhost:3000
+# TOFUPILOT_API_KEY_USER=your-api-key
 dotnet test
 ```
 

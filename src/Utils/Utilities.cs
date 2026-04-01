@@ -17,7 +17,7 @@ namespace TofuPilot.Utils
     using System.Text.Json.Serialization;
     using System.Text.RegularExpressions;
     using System.Numerics;
-    using NodaTime;
+
     using System.Collections;
 
     public class Utilities
@@ -115,7 +115,7 @@ namespace TofuPilot.Utils
         public static bool IsEnum(object? obj) => obj != null && obj.GetType().IsEnum;
 
         public static bool IsDate(object? obj) =>
-            obj != null && (obj.GetType() == typeof(DateTime) || obj.GetType() == typeof(LocalDate));
+            obj != null && (obj.GetType() == typeof(DateTime) || obj.GetType() == typeof(DateOnly));
 
         private static string StripSurroundingQuotes(string input)
         {
@@ -141,10 +141,9 @@ namespace TofuPilot.Utils
                     .ToUniversalTime()
                     .ToString("o", System.Globalization.CultureInfo.InvariantCulture);
             }
-            else if (value.GetType() == typeof(LocalDate))
+            else if (value.GetType() == typeof(DateOnly))
             {
-                return ((LocalDate)value)
-                    .ToDateTimeUnspecified()
+                return ((DateOnly)value)
                     .ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
             }
             else if (value.GetType() == typeof(bool))

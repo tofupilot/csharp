@@ -3,11 +3,11 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>TofuPilot</PackageId>
-    <Version>2.2.0</Version>
+    <Version>2.3.0</Version>
     <TargetFramework>net8.0</TargetFramework>
     <Authors>TofuPilot</Authors>
     <Copyright>Copyright (c) TofuPilot 2026</Copyright>
-    <PackageProjectUrl>https://tofupilot.com/docs/dashboard/api/v2/runs/create</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/tofupilot/csharp</PackageProjectUrl>
     <Description>TofuPilot APIv2: TofuPilot REST API for managing runs, units, procedures, and more.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageIcon>icon.png</PackageIcon>
@@ -26,11 +26,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="nodatime" Version="3.1.9" />
-  </ItemGroup>
-
-  <ItemGroup>
+<ItemGroup>
     <None Include="../README.md" Pack="true" PackagePath="\" />
     <None Include="../icon.png" Pack="true" PackagePath="\" />
   </ItemGroup>

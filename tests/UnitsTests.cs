@@ -13,10 +13,12 @@ namespace TofuPilot.Tests;
 public class UnitsTests
 {
     private readonly TofuPilot _client;
+    private readonly string _procedureId;
 
     public UnitsTests(TestFixture fixture)
     {
         _client = fixture.Client;
+        _procedureId = fixture.ProcedureId;
     }
 
     private string Uid() => Guid.NewGuid().ToString("N")[..8];
@@ -237,5 +239,97 @@ public class UnitsTests
             {
                 SerialNumber = serial, PartNumber = partNumber, RevisionNumber = revNumber,
             }));
+    }
+
+    [Fact]
+    public async Task ListUnits_FilterByRevisionNumbers()
+    {
+        var uid = Uid();
+        var partNumber = $"PART-RV-{uid}";
+        var revNumber = $"REV-RV-{uid}";
+        await _client.Parts.CreateAsync(new PartCreateRequest { Number = partNumber, Name = $"Part {uid}" });
+        await _client.Parts.Revisions.CreateAsync(partNumber, new PartCreateRevisionRequestBody { Number = revNumber });
+        await _client.Units.CreateAsync(new UnitCreateRequest
+        {
+            SerialNumber = $"SN-RV-{uid}", PartNumber = partNumber, RevisionNumber = revNumber,
+        });
+
+        var result = await _client.Units.ListAsync(
+            partNumbers: new List<string> { partNumber },
+            revisionNumbers: new List<string> { revNumber });
+
+        Assert.NotEmpty(result.Data);
+        Assert.All(result.Data, u => Assert.Equal(partNumber, u.Part.Number));
+    }
+
+    [Fact]
+    public async Task ListUnits_FilterByBatchNumbers()
+    {
+        var uid = Uid();
+        var partNumber = $"PART-BN-{uid}";
+        var revNumber = $"REV-BN-{uid}";
+        var batchNumber = $"BATCH-{uid}";
+        await _client.Parts.CreateAsync(new PartCreateRequest { Number = partNumber, Name = $"Part {uid}" });
+        await _client.Parts.Revisions.CreateAsync(partNumber, new PartCreateRevisionRequestBody { Number = revNumber });
+
+        // Create a run with batch_number to auto-create the batch and link the unit
+        await _client.Runs.CreateAsync(new RunCreateRequest
+        {
+            SerialNumber = $"SN-BN-{uid}",
+            ProcedureId = _procedureId,
+            PartNumber = partNumber,
+            RevisionNumber = revNumber,
+            BatchNumber = batchNumber,
+            StartedAt = DateTime.UtcNow.AddMinutes(-5),
+            EndedAt = DateTime.UtcNow,
+            Outcome = RunCreateOutcome.Pass,
+        });
+
+        var result = await _client.Units.ListAsync(
+            partNumbers: new List<string> { partNumber },
+            batchNumbers: new List<string> { batchNumber });
+
+        Assert.NotEmpty(result.Data);
+    }
+
+    [Fact]
+    public async Task ListUnits_FilterByCreatedAt()
+    {
+        var now = DateTime.UtcNow;
+        var (partNumber, _) = await CreatePartAndUnit("CA");
+
+        var result = await _client.Units.ListAsync(
+            partNumbers: new List<string> { partNumber },
+            createdAfter: now.AddMinutes(-5),
+            createdBefore: now.AddMinutes(5));
+
+        Assert.NotEmpty(result.Data);
+    }
+
+    [Fact]
+    public async Task ListUnits_ExcludeUnitsWithParent()
+    {
+        // Create parent and child
+        var (parentPart, parentSerial) = await CreatePartAndUnit("EP");
+        var (_, childSerial) = await CreatePartAndUnit("EC");
+
+        await _client.Units.AddChildAsync(parentSerial, new UnitAddChildRequestBody
+        {
+            ChildSerialNumber = childSerial,
+        });
+
+        // With exclude - child should not appear
+        var excluded = await _client.Units.ListAsync(
+            serialNumbers: new List<string> { parentSerial, childSerial },
+            excludeUnitsWithParent: true);
+
+        Assert.All(excluded.Data, u => Assert.Equal(parentSerial, u.SerialNumber));
+
+        // Without exclude - both should appear
+        var included = await _client.Units.ListAsync(
+            serialNumbers: new List<string> { parentSerial, childSerial },
+            excludeUnitsWithParent: false);
+
+        Assert.Equal(2, included.Data.Count);
     }
 }

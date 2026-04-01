@@ -187,4 +187,143 @@ public class RunsListTests
         Assert.Contains(run1.Id, returnedIds);
         Assert.Contains(run2.Id, returnedIds);
     }
+
+    [Fact]
+    public async Task ListRuns_FilterByDurationRange()
+    {
+        var uid = Uid();
+        var part = $"PART-DUR-{uid}";
+        var now = DateTime.UtcNow;
+
+        // Create a run with ~2 minute duration
+        await _client.Runs.CreateAsync(new RunCreateRequest
+        {
+            SerialNumber = $"SN-DUR-{uid}",
+            ProcedureId = _procedureId,
+            PartNumber = part,
+            StartedAt = now.AddMinutes(-5),
+            EndedAt = now.AddMinutes(-3),
+            Outcome = RunCreateOutcome.Pass,
+        });
+
+        // Filter with duration range that includes 2 minutes (PT1M to PT5M)
+        var result = await _client.Runs.ListAsync(
+            partNumbers: new List<string> { part },
+            durationMin: "PT1M",
+            durationMax: "PT5M");
+
+        Assert.NotEmpty(result.Data);
+    }
+
+    [Fact]
+    public async Task ListRuns_FilterByEndedAt()
+    {
+        var uid = Uid();
+        var part = $"PART-END-{uid}";
+        var now = DateTime.UtcNow;
+
+        await CreateTestRun(partNumber: part, serialNumber: $"SN-END-{uid}", startedAt: now.AddMinutes(-5));
+
+        var result = await _client.Runs.ListAsync(
+            partNumbers: new List<string> { part },
+            endedAfter: now.AddMinutes(-10),
+            endedBefore: now.AddMinutes(5));
+
+        Assert.NotEmpty(result.Data);
+    }
+
+    [Fact]
+    public async Task ListRuns_FilterByCreatedAt()
+    {
+        var uid = Uid();
+        var part = $"PART-CRT-{uid}";
+        var now = DateTime.UtcNow;
+
+        await CreateTestRun(partNumber: part, serialNumber: $"SN-CRT-{uid}");
+
+        var result = await _client.Runs.ListAsync(
+            partNumbers: new List<string> { part },
+            createdAfter: now.AddMinutes(-10),
+            createdBefore: now.AddMinutes(5));
+
+        Assert.NotEmpty(result.Data);
+    }
+
+    [Fact]
+    public async Task ListRuns_FilterByRevisionNumbers()
+    {
+        var uid = Uid();
+        var part = $"PART-REV-{uid}";
+        var rev = $"REV-{uid}";
+
+        await _client.Parts.CreateAsync(new PartCreateRequest { Number = part, Name = $"Part {uid}" });
+        await _client.Parts.Revisions.CreateAsync(part, new PartCreateRevisionRequestBody { Number = rev });
+
+        await _client.Runs.CreateAsync(new RunCreateRequest
+        {
+            SerialNumber = $"SN-REV-{uid}",
+            ProcedureId = _procedureId,
+            PartNumber = part,
+            RevisionNumber = rev,
+            StartedAt = DateTime.UtcNow.AddMinutes(-5),
+            EndedAt = DateTime.UtcNow,
+            Outcome = RunCreateOutcome.Pass,
+        });
+
+        var result = await _client.Runs.ListAsync(
+            partNumbers: new List<string> { part },
+            revisionNumbers: new List<string> { rev });
+
+        Assert.NotEmpty(result.Data);
+    }
+
+    [Fact]
+    public async Task ListRuns_FilterByProcedureVersions()
+    {
+        var uid = Uid();
+        var part = $"PART-PV-{uid}";
+        var version = $"1.0.{uid[..4]}";
+
+        await _client.Runs.CreateAsync(new RunCreateRequest
+        {
+            SerialNumber = $"SN-PV-{uid}",
+            ProcedureId = _procedureId,
+            PartNumber = part,
+            ProcedureVersion = version,
+            StartedAt = DateTime.UtcNow.AddMinutes(-5),
+            EndedAt = DateTime.UtcNow,
+            Outcome = RunCreateOutcome.Pass,
+        });
+
+        var result = await _client.Runs.ListAsync(
+            partNumbers: new List<string> { part },
+            procedureVersions: new List<string> { version });
+
+        Assert.NotEmpty(result.Data);
+    }
+
+    [Fact]
+    public async Task ListRuns_FilterByBatchNumbers()
+    {
+        var uid = Uid();
+        var part = $"PART-BN-{uid}";
+        var batch = $"BATCH-{uid}";
+
+        await _client.Runs.CreateAsync(new RunCreateRequest
+        {
+            SerialNumber = $"SN-BN-{uid}",
+            ProcedureId = _procedureId,
+            PartNumber = part,
+            BatchNumber = batch,
+            StartedAt = DateTime.UtcNow.AddMinutes(-5),
+            EndedAt = DateTime.UtcNow,
+            Outcome = RunCreateOutcome.Pass,
+        });
+
+        var result = await _client.Runs.ListAsync(
+            partNumbers: new List<string> { part },
+            batchNumbers: new List<string> { batch });
+
+        Assert.NotEmpty(result.Data);
+    }
 }

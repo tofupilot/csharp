@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using TofuPilot.Models.Requests;
 
@@ -18,27 +19,28 @@ namespace TofuPilot
         /// </summary>
         /// <param name="attachments">The attachments resource.</param>
         /// <param name="filePath">Path to the file to upload.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The attachment ID (use with Units.UpdateAsync or Runs.UpdateAsync).</returns>
-        public static async Task<string> UploadAsync(this IAttachments attachments, string filePath)
+        public static async Task<string> UploadAsync(this IAttachments attachments, string filePath, CancellationToken cancellationToken = default)
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"File not found: {filePath}", filePath);
 
             var fileName = Path.GetFileName(filePath);
-            var init = await attachments.InitializeAsync(new AttachmentInitializeRequest { Name = fileName });
+            var init = await attachments.InitializeAsync(new AttachmentInitializeRequest { Name = fileName }, cancellationToken);
 
-            var fileBytes = await File.ReadAllBytesAsync(filePath);
+            var fileBytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
             using var httpClient = new HttpClient();
             var content = new ByteArrayContent(fileBytes);
 
             var contentType = GetContentType(filePath);
             content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
 
-            var uploadResponse = await httpClient.PutAsync(init.UploadUrl, content);
+            var uploadResponse = await httpClient.PutAsync(init.UploadUrl, content, cancellationToken);
             if (!uploadResponse.IsSuccessStatusCode)
                 throw new InvalidOperationException($"File upload failed with status {(int)uploadResponse.StatusCode}");
 
-            await attachments.FinalizeAsync(init.Id);
+            await attachments.FinalizeAsync(init.Id, cancellationToken);
             return init.Id;
         }
 
@@ -48,19 +50,20 @@ namespace TofuPilot
         /// <param name="attachments">The attachments resource.</param>
         /// <param name="downloadUrl">The download URL from an attachment object.</param>
         /// <param name="destinationPath">Destination file path.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The path to the downloaded file.</returns>
-        public static async Task<string> DownloadAsync(this IAttachments attachments, string downloadUrl, string destinationPath)
+        public static async Task<string> DownloadAsync(this IAttachments attachments, string downloadUrl, string destinationPath, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(downloadUrl))
                 throw new ArgumentException("Download URL cannot be null or empty.", nameof(downloadUrl));
 
             using var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(downloadUrl);
+            var response = await httpClient.GetAsync(downloadUrl, cancellationToken);
             if (!response.IsSuccessStatusCode)
                 throw new InvalidOperationException($"Download failed with status {(int)response.StatusCode}");
 
-            var bytes = await response.Content.ReadAsByteArrayAsync();
-            await File.WriteAllBytesAsync(destinationPath, bytes);
+            var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+            await File.WriteAllBytesAsync(destinationPath, bytes, cancellationToken);
             return destinationPath;
         }
 

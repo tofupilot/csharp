@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using TofuPilot;
 using TofuPilot.Models.Errors;
@@ -297,5 +298,382 @@ public class RunsCreateTests
         Assert.Equal(2, fetched.SubUnits.Count);
         Assert.Contains(fetched.SubUnits, su => su.SerialNumber.Equals(subSerial1, StringComparison.OrdinalIgnoreCase));
         Assert.Contains(fetched.SubUnits, su => su.SerialNumber.Equals(subSerial2, StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public async Task CreateRun_WithRetryCount()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "retried_phase",
+                Outcome = RunCreatePhasesOutcome.Fail,
+                StartedAt = now.AddMinutes(-10),
+                EndedAt = now.AddMinutes(-8),
+                RetryCount = 0,
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "voltage",
+                        Outcome = RunCreateMeasurementsOutcome.Fail,
+                        MeasuredValue = 2.0,
+                    },
+                },
+            },
+            new RunCreatePhases
+            {
+                Name = "retried_phase",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-7),
+                EndedAt = now.AddMinutes(-5),
+                RetryCount = 1,
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "voltage",
+                        Outcome = RunCreateMeasurementsOutcome.Pass,
+                        MeasuredValue = 3.3,
+                    },
+                },
+            },
+        };
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.Equal(2, fetched.Phases!.Count);
+        Assert.Equal(0, fetched.Phases[0].RetryCount);
+        Assert.Equal(1, fetched.Phases[1].RetryCount);
+    }
+
+    [Fact]
+    public async Task CreateRun_RetryCountDefaultsToZero()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "no_retry",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-5),
+                EndedAt = now.AddMinutes(-3),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "test_val",
+                        Outcome = RunCreateMeasurementsOutcome.Pass,
+                        MeasuredValue = 1.0,
+                    },
+                },
+            },
+        };
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.Equal(0, fetched.Phases![0].RetryCount);
+    }
+
+    [Fact]
+    public async Task CreateRun_LegacyLimits_BothBounds()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        #pragma warning disable CS0618
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "both_limits",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-5),
+                EndedAt = now.AddMinutes(-3),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "temp",
+                        Outcome = RunCreateMeasurementsOutcome.Pass,
+                        MeasuredValue = 25.0,
+                        LowerLimit = 10.0,
+                        UpperLimit = 40.0,
+                    },
+                },
+            },
+        };
+        #pragma warning restore CS0618
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        // Legacy limits get converted to validators
+        Assert.NotNull(fetched.Phases![0].Measurements[0].Validators);
+        Assert.Equal(2, fetched.Phases[0].Measurements[0].Validators!.Count);
+    }
+
+    [Fact]
+    public async Task CreateRun_LegacyLimits_OnlyLower()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        #pragma warning disable CS0618
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "lower_only",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-5),
+                EndedAt = now.AddMinutes(-3),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "current",
+                        Outcome = RunCreateMeasurementsOutcome.Pass,
+                        MeasuredValue = 0.5,
+                        LowerLimit = 0.0,
+                    },
+                },
+            },
+        };
+        #pragma warning restore CS0618
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.NotNull(fetched.Phases![0].Measurements[0].Validators);
+        Assert.Single(fetched.Phases[0].Measurements[0].Validators!);
+    }
+
+    [Fact]
+    public async Task CreateRun_LegacyLimits_OnlyUpper()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        #pragma warning disable CS0618
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "upper_only",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-5),
+                EndedAt = now.AddMinutes(-3),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "power",
+                        Outcome = RunCreateMeasurementsOutcome.Pass,
+                        MeasuredValue = 3.0,
+                        UpperLimit = 5.0,
+                    },
+                },
+            },
+        };
+        #pragma warning restore CS0618
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.NotNull(fetched.Phases![0].Measurements[0].Validators);
+        Assert.Single(fetched.Phases[0].Measurements[0].Validators!);
+    }
+
+    [Fact]
+    public async Task CreateRun_LegacyLimits_Failure()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        req.Outcome = RunCreateOutcome.Fail;
+        #pragma warning disable CS0618
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "fail_limit",
+                Outcome = RunCreatePhasesOutcome.Fail,
+                StartedAt = now.AddMinutes(-5),
+                EndedAt = now.AddMinutes(-3),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "voltage",
+                        Outcome = RunCreateMeasurementsOutcome.Fail,
+                        MeasuredValue = 50.0,
+                        LowerLimit = 0.0,
+                        UpperLimit = 10.0,
+                    },
+                },
+            },
+        };
+        #pragma warning restore CS0618
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.NotNull(fetched.Phases![0].Measurements[0].Validators);
+    }
+
+    [Fact]
+    public async Task CreateRun_LegacyLimits_NegativeValues()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        #pragma warning disable CS0618
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "neg_limits",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-5),
+                EndedAt = now.AddMinutes(-3),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements
+                    {
+                        Name = "offset",
+                        Outcome = RunCreateMeasurementsOutcome.Pass,
+                        MeasuredValue = -5.0,
+                        LowerLimit = -10.0,
+                        UpperLimit = 0.0,
+                    },
+                },
+            },
+        };
+        #pragma warning restore CS0618
+
+        var created = await _client.Runs.CreateAsync(req);
+        Assert.False(string.IsNullOrEmpty(created.Id));
+    }
+
+    [Fact]
+    public async Task CreateRun_SubUnits_WithoutSubUnits()
+    {
+        var uid = Uid();
+        var req = BaseRequest(uid);
+        // No SubUnits set
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.Empty(fetched.SubUnits);
+    }
+
+    [Fact]
+    public async Task CreateRun_SubUnits_SingleSubUnit()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+
+        var subSerial = $"SUB-{uid}";
+        await _client.Runs.CreateAsync(new RunCreateRequest
+        {
+            SerialNumber = subSerial,
+            ProcedureId = _procedureId,
+            PartNumber = $"SUB-PART-{uid}",
+            StartedAt = now.AddMinutes(-10),
+            EndedAt = now.AddMinutes(-8),
+            Outcome = RunCreateOutcome.Pass,
+        });
+
+        var mainReq = BaseRequest(uid);
+        mainReq.SubUnits = new List<string> { subSerial };
+
+        var created = await _client.Runs.CreateAsync(mainReq);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.Single(fetched.SubUnits);
+        Assert.Equal(subSerial, fetched.SubUnits[0].SerialNumber, ignoreCase: true);
+    }
+
+    [Fact]
+    public async Task CreateRun_SubUnits_EmptyList()
+    {
+        var uid = Uid();
+        var req = BaseRequest(uid);
+        req.SubUnits = new List<string>();
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.Empty(fetched.SubUnits);
+    }
+
+    [Fact]
+    public async Task CreateRun_MultiplePhasesMeasurements()
+    {
+        var uid = Uid();
+        var now = DateTime.UtcNow;
+        var req = BaseRequest(uid);
+        req.Phases = new List<RunCreatePhases>
+        {
+            new RunCreatePhases
+            {
+                Name = "phase_a",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-10),
+                EndedAt = now.AddMinutes(-7),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements { Name = "v1", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = 3.3 },
+                    new RunCreateMeasurements { Name = "v2", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = 5.0 },
+                },
+            },
+            new RunCreatePhases
+            {
+                Name = "phase_b",
+                Outcome = RunCreatePhasesOutcome.Pass,
+                StartedAt = now.AddMinutes(-6),
+                EndedAt = now.AddMinutes(-3),
+                Measurements = new List<RunCreateMeasurements>
+                {
+                    new RunCreateMeasurements { Name = "temp", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = 25.0 },
+                },
+            },
+        };
+
+        var created = await _client.Runs.CreateAsync(req);
+        var fetched = await _client.Runs.GetAsync(created.Id);
+
+        Assert.Equal(2, fetched.Phases!.Count);
+        Assert.Equal(2, fetched.Phases[0].Measurements.Count);
+        Assert.Single(fetched.Phases[1].Measurements);
+    }
+
+    [Fact]
+    public async Task CreateRun_WithCancellationToken()
+    {
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        var result = await _client.Runs.CreateAsync(BaseRequest(), cts.Token);
+        Assert.False(string.IsNullOrEmpty(result.Id));
+    }
+
+    [Fact]
+    public async Task CreateRun_CancelledToken_Throws()
+    {
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => _client.Runs.CreateAsync(BaseRequest(), cts.Token));
     }
 }

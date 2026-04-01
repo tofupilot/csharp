@@ -12,6 +12,7 @@ namespace TofuPilot.Utils
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Threading;
     using System.Threading.Tasks;
 
     public interface ITofuPilotHttpClient
@@ -20,8 +21,9 @@ namespace TofuPilot.Utils
         /// Sends an HTTP request asynchronously.
         /// </summary>
         /// <param name="request">The HTTP request message to send.</param>
+        /// <param name="cancellationToken">Cancellation token.</param>
         /// <returns>The value of the TResult parameter contains the HTTP response message.</returns>
-        Task<HttpResponseMessage> SendAsync(HttpRequestMessage request);
+        Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Clones an HTTP request asynchronously.
@@ -49,9 +51,9 @@ namespace TofuPilot.Utils
             httpClient = new System.Net.Http.HttpClient(handler);
         }
 
-        public virtual async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
+        public virtual async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken = default)
         {
-            return await httpClient.SendAsync(request);
+            return await httpClient.SendAsync(request, cancellationToken);
         }
 
         public virtual async Task<HttpRequestMessage> CloneAsync(HttpRequestMessage request)
