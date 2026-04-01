@@ -12,10 +12,10 @@ namespace TofuPilot
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using TofuPilot.Hooks;
-    using TofuPilot.Models.Components;
-    using TofuPilot.Utils;
-    using TofuPilot.Utils.Retries;
+    using global::TofuPilot.Hooks;
+    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Utils;
+    using global::TofuPilot.Utils.Retries;
 
     public struct SDKConfig
     {
@@ -30,7 +30,7 @@ namespace TofuPilot
         public string ServerUrl;
         public int ServerIndex;
         public string UserAgent;
-        public Func<TofuPilot.Models.Components.Security>? SecuritySource;
+        public Func<global::TofuPilot.Models.Components.Security>? SecuritySource;
         public SDKHooks Hooks;
         public RetryConfig? RetryConfig;
 

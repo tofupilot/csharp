@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Procedure deleted successfully
@@ -21,7 +21,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier of the deleted procedure.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
     }
 }

@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -24,43 +24,46 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier of the revision.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Revision number.
         /// </summary>
-        [JsonProperty("number")]
+        [JsonPropertyName("number")]
         public string Number { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the revision was created.
         /// </summary>
-        [JsonProperty("created_at", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("created_at")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? CreatedAt { get; set; }
 
         /// <summary>
         /// User who created the revision.
         /// </summary>
-        [JsonProperty("created_by_user", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("created_by_user")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public PartGetRevisionCreatedByUser? CreatedByUser { get; set; }
 
         /// <summary>
         /// Station that created the revision.
         /// </summary>
-        [JsonProperty("created_by_station", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("created_by_station")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public PartGetRevisionCreatedByStation? CreatedByStation { get; set; }
 
         /// <summary>
         /// Part associated with this revision.
         /// </summary>
-        [JsonProperty("part")]
+        [JsonPropertyName("part")]
         public PartGetRevisionPart Part { get; set; } = default!;
 
         /// <summary>
         /// List of units created with this revision.
         /// </summary>
-        [JsonProperty("units")]
+        [JsonPropertyName("units")]
         public List<PartGetRevisionUnits> Units { get; set; } = default!;
     }
 }

@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     
     public class StationGetCurrentProcedures
     {
@@ -19,31 +19,32 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Procedure ID
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Procedure identifier
         /// </summary>
-        [JsonProperty("identifier", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("identifier")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Identifier { get; set; }
 
         /// <summary>
         /// Procedure name
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Number of runs created by this station in the last 7 days
         /// </summary>
-        [JsonProperty("runs_count")]
+        [JsonPropertyName("runs_count")]
         public double RunsCount { get; set; } = default!;
 
         /// <summary>
         /// Deployment information for this procedure on this station
         /// </summary>
-        [JsonProperty("deployment")]
+        [JsonPropertyName("deployment")]
         public StationGetCurrentDeployment? Deployment { get; set; } = null;
     }
 }

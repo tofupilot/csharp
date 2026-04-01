@@ -50,7 +50,7 @@ public class RunsUpdateTests
     public async Task UpdateRun_Nonexistent_ThrowsNotFound()
     {
         var fakeId = Guid.NewGuid().ToString();
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Runs.UpdateAsync(fakeId, new RunUpdateRequestBody()));
     }
 }

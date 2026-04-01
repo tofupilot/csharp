@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     public class UnitUpdateRequestBody
@@ -19,31 +19,31 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// New serial number for the unit.
         /// </summary>
-        [JsonProperty("new_serial_number")]
+        [JsonPropertyName("new_serial_number")]
         public string? NewSerialNumber { get; set; }
 
         /// <summary>
         /// New part number for the unit.
         /// </summary>
-        [JsonProperty("part_number")]
+        [JsonPropertyName("part_number")]
         public string? PartNumber { get; set; }
 
         /// <summary>
         /// New revision number for the unit.
         /// </summary>
-        [JsonProperty("revision_number")]
+        [JsonPropertyName("revision_number")]
         public string? RevisionNumber { get; set; }
 
         /// <summary>
         /// New batch number for the unit. Set to null to remove batch.
         /// </summary>
-        [JsonProperty("batch_number")]
+        [JsonPropertyName("batch_number")]
         public string? BatchNumber { get; set; } = null;
 
         /// <summary>
         /// Array of upload IDs to attach to the unit.
         /// </summary>
-        [JsonProperty("attachments")]
+        [JsonPropertyName("attachments")]
         public List<string>? Attachments { get; set; }
     }
 }

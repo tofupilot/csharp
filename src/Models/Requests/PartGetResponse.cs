@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -24,43 +24,43 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the part.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Part number.
         /// </summary>
-        [JsonProperty("number")]
+        [JsonPropertyName("number")]
         public string Number { get; set; } = default!;
 
         /// <summary>
         /// Part name.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the part was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
         /// User who created this part.
         /// </summary>
-        [JsonProperty("created_by_user")]
+        [JsonPropertyName("created_by_user")]
         public PartGetCreatedByUser? CreatedByUser { get; set; } = null;
 
         /// <summary>
         /// Station that created this part.
         /// </summary>
-        [JsonProperty("created_by_station")]
+        [JsonPropertyName("created_by_station")]
         public PartGetCreatedByStation? CreatedByStation { get; set; } = null;
 
         /// <summary>
         /// List of revisions for this part.
         /// </summary>
-        [JsonProperty("revisions")]
+        [JsonPropertyName("revisions")]
         public List<PartGetRevisions> Revisions { get; set; } = default!;
     }
 }

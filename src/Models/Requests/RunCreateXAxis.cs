@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     /// <summary>
@@ -23,31 +23,31 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Array of numeric data points for this axis.
         /// </summary>
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public List<double> Data { get; set; } = default!;
 
         /// <summary>
         /// Unit for this axis.
         /// </summary>
-        [JsonProperty("units")]
+        [JsonPropertyName("units")]
         public string? Units { get; set; } = null;
 
         /// <summary>
         /// Description of this data series.
         /// </summary>
-        [JsonProperty("description")]
+        [JsonPropertyName("description")]
         public string? Description { get; set; } = null;
 
         /// <summary>
         /// Validators for this specific axis/series.
         /// </summary>
-        [JsonProperty("validators")]
+        [JsonPropertyName("validators")]
         public List<RunCreateValidators>? Validators { get; set; } = null;
 
         /// <summary>
         /// Aggregations computed over this axis data (min, max, avg, etc.).
         /// </summary>
-        [JsonProperty("aggregations")]
+        [JsonPropertyName("aggregations")]
         public List<RunCreateAggregations>? Aggregations { get; set; } = null;
     }
 }

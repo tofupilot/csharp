@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -21,82 +21,82 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Overall test result. Use PASS when test succeeds, FAIL when test fails but script execution completed successfully, ERROR when script execution fails, TIMEOUT when test exceeds time limit, ABORTED for manual script interruption.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public RunCreateOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// Procedure ID. Create the procedure in the app first, then find the auto-generated ID on the procedure page.
         /// </summary>
-        [JsonProperty("procedure_id")]
+        [JsonPropertyName("procedure_id")]
         public string ProcedureId { get; set; } = default!;
 
-        [JsonProperty("procedure_version")]
+        [JsonPropertyName("procedure_version")]
         public string? ProcedureVersion { get; set; } = null;
 
         /// <summary>
         /// Email address of the operator who executed the test run. The operator must exist as a user in the system. The run will be linked to this user to track who performed the test.
         /// </summary>
-        [JsonProperty("operated_by")]
+        [JsonPropertyName("operated_by")]
         public string? OperatedBy { get; set; }
 
         /// <summary>
         /// ISO 8601 timestamp when the test run began execution. This timestamp will be used to track when the test execution started and for historical analysis of test runs. A separate created_at timestamp is stored internally server side to track upload date.
         /// </summary>
-        [JsonProperty("started_at")]
+        [JsonPropertyName("started_at")]
         public DateTime StartedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the test run finished execution.
         /// </summary>
-        [JsonProperty("ended_at")]
+        [JsonPropertyName("ended_at")]
         public DateTime EndedAt { get; set; } = default!;
 
         /// <summary>
         /// Unique serial number of the unit under test. Matched case-insensitively. If no unit with this serial number exists, one will be created.
         /// </summary>
-        [JsonProperty("serial_number")]
+        [JsonPropertyName("serial_number")]
         public string SerialNumber { get; set; } = default!;
 
         /// <summary>
         /// Component part number for the unit. Matched case-insensitively. This field is required if the part number cannot be extracted from the serial number (as set in the settings). This field takes precedence over extraction from serial number. A component with the provided or extracted part number will be created if one does not exist.
         /// </summary>
-        [JsonProperty("part_number")]
+        [JsonPropertyName("part_number")]
         public string? PartNumber { get; set; }
 
         /// <summary>
         /// Hardware revision identifier for the unit. Matched case-insensitively. If none exist, a revision with this number will be created. If no revision is specified, the unit will be linked to the default revision of the part number.
         /// </summary>
-        [JsonProperty("revision_number")]
+        [JsonPropertyName("revision_number")]
         public string? RevisionNumber { get; set; }
 
         /// <summary>
         /// Production batch identifier for grouping units manufactured together. Matched case-insensitively. If none exist, a batch with this batch number will be created. If no batch number is specified, the unit will not be linked to any batch.
         /// </summary>
-        [JsonProperty("batch_number")]
+        [JsonPropertyName("batch_number")]
         public string? BatchNumber { get; set; }
 
         /// <summary>
         /// Array of sub-unit serial numbers that are part of this main unit. Matched case-insensitively. Each sub-unit must already exist and will be linked as a sub-component of the main unit under test. If no sub-units are specified, the unit will be created without sub-unit relationships.
         /// </summary>
-        [JsonProperty("sub_units")]
+        [JsonPropertyName("sub_units")]
         public List<string>? SubUnits { get; set; }
 
         /// <summary>
         /// Additional notes or documentation about this test run.
         /// </summary>
-        [JsonProperty("docstring")]
+        [JsonPropertyName("docstring")]
         public string? Docstring { get; set; }
 
         /// <summary>
         /// Array of test phases with measurements and results. Each phase represents a distinct stage of the test execution with timing information, outcome status, and optional measurements. If no phases are specified, the run will be created without phase-level organization of test data.
         /// </summary>
-        [JsonProperty("phases")]
+        [JsonPropertyName("phases")]
         public List<RunCreatePhases>? Phases { get; set; }
 
         /// <summary>
         /// Array of log messages generated during the test execution. Each log entry captures events, errors, and diagnostic information with severity levels and source code references. If no logs are specified, the run will be created without log entries.
         /// </summary>
-        [JsonProperty("logs")]
+        [JsonPropertyName("logs")]
         public List<RunCreateLogs>? Logs { get; set; }
     }
 }

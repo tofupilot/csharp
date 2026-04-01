@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// User who created the procedure.
@@ -21,19 +21,20 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the user who created the procedure.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Name of the user who created the procedure.
         /// </summary>
-        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("name")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Name { get; set; }
 
         /// <summary>
         /// Email of the user who created the procedure.
         /// </summary>
-        [JsonProperty("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; } = default!;
     }
 }

@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class AttachmentInitializeRequest
     {
@@ -18,7 +18,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// File name including extension (e.g. &quot;report.pdf&quot;)
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
     }
 }

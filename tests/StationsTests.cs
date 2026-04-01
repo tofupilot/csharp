@@ -46,7 +46,7 @@ public class StationsTests
     [Fact]
     public async Task GetStation_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Stations.GetAsync(Guid.NewGuid().ToString()));
     }
 
@@ -109,7 +109,7 @@ public class StationsTests
     [Fact]
     public async Task RemoveStation_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Stations.RemoveAsync(Guid.NewGuid().ToString()));
     }
 
@@ -121,7 +121,7 @@ public class StationsTests
             Name = $"Station-RMT-{Uid()}",
         });
         await _client.Stations.RemoveAsync(created.Id);
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Stations.RemoveAsync(created.Id));
     }
 
@@ -144,7 +144,7 @@ public class StationsTests
     [Fact]
     public async Task UpdateStation_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Stations.UpdateAsync(Guid.NewGuid().ToString(), new StationUpdateRequestBody
             {
                 Name = "whatever",
@@ -159,7 +159,7 @@ public class StationsTests
         {
             Name = name,
         });
-        await Assert.ThrowsAsync<ErrorCONFLICT>(() =>
+        await Assert.ThrowsAsync<ConflictException>(() =>
             _client.Stations.CreateAsync(new StationCreateRequest
             {
                 Name = name,
@@ -169,7 +169,7 @@ public class StationsTests
     [Fact]
     public async Task GetCurrent_WithUserKey_ThrowsForbidden()
     {
-        await Assert.ThrowsAsync<ErrorFORBIDDEN>(() =>
+        await Assert.ThrowsAsync<ForbiddenException>(() =>
             _client.Stations.GetCurrentAsync());
     }
 }

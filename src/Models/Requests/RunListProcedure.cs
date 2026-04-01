@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Test procedure associated with this run.
@@ -22,19 +22,20 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Procedure ID.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Procedure name.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Version of the procedure used for this run.
         /// </summary>
-        [JsonProperty("version", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("version")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public RunListVersion? Version { get; set; }
     }
 }

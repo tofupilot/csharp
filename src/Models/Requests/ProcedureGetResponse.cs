@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -24,49 +24,51 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the procedure.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Optional unique identifier for the procedure.
         /// </summary>
-        [JsonProperty("identifier", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("identifier")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Identifier { get; set; }
 
         /// <summary>
         /// Procedure name.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the procedure was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
         /// User who created this procedure.
         /// </summary>
-        [JsonProperty("created_by_user", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("created_by_user")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public ProcedureGetCreatedByUser? CreatedByUser { get; set; }
 
         /// <summary>
         /// Total number of runs for this procedure.
         /// </summary>
-        [JsonProperty("runs_count")]
+        [JsonPropertyName("runs_count")]
         public double RunsCount { get; set; } = default!;
 
         /// <summary>
         /// List of recent runs for this procedure.
         /// </summary>
-        [JsonProperty("recent_runs")]
+        [JsonPropertyName("recent_runs")]
         public List<ProcedureGetRecentRuns> RecentRuns { get; set; } = default!;
 
         /// <summary>
         /// Stations linked to this procedure.
         /// </summary>
-        [JsonProperty("stations")]
+        [JsonPropertyName("stations")]
         public List<ProcedureGetStations> Stations { get; set; } = default!;
     }
 }

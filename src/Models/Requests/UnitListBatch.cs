@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class UnitListBatch
     {
@@ -18,13 +18,13 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the batch.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Human-readable batch number.
         /// </summary>
-        [JsonProperty("number")]
+        [JsonPropertyName("number")]
         public string Number { get; set; } = default!;
     }
 }

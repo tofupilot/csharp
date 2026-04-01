@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System;
     
     /// <summary>
@@ -18,11 +18,11 @@ namespace TofuPilot.Models.Requests
     /// </summary>
     public enum PartListSortBy
     {
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         Name,
-        [JsonProperty("number")]
+        [JsonPropertyName("number")]
         Number,
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         CreatedAt,
     }
 
@@ -30,21 +30,21 @@ namespace TofuPilot.Models.Requests
     {
         public static string Value(this PartListSortBy value)
         {
-            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString())[0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
+            return ((JsonPropertyNameAttribute)value.GetType().GetMember(value.ToString())[0].GetCustomAttributes(typeof(JsonPropertyNameAttribute), false)[0]).Name ?? value.ToString();
         }
 
         public static PartListSortBy ToEnum(this string value)
         {
             foreach(var field in typeof(PartListSortBy).GetFields())
             {
-                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
+                var attributes = field.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
                 if (attributes.Length == 0)
                 {
                     continue;
                 }
 
-                var attribute = attributes[0] as JsonPropertyAttribute;
-                if (attribute != null && attribute.PropertyName == value)
+                var attribute = attributes[0] as JsonPropertyNameAttribute;
+                if (attribute != null && attribute.Name == value)
                 {
                     var enumVal = field.GetValue(null);
 

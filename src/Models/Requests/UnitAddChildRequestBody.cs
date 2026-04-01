@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class UnitAddChildRequestBody
     {
@@ -18,7 +18,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Serial number of the sub-unit to add
         /// </summary>
-        [JsonProperty("child_serial_number")]
+        [JsonPropertyName("child_serial_number")]
         public string ChildSerialNumber { get; set; } = default!;
     }
 }

@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     
     public class StationGetCurrentRepository
     {
@@ -19,25 +19,26 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Repository owner
         /// </summary>
-        [JsonProperty("owner")]
+        [JsonPropertyName("owner")]
         public string Owner { get; set; } = default!;
 
         /// <summary>
         /// Repository name
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Git provider
         /// </summary>
-        [JsonProperty("provider")]
+        [JsonPropertyName("provider")]
         public StationGetCurrentProvider Provider { get; set; } = default!;
 
         /// <summary>
         /// GitLab project ID (only for GitLab repos)
         /// </summary>
-        [JsonProperty("gitlab_project_id", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("gitlab_project_id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public double? GitlabProjectId { get; set; }
     }
 }

@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -24,67 +24,68 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the unit.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Unit serial number.
         /// </summary>
-        [JsonProperty("serial_number")]
+        [JsonPropertyName("serial_number")]
         public string SerialNumber { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the unit was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
         /// User who created this unit.
         /// </summary>
-        [JsonProperty("created_by_user")]
+        [JsonPropertyName("created_by_user")]
         public UnitGetCreatedByUser? CreatedByUser { get; set; } = null;
 
         /// <summary>
         /// Station that created this unit.
         /// </summary>
-        [JsonProperty("created_by_station")]
+        [JsonPropertyName("created_by_station")]
         public UnitGetCreatedByStation? CreatedByStation { get; set; } = null;
 
         /// <summary>
         /// Part information with revision details for this unit. Every unit must have a part and revision.
         /// </summary>
-        [JsonProperty("part")]
+        [JsonPropertyName("part")]
         public UnitGetPart Part { get; set; } = default!;
 
         /// <summary>
         /// Batch information for this unit.
         /// </summary>
-        [JsonProperty("batch")]
+        [JsonPropertyName("batch")]
         public UnitGetBatch? Batch { get; set; } = null;
 
         /// <summary>
         /// Parent unit information with part details and processed images.
         /// </summary>
-        [JsonProperty("parent", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("parent")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public UnitGetParent? Parent { get; set; }
 
         /// <summary>
         /// Child units with part details.
         /// </summary>
-        [JsonProperty("children")]
+        [JsonPropertyName("children")]
         public List<UnitGetChildren>? Children { get; set; }
 
         /// <summary>
         /// Run that created this unit.
         /// </summary>
-        [JsonProperty("created_during")]
+        [JsonPropertyName("created_during")]
         public UnitGetCreatedDuring? CreatedDuring { get; set; } = null;
 
         /// <summary>
         /// Files attached to this unit.
         /// </summary>
-        [JsonProperty("attachments")]
+        [JsonPropertyName("attachments")]
         public List<UnitGetAttachments>? Attachments { get; set; }
     }
 }

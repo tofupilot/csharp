@@ -9,30 +9,30 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     
     public class RunGetLogs
     {
 
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
-        [JsonProperty("level")]
+        [JsonPropertyName("level")]
         public RunGetLevel Level { get; set; } = default!;
 
-        [JsonProperty("timestamp")]
+        [JsonPropertyName("timestamp")]
         public DateTime Timestamp { get; set; } = default!;
 
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; } = default!;
 
-        [JsonProperty("source_file")]
+        [JsonPropertyName("source_file")]
         public string SourceFile { get; set; } = default!;
 
-        [JsonProperty("line_number")]
+        [JsonPropertyName("line_number")]
         public double LineNumber { get; set; } = default!;
     }
 }

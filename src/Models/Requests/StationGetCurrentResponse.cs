@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     /// <summary>
@@ -23,43 +23,46 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier of the station
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Name of the station
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// API key prefix for the station (full key only shown on creation)
         /// </summary>
-        [JsonProperty("api_key", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("api_key")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? ApiKey { get; set; }
 
         /// <summary>
         /// Procedures linked to this station with recent run counts
         /// </summary>
-        [JsonProperty("procedures")]
+        [JsonPropertyName("procedures")]
         public List<StationGetCurrentProcedures> Procedures { get; set; } = default!;
 
         /// <summary>
         /// Slug of the organization this station belongs to
         /// </summary>
-        [JsonProperty("organization_slug")]
+        [JsonPropertyName("organization_slug")]
         public string OrganizationSlug { get; set; } = default!;
 
         /// <summary>
         /// Current connection status of the station
         /// </summary>
-        [JsonProperty("connection_status", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("connection_status")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? ConnectionStatus { get; set; }
 
         /// <summary>
         /// Team this station is assigned to
         /// </summary>
-        [JsonProperty("team", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("team")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public StationGetCurrentTeam? Team { get; set; }
     }
 }

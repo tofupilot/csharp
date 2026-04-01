@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Upload metadata updated successfully
@@ -21,7 +21,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Signed URL for accessing the uploaded file
         /// </summary>
-        [JsonProperty("url")]
+        [JsonPropertyName("url")]
         public string Url { get; set; } = default!;
     }
 }

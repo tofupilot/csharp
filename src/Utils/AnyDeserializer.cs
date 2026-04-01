@@ -9,86 +9,80 @@
 #nullable enable
 namespace TofuPilot.Utils
 {
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
     using System;
     using System.Collections.Generic;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
-    public class AnyDeserializer : JsonConverter
+    public class AnyDeserializer : JsonConverter<Dictionary<string, object>>
     {
-        public override bool CanConvert(Type objectType)
-        {
-            return (objectType == typeof(Dictionary<string, object>));
-        }
-
-        public override bool CanWrite => false;
-
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
-            throw new NotSupportedException();
-        }
-
-        public override object ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object? existingValue,
-            JsonSerializer serializer
+        public override Dictionary<string, object>? Read(
+            ref Utf8JsonReader reader,
+            Type typeToConvert,
+            JsonSerializerOptions options
         )
         {
-            if (reader.TokenType == JsonToken.StartObject) {
-                return ParseTokenIntoDictionary(JToken.Load(reader));
+            if (reader.TokenType != JsonTokenType.StartObject)
+            {
+                throw new JsonException("Could not deserialize token into dictionary");
             }
-            throw new JsonSerializationException($"Could not deserialize token into dictionary");
+
+            using var doc = JsonDocument.ParseValue(ref reader);
+            return ParseElementIntoDictionary(doc.RootElement);
         }
 
-        private Dictionary<string, object?> ParseTokenIntoDictionary(JToken token)
+        private Dictionary<string, object?> ParseElementIntoDictionary(JsonElement element)
         {
             var dict = new Dictionary<string, object?>();
 
-            foreach (var child in token.Children<JProperty>())
+            foreach (var property in element.EnumerateObject())
             {
-
-                object? val = null;
-                if (child.Value is JObject)
-                {
-                    val = ParseTokenIntoDictionary(child.Value);
-                }
-                else if (child.Value is JArray)
-                {
-                    val = ParseTokenIntoList(child.Value);
-                }
-                else if (child.Value != null)
-                {
-                    val = ((JValue)child.Value).Value;
-                }
-
-                dict[child.Name] = val;
+                dict[property.Name] = ParseValue(property.Value);
             }
 
             return dict;
         }
 
-        private List<object?> ParseTokenIntoList(JToken token)
+        private List<object?> ParseElementIntoList(JsonElement element)
         {
             var list = new List<object?>();
 
-            foreach (var child in token.Children())
+            foreach (var item in element.EnumerateArray())
             {
-                if (child is JObject)
-                {
-                    list.Add((object)ParseTokenIntoDictionary(child));
-                }
-                else if (child is JArray)
-                {
-                    list.Add((object)ParseTokenIntoList(child));
-                }
-                else
-                {
-                    list.Add(((JValue)child).Value);
-                }
+                list.Add(ParseValue(item));
             }
 
             return list;
+        }
+
+        private object? ParseValue(JsonElement element)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    return ParseElementIntoDictionary(element);
+                case JsonValueKind.Array:
+                    return ParseElementIntoList(element);
+                case JsonValueKind.String:
+                    return element.GetString();
+                case JsonValueKind.Number:
+                    if (element.TryGetInt64(out long l))
+                        return l;
+                    return element.GetDouble();
+                case JsonValueKind.True:
+                    return true;
+                case JsonValueKind.False:
+                    return false;
+                case JsonValueKind.Null:
+                case JsonValueKind.Undefined:
+                default:
+                    return null;
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, Dictionary<string, object> value, JsonSerializerOptions options)
+        {
+            throw new NotSupportedException();
         }
     }
 }

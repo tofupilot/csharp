@@ -64,7 +64,7 @@ public class RunsDeleteTests
     public async Task DeleteRun_Nonexistent_ThrowsNotFound()
     {
         var fakeId = Guid.NewGuid().ToString();
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Runs.DeleteAsync(new List<string> { fakeId }));
     }
 }

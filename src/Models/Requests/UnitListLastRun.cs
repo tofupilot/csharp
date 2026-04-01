@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     
     public class UnitListLastRun
@@ -20,31 +20,33 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the run.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Final result of the test run execution.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public UnitListLastRunOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run execution started.
         /// </summary>
-        [JsonProperty("started_at")]
+        [JsonPropertyName("started_at")]
         public DateTime StartedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run execution completed. Null if still running.
         /// </summary>
-        [JsonProperty("ended_at", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("ended_at")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public DateTime? EndedAt { get; set; }
 
         /// <summary>
         /// Test procedure that was executed. Null if run had no associated procedure.
         /// </summary>
-        [JsonProperty("procedure", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("procedure")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public UnitListProcedure? Procedure { get; set; }
     }
 }

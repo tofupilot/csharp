@@ -68,7 +68,7 @@ public class RevisionsTests
         var uid = Uid();
         var partNumber = await CreatePartAsync(uid);
 
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Parts.Revisions.GetAsync(partNumber, $"REV-NONE-{Uid()}"));
     }
 
@@ -94,7 +94,7 @@ public class RevisionsTests
         var uid = Uid();
         var partNumber = await CreatePartAsync(uid);
 
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Parts.Revisions.DeleteAsync(partNumber, $"REV-NONE-{Uid()}"));
     }
 
@@ -110,7 +110,7 @@ public class RevisionsTests
             Number = revNumber,
         });
 
-        await Assert.ThrowsAsync<ErrorCONFLICT>(
+        await Assert.ThrowsAsync<ConflictException>(
             () => _client.Parts.Revisions.CreateAsync(partNumber, new PartCreateRevisionRequestBody
             {
                 Number = revNumber,
@@ -143,7 +143,7 @@ public class RevisionsTests
     [Fact]
     public async Task CreateRevision_InvalidPartNumber_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Parts.Revisions.CreateAsync($"PART-INVALID-{Uid()}", new PartCreateRevisionRequestBody
             {
                 Number = $"REV-{Uid()}",

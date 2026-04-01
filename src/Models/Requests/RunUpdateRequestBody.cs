@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     public class RunUpdateRequestBody
@@ -19,7 +19,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Array of upload IDs to attach to the run.
         /// </summary>
-        [JsonProperty("attachments")]
+        [JsonPropertyName("attachments")]
         public List<string>? Attachments { get; set; }
     }
 }

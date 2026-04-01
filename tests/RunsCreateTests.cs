@@ -161,7 +161,7 @@ public class RunsCreateTests
         var req = BaseRequest();
         req.SerialNumber = "";
 
-        await Assert.ThrowsAsync<ErrorBADREQUEST>(() => _client.Runs.CreateAsync(req));
+        await Assert.ThrowsAsync<BadRequestException>(() => _client.Runs.CreateAsync(req));
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class RunsCreateTests
         var req = BaseRequest();
         req.ProcedureId = Guid.NewGuid().ToString();
 
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() => _client.Runs.CreateAsync(req));
+        await Assert.ThrowsAsync<NotFoundException>(() => _client.Runs.CreateAsync(req));
     }
 
     [Fact]

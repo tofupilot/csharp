@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Components;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Structured validator specification with operator, expected value, and outcome.
@@ -22,31 +22,31 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Pre-computed validation result from test framework. Server stores as-is, does not re-evaluate.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public string? Outcome { get; set; } = null;
 
         /// <summary>
         /// Comparison operator: &quot;&gt;&quot;, &quot;&gt;=&quot;, &quot;&lt;&quot;, &quot;&lt;=&quot;, &quot;==&quot;, &quot;!=&quot;, &quot;matches&quot;, &quot;in&quot;, &quot;range&quot;
         /// </summary>
-        [JsonProperty("operator")]
+        [JsonPropertyName("operator")]
         public string? Operator { get; set; } = null;
 
         /// <summary>
         /// Expected value for comparison. Type depends on operator.
         /// </summary>
-        [JsonProperty("expected_value")]
+        [JsonPropertyName("expected_value")]
         public RunCreateYAxisAggregationsExpectedValue? ExpectedValue { get; set; } = null;
 
         /// <summary>
         /// Original expression string for display/audit purposes.
         /// </summary>
-        [JsonProperty("expression")]
+        [JsonPropertyName("expression")]
         public string? Expression { get; set; } = null;
 
         /// <summary>
         /// Whether this validator is decisive (if it fails, measurement fails). False for marginal/warning validators. Defaults to true.
         /// </summary>
-        [JsonProperty("is_decisive")]
+        [JsonPropertyName("is_decisive")]
         public bool? IsDecisive { get; set; } = null;
     }
 }

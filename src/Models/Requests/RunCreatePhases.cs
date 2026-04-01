@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -21,37 +21,37 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Name identifier for the test phase. Each phase should have a descriptive name that identifies the specific stage of testing being performed. Analytics at phase level are computed using this name as unique identifier.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Overall result of the phase execution. Use PASS when phase succeeds, FAIL when phase fails but execution completed successfully, ERROR when phase execution fails, SKIP when phase was not executed.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public RunCreatePhasesOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the phase execution began.
         /// </summary>
-        [JsonProperty("started_at")]
+        [JsonPropertyName("started_at")]
         public DateTime StartedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the phase execution completed.
         /// </summary>
-        [JsonProperty("ended_at")]
+        [JsonPropertyName("ended_at")]
         public DateTime EndedAt { get; set; } = default!;
 
-        [JsonProperty("docstring")]
+        [JsonPropertyName("docstring")]
         public string? Docstring { get; set; } = null;
 
-        [JsonProperty("measurements")]
+        [JsonPropertyName("measurements")]
         public List<RunCreateMeasurements>? Measurements { get; set; } = null;
 
         /// <summary>
         /// Zero-based retry attempt index for this phase. 0 = first attempt, 1 = first retry, etc. When a phase is retried, all attempts are stored with the same name and increasing retry_count.
         /// </summary>
-        [JsonProperty("retry_count")]
+        [JsonPropertyName("retry_count")]
         public long? RetryCount { get; set; }
     }
 }

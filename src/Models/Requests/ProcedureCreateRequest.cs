@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class ProcedureCreateRequest
     {
@@ -18,7 +18,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Name of the procedure. Must be unique within the organization.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
     }
 }

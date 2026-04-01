@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class StationGetCommit
     {
@@ -18,19 +18,20 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Git commit SHA
         /// </summary>
-        [JsonProperty("sha")]
+        [JsonPropertyName("sha")]
         public string Sha { get; set; } = default!;
 
         /// <summary>
         /// Git commit message
         /// </summary>
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; } = default!;
 
         /// <summary>
         /// Git branch name
         /// </summary>
-        [JsonProperty("branch", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("branch")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Branch { get; set; }
     }
 }

@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class PartCreateRevisionRequestBody
     {
@@ -18,7 +18,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Revision number (e.g., version number or code).
         /// </summary>
-        [JsonProperty("number")]
+        [JsonPropertyName("number")]
         public string Number { get; set; } = default!;
     }
 }

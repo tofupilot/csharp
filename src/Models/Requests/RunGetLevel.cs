@@ -9,21 +9,21 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System;
     
     public enum RunGetLevel
     {
-        [JsonProperty("DEBUG")]
+        [JsonPropertyName("DEBUG")]
         Debug,
-        [JsonProperty("INFO")]
+        [JsonPropertyName("INFO")]
         Info,
-        [JsonProperty("WARNING")]
+        [JsonPropertyName("WARNING")]
         Warning,
-        [JsonProperty("ERROR")]
+        [JsonPropertyName("ERROR")]
         Error,
-        [JsonProperty("CRITICAL")]
+        [JsonPropertyName("CRITICAL")]
         Critical,
     }
 
@@ -31,21 +31,21 @@ namespace TofuPilot.Models.Requests
     {
         public static string Value(this RunGetLevel value)
         {
-            return ((JsonPropertyAttribute)value.GetType().GetMember(value.ToString())[0].GetCustomAttributes(typeof(JsonPropertyAttribute), false)[0]).PropertyName ?? value.ToString();
+            return ((JsonPropertyNameAttribute)value.GetType().GetMember(value.ToString())[0].GetCustomAttributes(typeof(JsonPropertyNameAttribute), false)[0]).Name ?? value.ToString();
         }
 
         public static RunGetLevel ToEnum(this string value)
         {
             foreach(var field in typeof(RunGetLevel).GetFields())
             {
-                var attributes = field.GetCustomAttributes(typeof(JsonPropertyAttribute), false);
+                var attributes = field.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
                 if (attributes.Length == 0)
                 {
                     continue;
                 }
 
-                var attribute = attributes[0] as JsonPropertyAttribute;
-                if (attribute != null && attribute.PropertyName == value)
+                var attribute = attributes[0] as JsonPropertyNameAttribute;
+                if (attribute != null && attribute.Name == value)
                 {
                     var enumVal = field.GetValue(null);
 

@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     
     /// <summary>
@@ -23,43 +23,43 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the procedure version.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Version tag.
         /// </summary>
-        [JsonProperty("tag")]
+        [JsonPropertyName("tag")]
         public string Tag { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the procedure version was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
         /// User who created this procedure version.
         /// </summary>
-        [JsonProperty("created_by_user")]
+        [JsonPropertyName("created_by_user")]
         public ProcedureGetVersionCreatedByUser? CreatedByUser { get; set; } = null;
 
         /// <summary>
         /// Station that created this procedure version.
         /// </summary>
-        [JsonProperty("created_by_station")]
+        [JsonPropertyName("created_by_station")]
         public ProcedureGetVersionCreatedByStation? CreatedByStation { get; set; } = null;
 
         /// <summary>
         /// Procedure this version belongs to.
         /// </summary>
-        [JsonProperty("procedure")]
+        [JsonPropertyName("procedure")]
         public ProcedureGetVersionProcedure Procedure { get; set; } = default!;
 
         /// <summary>
         /// Number of runs using this procedure version.
         /// </summary>
-        [JsonProperty("run_count")]
+        [JsonPropertyName("run_count")]
         public long RunCount { get; set; } = default!;
     }
 }

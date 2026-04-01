@@ -9,24 +9,25 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     public class RunGetDataSeries
     {
 
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public List<double> Data { get; set; } = default!;
 
-        [JsonProperty("units", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("units")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Units { get; set; }
 
-        [JsonProperty("validators")]
+        [JsonPropertyName("validators")]
         public List<RunGetDataSeriesValidators>? Validators { get; set; } = null;
 
-        [JsonProperty("aggregations")]
+        [JsonPropertyName("aggregations")]
         public List<RunGetDataSeriesAggregations>? Aggregations { get; set; } = null;
     }
 }

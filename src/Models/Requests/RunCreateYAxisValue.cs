@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using TofuPilot.Utils;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     using System.Numerics;
@@ -108,16 +108,20 @@ namespace TofuPilot.Models.Requests
             return new RunCreateYAxisValue(typ);
         }
 
-        public class RunCreateYAxisValueConverter : JsonConverter
+        public class RunCreateYAxisValueConverter : JsonConverter<RunCreateYAxisValue>
         {
 
-            public override bool CanConvert(System.Type objectType) => objectType == typeof(RunCreateYAxisValue);
-
-            public override bool CanRead => true;
-
-            public override object? ReadJson(JsonReader reader, System.Type objectType, object? existingValue, JsonSerializer serializer)
+            public override RunCreateYAxisValue? Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
             {
-                var json = JRaw.Create(reader).ToString();
+                if (reader.TokenType == JsonTokenType.Null)
+                {
+                    reader.Read();
+                    return null;
+                }
+
+                using var doc = JsonDocument.ParseValue(ref reader);
+                var json = doc.RootElement.GetRawText();
+
                 if (json == "null")
                 {
                     return null;
@@ -165,7 +169,7 @@ namespace TofuPilot.Models.Requests
                     {
                         try
                         {
-                            return ResponseBodyDeserializer.DeserializeUndiscriminatedUnionFallback(deserializationType, returnObject, propertyName, json);
+                            return (RunCreateYAxisValue)ResponseBodyDeserializer.DeserializeUndiscriminatedUnionFallback(deserializationType, returnObject, propertyName, json);
                         }
                         catch (ResponseBodyDeserializer.DeserializationException)
                         {
@@ -181,31 +185,30 @@ namespace TofuPilot.Models.Requests
                 throw new InvalidOperationException("Could not deserialize into any supported types.");
             }
 
-            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            public override void Write(Utf8JsonWriter writer, RunCreateYAxisValue? value, JsonSerializerOptions options)
             {
                 if (value == null) {
-                    writer.WriteRawValue("null");
+                    writer.WriteNullValue();
                     return;
                 }
-                RunCreateYAxisValue res = (RunCreateYAxisValue)value;
-                if (RunCreateYAxisValueType.FromString(res.Type).Equals(RunCreateYAxisValueType.Null))
+                if (RunCreateYAxisValueType.FromString(value.Type).Equals(RunCreateYAxisValueType.Null))
                 {
-                    writer.WriteRawValue("null");
+                    writer.WriteNullValue();
                     return;
                 }
-                if (res.Number != null)
+                if (value.Number != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.Number));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.Number));
                     return;
                 }
-                if (res.Str != null)
+                if (value.Str != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.Str));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.Str));
                     return;
                 }
-                if (res.Boolean != null)
+                if (value.Boolean != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.Boolean));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.Boolean));
                     return;
                 }
 

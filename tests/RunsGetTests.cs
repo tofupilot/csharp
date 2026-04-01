@@ -49,7 +49,7 @@ public class RunsGetTests
     public async Task GetRun_Nonexistent_ThrowsNotFound()
     {
         var fakeId = Guid.NewGuid().ToString();
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() => _client.Runs.GetAsync(fakeId));
+        await Assert.ThrowsAsync<NotFoundException>(() => _client.Runs.GetAsync(fakeId));
     }
 
     [Fact]

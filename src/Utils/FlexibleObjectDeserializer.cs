@@ -12,32 +12,57 @@ namespace TofuPilot.Utils
     using System;
     using System.Linq;
     using System.Collections.Generic;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
-    internal class FlexibleObjectDeserializer: JsonConverter
+    internal class FlexibleObjectDeserializer : JsonConverter<object>
     {
-        public override bool CanConvert(Type objectType) =>
-            objectType == typeof(object);
+        public override bool CanConvert(Type typeToConvert) =>
+            typeToConvert == typeof(object);
 
-        public override bool CanWrite => false;
-
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer)
+        public override object? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var token = JToken.ReadFrom(reader);
-
-            if (token is JArray)
+            if (reader.TokenType == JsonTokenType.StartArray)
             {
-                return new List<object>(token.Select(t =>
+                var list = new List<object>();
+                while (reader.Read())
                 {
-                    return t.ToString();
-                }));
+                    if (reader.TokenType == JsonTokenType.EndArray)
+                        break;
+
+                    using var doc = JsonDocument.ParseValue(ref reader);
+                    list.Add(doc.RootElement.ToString());
+                }
+                return list;
             }
 
-            return token.ToObject(objectType);
+            using var document = JsonDocument.ParseValue(ref reader);
+            return ParseJsonElement(document.RootElement);
         }
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer) =>
+        private static object? ParseJsonElement(JsonElement element)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.String:
+                    return element.GetString();
+                case JsonValueKind.Number:
+                    if (element.TryGetInt64(out long l))
+                        return l;
+                    return element.GetDouble();
+                case JsonValueKind.True:
+                    return true;
+                case JsonValueKind.False:
+                    return false;
+                case JsonValueKind.Null:
+                case JsonValueKind.Undefined:
+                    return null;
+                default:
+                    return element.GetRawText();
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, object value, JsonSerializerOptions options) =>
             throw new NotImplementedException();
     }
 }

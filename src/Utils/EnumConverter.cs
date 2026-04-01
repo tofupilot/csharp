@@ -8,77 +8,91 @@
 //------------------------------------------------------------------------------
 #nullable enable
 using System;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace TofuPilot.Utils
 {
-    internal class EnumConverter : JsonConverter
+    internal class EnumConverter : JsonConverterFactory
     {
-        public override bool CanConvert(System.Type objectType)
+        public override bool CanConvert(System.Type typeToConvert)
         {
-            var  nullableType = Nullable.GetUnderlyingType(objectType);
+            var nullableType = Nullable.GetUnderlyingType(typeToConvert);
             if (nullableType != null)
             {
                 return nullableType.IsEnum;
             }
 
-            return objectType.IsEnum;
+            return typeToConvert.IsEnum;
         }
 
-        public override object? ReadJson(
-            JsonReader reader,
-            System.Type objectType,
-            object? existingValue,
-            JsonSerializer serializer
-        )
+        public override JsonConverter CreateConverter(System.Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.Value == null)
-            {
-                return null;
-            }
-
-            var extensionType = System.Type.GetType(objectType.FullName + "Extension");
-
-            if (Nullable.GetUnderlyingType(objectType) != null) {
-                objectType = Nullable.GetUnderlyingType(objectType)!;
-                extensionType = System.Type.GetType(objectType!.FullName + "Extension");
-            }
-
-            if (extensionType == null)
-            {
-                return Enum.ToObject(objectType, reader.Value);
-            }
-
-            var method = extensionType.GetMethod("ToEnum");
-            if (method == null)
-            {
-                throw new Exception($"Unable to find ToEnum method on {extensionType.FullName}");
-            }
-
-            try {
-                return method.Invoke(null, new[] { (string)reader.Value });
-            } catch(System.Reflection.TargetInvocationException e) {
-                throw new Newtonsoft.Json.JsonSerializationException("Unable to convert value to enum", e);
-            }
-
+            var enumType = Nullable.GetUnderlyingType(typeToConvert) ?? typeToConvert;
+            var converterType = typeof(EnumConverterInner<>).MakeGenericType(enumType);
+            return (JsonConverter)Activator.CreateInstance(converterType)!;
         }
 
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        private class EnumConverterInner<T> : JsonConverter<T> where T : struct, Enum
         {
-            if (value == null)
+            public override T Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
             {
-                writer.WriteValue("null");
-                return;
+                if (reader.TokenType == JsonTokenType.Null)
+                {
+                    return default;
+                }
+
+                var value = reader.GetString();
+                if (value == null)
+                {
+                    return default;
+                }
+
+                var objectType = typeToConvert;
+                var extensionType = System.Type.GetType(objectType.FullName + "Extension");
+
+                if (Nullable.GetUnderlyingType(objectType) != null)
+                {
+                    objectType = Nullable.GetUnderlyingType(objectType)!;
+                    extensionType = System.Type.GetType(objectType!.FullName + "Extension");
+                }
+
+                if (extensionType == null)
+                {
+                    if (Enum.TryParse<T>(value, out var result))
+                    {
+                        return result;
+                    }
+                    return default;
+                }
+
+                var method = extensionType.GetMethod("ToEnum");
+                if (method == null)
+                {
+                    throw new Exception($"Unable to find ToEnum method on {extensionType.FullName}");
+                }
+
+                try
+                {
+                    return (T)method.Invoke(null, new[] { value })!;
+                }
+                catch (System.Reflection.TargetInvocationException e)
+                {
+                    throw new JsonException("Unable to convert value to enum", e);
+                }
             }
 
-            var extensionType = System.Type.GetType(value.GetType().FullName + "Extension");
-            if (extensionType == null)
+            public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
             {
-                writer.WriteValue(value);
-                return;
-            }
+                var extensionType = System.Type.GetType(value.GetType().FullName + "Extension");
+                if (extensionType == null)
+                {
+                    writer.WriteStringValue(value.ToString());
+                    return;
+                }
 
-            writer.WriteValue(Utilities.ToString(value));
+                writer.WriteStringValue(Utilities.ToString(value));
+            }
         }
     }
 }

@@ -11,38 +11,20 @@ namespace TofuPilot.Utils
 {
     using System;
     using System.Globalization;
-    using Newtonsoft.Json;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
-    internal class IsoDateTimeSerializer: JsonConverter
+    internal class IsoDateTimeSerializer : JsonConverter<DateTime>
     {
-        public override bool CanConvert(Type objectType)
+        public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var  nullableType = Nullable.GetUnderlyingType(objectType);
-            if (nullableType != null)
-            {
-                return nullableType == typeof(DateTime);
-            }
-
-            return objectType == typeof(DateTime);
+            return DateTime.Parse(reader.GetString()!, CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.RoundtripKind);
         }
 
-        public override bool CanRead => false;
-
-        public override object? ReadJson(JsonReader reader, Type objectType, object? existingValue, JsonSerializer serializer) =>
-            throw new NotImplementedException();
-
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
         {
-            if (value == null)
-            {
-                writer.WriteValue("null");
-                return;
-            }
-
-            DateTime time = (DateTime)value;
-            // The built-in Iso converter coerces to local time;
-            // This standardizes to UTC.
-            writer.WriteValue(time.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture));
+            // Standardize to UTC.
+            writer.WriteStringValue(value.ToUniversalTime().ToString("o", CultureInfo.InvariantCulture));
         }
     }
 }

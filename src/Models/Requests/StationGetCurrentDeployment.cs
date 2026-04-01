@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     
     public class StationGetCurrentDeployment
     {
@@ -19,13 +19,15 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// When the procedure was deployed
         /// </summary>
-        [JsonProperty("deployed_at")]
+        [JsonPropertyName("deployed_at")]
         public string DeployedAt { get; set; } = default!;
 
-        [JsonProperty("commit", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("commit")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public StationGetCurrentCommit? Commit { get; set; }
 
-        [JsonProperty("repository", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("repository")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public StationGetCurrentRepository? Repository { get; set; }
     }
 }

@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class PartUpdateRequestBody
     {
@@ -18,13 +18,13 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// New unique identifier number for the part.
         /// </summary>
-        [JsonProperty("new_number")]
+        [JsonPropertyName("new_number")]
         public string? NewNumber { get; set; }
 
         /// <summary>
         /// New human-readable name for the part.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
     }
 }

@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using TofuPilot.Utils;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     using System.Numerics;
@@ -94,16 +94,20 @@ namespace TofuPilot.Models.Requests
             return new RunCreateUnits(typ);
         }
 
-        public class RunCreateUnitsConverter : JsonConverter
+        public class RunCreateUnitsConverter : JsonConverter<RunCreateUnits>
         {
 
-            public override bool CanConvert(System.Type objectType) => objectType == typeof(RunCreateUnits);
-
-            public override bool CanRead => true;
-
-            public override object? ReadJson(JsonReader reader, System.Type objectType, object? existingValue, JsonSerializer serializer)
+            public override RunCreateUnits? Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
             {
-                var json = JRaw.Create(reader).ToString();
+                if (reader.TokenType == JsonTokenType.Null)
+                {
+                    reader.Read();
+                    return null;
+                }
+
+                using var doc = JsonDocument.ParseValue(ref reader);
+                var json = doc.RootElement.GetRawText();
+
                 if (json == "null")
                 {
                     return null;
@@ -145,7 +149,7 @@ namespace TofuPilot.Models.Requests
                     {
                         try
                         {
-                            return ResponseBodyDeserializer.DeserializeUndiscriminatedUnionFallback(deserializationType, returnObject, propertyName, json);
+                            return (RunCreateUnits)ResponseBodyDeserializer.DeserializeUndiscriminatedUnionFallback(deserializationType, returnObject, propertyName, json);
                         }
                         catch (ResponseBodyDeserializer.DeserializationException)
                         {
@@ -161,26 +165,25 @@ namespace TofuPilot.Models.Requests
                 throw new InvalidOperationException("Could not deserialize into any supported types.");
             }
 
-            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            public override void Write(Utf8JsonWriter writer, RunCreateUnits? value, JsonSerializerOptions options)
             {
                 if (value == null) {
-                    writer.WriteRawValue("null");
+                    writer.WriteNullValue();
                     return;
                 }
-                RunCreateUnits res = (RunCreateUnits)value;
-                if (RunCreateUnitsType.FromString(res.Type).Equals(RunCreateUnitsType.Null))
+                if (RunCreateUnitsType.FromString(value.Type).Equals(RunCreateUnitsType.Null))
                 {
-                    writer.WriteRawValue("null");
+                    writer.WriteNullValue();
                     return;
                 }
-                if (res.Str != null)
+                if (value.Str != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.Str));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.Str));
                     return;
                 }
-                if (res.ArrayOfStr != null)
+                if (value.ArrayOfStr != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.ArrayOfStr));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.ArrayOfStr));
                     return;
                 }
 

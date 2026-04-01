@@ -9,35 +9,35 @@
 #nullable enable
 namespace TofuPilot.Models.Errors
 {
-    using Newtonsoft.Json;
+    using System.Text.Json.Serialization;
     using System;
     using System.Collections.Generic;
-    using TofuPilot.Models.Components;
-    using TofuPilot.Utils;
+    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Utils;
     
     /// <summary>
-    /// Unprocessable content error
+    /// Internal server error
     /// </summary>
-    public class ErrorUNPROCESSABLECONTENT : Exception
+    public class InternalServerErrorException : Exception
     {
 
         /// <summary>
         /// The error message
         /// </summary>
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         private string? _message { get; set; }
         public override string Message { get {return _message ?? "";} }
 
         /// <summary>
         /// The error code
         /// </summary>
-        [JsonProperty("code")]
+        [JsonPropertyName("code")]
         public string Code { get; set; } = default!;
 
         /// <summary>
         /// An array of issues that were responsible for the error
         /// </summary>
-        [JsonProperty("issues")]
-        public List<ErrorUNPROCESSABLECONTENTIssue>? Issues { get; set; }
+        [JsonPropertyName("issues")]
+        public List<InternalServerErrorIssue>? Issues { get; set; }
     }
 }

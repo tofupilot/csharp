@@ -51,7 +51,7 @@ public class ProceduresTests
     [Fact]
     public async Task GetProcedure_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Procedures.GetAsync(Guid.NewGuid().ToString()));
     }
 
@@ -151,7 +151,7 @@ public class ProceduresTests
     [Fact]
     public async Task DeleteProcedure_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Procedures.DeleteAsync(Guid.NewGuid().ToString()));
     }
 
@@ -193,7 +193,7 @@ public class ProceduresTests
     [Fact]
     public async Task UpdateProcedure_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Procedures.UpdateAsync(Guid.NewGuid().ToString(), new ProcedureUpdateRequestBody
             {
                 Name = "Doesn't matter",

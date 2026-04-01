@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     public class RunGetMeasurements
@@ -20,49 +20,51 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Measurement ID.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Measurement name.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Measurement validation result.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public RunGetMeasurementsOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// Units of measurement.
         /// </summary>
-        [JsonProperty("units", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("units")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Units { get; set; }
 
         /// <summary>
         /// Structured validation rules with outcome and expected values.
         /// </summary>
-        [JsonProperty("validators", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("validators")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public List<RunGetValidators>? Validators { get; set; }
 
         /// <summary>
         /// Aggregations computed over this measurement.
         /// </summary>
-        [JsonProperty("aggregations")]
+        [JsonPropertyName("aggregations")]
         public List<RunGetAggregations>? Aggregations { get; set; } = null;
 
         /// <summary>
         /// The actual measured value.
         /// </summary>
-        [JsonProperty("measured_value")]
+        [JsonPropertyName("measured_value")]
         public object? MeasuredValue { get; set; }
 
         /// <summary>
         /// Multi-dimensional measurement data series.
         /// </summary>
-        [JsonProperty("data_series")]
+        [JsonPropertyName("data_series")]
         public List<RunGetDataSeries>? DataSeries { get; set; }
     }
 }

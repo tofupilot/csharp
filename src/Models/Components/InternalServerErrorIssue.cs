@@ -9,13 +9,13 @@
 #nullable enable
 namespace TofuPilot.Models.Components
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
-    public class ErrorBADGATEWAYIssue
+    public class InternalServerErrorIssue
     {
 
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; } = default!;
     }
 }

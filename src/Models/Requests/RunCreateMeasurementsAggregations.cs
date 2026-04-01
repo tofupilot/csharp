@@ -9,10 +9,10 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Components;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     /// <summary>
@@ -24,31 +24,31 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Aggregation function: &quot;min&quot;, &quot;max&quot;, &quot;avg&quot;, &quot;sum&quot;, &quot;count&quot;, &quot;std&quot;, &quot;median&quot;, &quot;percentile_95&quot;, etc.
         /// </summary>
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; } = default!;
 
         /// <summary>
         /// Computed result of aggregation validation. Server stores as-is.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public string? Outcome { get; set; } = null;
 
         /// <summary>
         /// Computed aggregation value.
         /// </summary>
-        [JsonProperty("value")]
+        [JsonPropertyName("value")]
         public RunCreateMeasurementsValue? Value { get; set; } = null;
 
         /// <summary>
         /// Unit for the aggregated value.
         /// </summary>
-        [JsonProperty("unit")]
+        [JsonPropertyName("unit")]
         public string? Unit { get; set; } = null;
 
         /// <summary>
         /// Validators applied to the aggregated value.
         /// </summary>
-        [JsonProperty("validators")]
+        [JsonPropertyName("validators")]
         public List<RunCreateMeasurementsAggregationsValidators>? Validators { get; set; } = null;
     }
 }

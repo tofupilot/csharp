@@ -66,7 +66,7 @@ public class ProcedureVersionsTests
     {
         var procId = await CreateProcedureAsync();
 
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Procedures.Versions.GetAsync(procId, $"v-none-{Uid()}"));
     }
 
@@ -91,7 +91,7 @@ public class ProcedureVersionsTests
     {
         var procId = await CreateProcedureAsync();
 
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Procedures.Versions.DeleteAsync(procId, $"v-none-{Uid()}"));
     }
 }

@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class BatchUpdateRequestBody
     {
@@ -18,7 +18,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// New batch number.
         /// </summary>
-        [JsonProperty("new_number")]
+        [JsonPropertyName("new_number")]
         public string NewNumber { get; set; } = default!;
     }
 }

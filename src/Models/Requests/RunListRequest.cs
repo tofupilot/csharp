@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -90,12 +90,12 @@ namespace TofuPilot.Models.Requests
         /// Field to sort results by.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=sort_by")]
-        public RunListSortBy? SortBy { get; set; } = TofuPilot.Models.Requests.RunListSortBy.StartedAt;
+        public RunListSortBy? SortBy { get; set; } = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt;
 
         /// <summary>
         /// Sort order direction.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=sort_order")]
-        public RunListSortOrder? SortOrder { get; set; } = TofuPilot.Models.Requests.RunListSortOrder.Desc;
+        public RunListSortOrder? SortOrder { get; set; } = global::TofuPilot.Models.Requests.RunListSortOrder.Desc;
     }
 }

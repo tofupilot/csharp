@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     /// <summary>
@@ -22,7 +22,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// IDs of units that were successfully deleted
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public List<string> Id { get; set; } = default!;
     }
 }

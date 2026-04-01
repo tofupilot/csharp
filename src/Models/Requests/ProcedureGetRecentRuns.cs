@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     
     public class ProcedureGetRecentRuns
@@ -20,25 +20,26 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Run ID.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run started.
         /// </summary>
-        [JsonProperty("started_at")]
+        [JsonPropertyName("started_at")]
         public DateTime StartedAt { get; set; } = default!;
 
         /// <summary>
         /// Run outcome.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public ProcedureGetOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// Unit information.
         /// </summary>
-        [JsonProperty("unit", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("unit")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public ProcedureGetUnit? Unit { get; set; }
     }
 }

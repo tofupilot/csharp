@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     /// <summary>
@@ -23,13 +23,13 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Array of batches matching the query.
         /// </summary>
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public List<BatchListData> Data { get; set; } = default!;
 
         /// <summary>
         /// Pagination metadata.
         /// </summary>
-        [JsonProperty("meta")]
+        [JsonPropertyName("meta")]
         public BatchListMeta Meta { get; set; } = default!;
     }
 }

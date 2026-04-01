@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -24,94 +24,94 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the run.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run execution started.
         /// </summary>
-        [JsonProperty("started_at")]
+        [JsonPropertyName("started_at")]
         public DateTime StartedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run execution ended.
         /// </summary>
-        [JsonProperty("ended_at")]
+        [JsonPropertyName("ended_at")]
         public DateTime EndedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 duration of the run (computed from started_at and ended_at).
         /// </summary>
-        [JsonProperty("duration")]
+        [JsonPropertyName("duration")]
         public string Duration { get; set; } = default!;
 
         /// <summary>
         /// Final result of the run execution.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public RunGetOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// Additional notes or documentation about this test run.
         /// </summary>
-        [JsonProperty("docstring")]
+        [JsonPropertyName("docstring")]
         public string? Docstring { get; set; } = null;
 
         /// <summary>
         /// User whose API key was used to create this run. Only returned if `all` or `created_by` is included.
         /// </summary>
-        [JsonProperty("created_by_user")]
+        [JsonPropertyName("created_by_user")]
         public RunGetCreatedByUser? CreatedByUser { get; set; } = null;
 
         /// <summary>
         /// Station whose API key was used to create this run. Only returned if `all` or `created_by` is included.
         /// </summary>
-        [JsonProperty("created_by_station")]
+        [JsonPropertyName("created_by_station")]
         public RunGetCreatedByStation? CreatedByStation { get; set; } = null;
 
         /// <summary>
         /// User who operated this run. Only returned if `all` or `operated_by` is included.
         /// </summary>
-        [JsonProperty("operated_by")]
+        [JsonPropertyName("operated_by")]
         public RunGetOperatedBy? OperatedBy { get; set; } = null;
 
         /// <summary>
         /// Test procedure associated with this run.
         /// </summary>
-        [JsonProperty("procedure")]
+        [JsonPropertyName("procedure")]
         public RunGetProcedure Procedure { get; set; } = default!;
 
         /// <summary>
         /// Unit under test information.
         /// </summary>
-        [JsonProperty("unit")]
+        [JsonPropertyName("unit")]
         public RunGetUnit Unit { get; set; } = default!;
 
         /// <summary>
         /// Array of execution phases in this run. Only returned if `all` or `phases` is included.
         /// </summary>
-        [JsonProperty("phases")]
+        [JsonPropertyName("phases")]
         public List<RunGetPhases>? Phases { get; set; }
 
         /// <summary>
         /// Files attached to this run, including both regular attachments and test reports. Only returned if `all` or `attachments` is included.
         /// </summary>
-        [JsonProperty("attachments")]
+        [JsonPropertyName("attachments")]
         public List<RunGetAttachments>? Attachments { get; set; }
 
-        [JsonProperty("logs")]
+        [JsonPropertyName("logs")]
         public List<RunGetLogs>? Logs { get; set; }
 
         /// <summary>
         /// Array of sub-units that had parent changes during this run. Only returned if `all` or `sub_units` is included.
         /// </summary>
-        [JsonProperty("sub_units")]
+        [JsonPropertyName("sub_units")]
         public List<RunGetSubUnits>? SubUnits { get; set; }
     }
 }

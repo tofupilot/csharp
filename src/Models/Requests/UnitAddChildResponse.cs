@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Child unit added successfully
@@ -21,7 +21,7 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// ID of the child unit that was added
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
     }
 }

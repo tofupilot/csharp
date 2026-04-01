@@ -9,16 +9,15 @@
 #nullable enable
 namespace TofuPilot
 {
-    using Newtonsoft.Json;
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using TofuPilot.Hooks;
-    using TofuPilot.Models.Components;
-    using TofuPilot.Models.Errors;
-    using TofuPilot.Utils;
-    using TofuPilot.Utils.Retries;
+    using global::TofuPilot.Hooks;
+    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Models.Errors;
+    using global::TofuPilot.Utils;
+    using global::TofuPilot.Utils.Retries;
 
     /// <summary>
     /// TofuPilot APIv2: TofuPilot REST API for managing runs, units, procedures, and more.
@@ -99,15 +98,15 @@ namespace TofuPilot
                     serverUrl = Utilities.TemplateUrl(serverUrl, urlParams);
                 }
             }
-            Func<TofuPilot.Models.Components.Security>? _securitySource = null;
+            Func<global::TofuPilot.Models.Components.Security>? _securitySource = null;
 
             if(apiKeySource != null)
             {
-                _securitySource = () => new TofuPilot.Models.Components.Security() { ApiKey = apiKeySource() };
+                _securitySource = () => new global::TofuPilot.Models.Components.Security() { ApiKey = apiKeySource() };
             }
             else if(apiKey != null)
             {
-                _securitySource = () => new TofuPilot.Models.Components.Security() { ApiKey = apiKey };
+                _securitySource = () => new global::TofuPilot.Models.Components.Security() { ApiKey = apiKey };
             }
             else
             {
@@ -174,13 +173,13 @@ namespace TofuPilot
 
             public SDKBuilder WithApiKeySource(Func<string> apiKeySource)
             {
-                _sdkConfig.SecuritySource = () => new TofuPilot.Models.Components.Security() { ApiKey = apiKeySource() };
+                _sdkConfig.SecuritySource = () => new global::TofuPilot.Models.Components.Security() { ApiKey = apiKeySource() };
                 return this;
             }
 
             public SDKBuilder WithApiKey(string apiKey)
             {
-                _sdkConfig.SecuritySource = () => new TofuPilot.Models.Components.Security() { ApiKey = apiKey };
+                _sdkConfig.SecuritySource = () => new global::TofuPilot.Models.Components.Security() { ApiKey = apiKey };
                 return this;
             }
 

@@ -9,10 +9,10 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Components;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     /// <summary>
@@ -24,37 +24,39 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the aggregation.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Aggregation type (e.g., MIN, MAX, MEAN, RANGE, STD_DEV).
         /// </summary>
-        [JsonProperty("type")]
+        [JsonPropertyName("type")]
         public string Type { get; set; } = default!;
 
         /// <summary>
         /// Aggregation validation result: PASS, FAIL, UNSET, or null if no validators.
         /// </summary>
-        [JsonProperty("outcome", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("outcome")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Outcome { get; set; }
 
         /// <summary>
         /// Computed aggregation value. Type depends on aggregation type.
         /// </summary>
-        [JsonProperty("value", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("value")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public RunGetValue? Value { get; set; }
 
         /// <summary>
         /// Unit of measurement for the aggregated value.
         /// </summary>
-        [JsonProperty("unit")]
+        [JsonPropertyName("unit")]
         public string? Unit { get; set; } = null;
 
         /// <summary>
         /// Validators applied to the aggregated value.
         /// </summary>
-        [JsonProperty("validators")]
+        [JsonPropertyName("validators")]
         public List<RunGetAggregationsValidators>? Validators { get; set; } = null;
     }
 }

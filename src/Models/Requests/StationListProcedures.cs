@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class StationListProcedures
     {
@@ -18,19 +18,20 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Procedure ID
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Procedure identifier
         /// </summary>
-        [JsonProperty("identifier", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("identifier")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Identifier { get; set; }
 
         /// <summary>
         /// Procedure name
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
     }
 }

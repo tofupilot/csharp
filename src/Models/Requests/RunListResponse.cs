@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     /// <summary>
@@ -20,10 +20,10 @@ namespace TofuPilot.Models.Requests
     public class RunListResponse
     {
 
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public List<RunListData> Data { get; set; } = default!;
 
-        [JsonProperty("meta")]
+        [JsonPropertyName("meta")]
         public RunListMeta Meta { get; set; } = default!;
     }
 }

@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -21,61 +21,61 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the unit.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Human-readable serial number assigned to the unit.
         /// </summary>
-        [JsonProperty("serial_number")]
+        [JsonPropertyName("serial_number")]
         public string SerialNumber { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the unit was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
         /// User who created this unit. Null if created by a station or system.
         /// </summary>
-        [JsonProperty("created_by_user")]
+        [JsonPropertyName("created_by_user")]
         public UnitListCreatedByUser? CreatedByUser { get; set; } = null;
 
         /// <summary>
         /// Station that created this unit. Null if created by a user.
         /// </summary>
-        [JsonProperty("created_by_station")]
+        [JsonPropertyName("created_by_station")]
         public UnitListCreatedByStation? CreatedByStation { get; set; } = null;
 
         /// <summary>
         /// Production batch this unit belongs to. Null if not part of a batch.
         /// </summary>
-        [JsonProperty("batch")]
+        [JsonPropertyName("batch")]
         public UnitListBatch? Batch { get; set; } = null;
 
         /// <summary>
         /// Parent unit in the assembly hierarchy. Null if this is a top-level unit.
         /// </summary>
-        [JsonProperty("parent")]
+        [JsonPropertyName("parent")]
         public UnitListParent? Parent { get; set; } = null;
 
         /// <summary>
         /// Child units assembled into this unit. Limited to 10 results; use Get Unit endpoint for complete list.
         /// </summary>
-        [JsonProperty("children")]
+        [JsonPropertyName("children")]
         public List<UnitListChildren> Children { get; set; } = default!;
 
         /// <summary>
         /// Part information with the specific revision this unit is built from.
         /// </summary>
-        [JsonProperty("part")]
+        [JsonPropertyName("part")]
         public UnitListPart Part { get; set; } = default!;
 
         /// <summary>
         /// Most recent test run performed on this unit. Null if no runs have been executed.
         /// </summary>
-        [JsonProperty("last_run")]
+        [JsonPropertyName("last_run")]
         public UnitListLastRun? LastRun { get; set; } = null;
     }
 }

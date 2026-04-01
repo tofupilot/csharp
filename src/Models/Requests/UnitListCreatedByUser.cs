@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class UnitListCreatedByUser
     {
@@ -18,13 +18,14 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the user.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Display name of the user who created this unit.
         /// </summary>
-        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("name")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Name { get; set; }
     }
 }

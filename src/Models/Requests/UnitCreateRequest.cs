@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class UnitCreateRequest
     {
@@ -18,19 +18,19 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique serial number identifier for the unit. Must be unique within the organization.
         /// </summary>
-        [JsonProperty("serial_number")]
+        [JsonPropertyName("serial_number")]
         public string SerialNumber { get; set; } = default!;
 
         /// <summary>
         /// Component part number that defines what type of unit this is. If the part does not exist, it will be created.
         /// </summary>
-        [JsonProperty("part_number")]
+        [JsonPropertyName("part_number")]
         public string PartNumber { get; set; } = default!;
 
         /// <summary>
         /// Hardware revision identifier for the specific version of the part. If the revision does not exist, it will be created.
         /// </summary>
-        [JsonProperty("revision_number")]
+        [JsonPropertyName("revision_number")]
         public string RevisionNumber { get; set; } = default!;
     }
 }

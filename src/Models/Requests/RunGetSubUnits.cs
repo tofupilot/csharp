@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class RunGetSubUnits
     {
@@ -18,25 +18,26 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unit ID.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Unit serial number.
         /// </summary>
-        [JsonProperty("serial_number")]
+        [JsonPropertyName("serial_number")]
         public string SerialNumber { get; set; } = default!;
 
         /// <summary>
         /// Part number of the sub-unit.
         /// </summary>
-        [JsonProperty("part_number")]
+        [JsonPropertyName("part_number")]
         public string PartNumber { get; set; } = default!;
 
         /// <summary>
         /// Part name of the sub-unit.
         /// </summary>
-        [JsonProperty("part_name", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("part_name")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? PartName { get; set; }
     }
 }

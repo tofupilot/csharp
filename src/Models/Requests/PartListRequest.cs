@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     public class PartListRequest
@@ -35,12 +35,12 @@ namespace TofuPilot.Models.Requests
         /// Field to sort results by.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=sort_by")]
-        public PartListSortBy? SortBy { get; set; } = TofuPilot.Models.Requests.PartListSortBy.CreatedAt;
+        public PartListSortBy? SortBy { get; set; } = global::TofuPilot.Models.Requests.PartListSortBy.CreatedAt;
 
         /// <summary>
         /// Sort order direction.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=sort_order")]
-        public PartListSortOrder? SortOrder { get; set; } = TofuPilot.Models.Requests.PartListSortOrder.Desc;
+        public PartListSortOrder? SortOrder { get; set; } = global::TofuPilot.Models.Requests.PartListSortOrder.Desc;
     }
 }

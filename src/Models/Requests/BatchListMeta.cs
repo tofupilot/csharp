@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Pagination metadata.
@@ -21,13 +21,14 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Whether there are more results available.
         /// </summary>
-        [JsonProperty("has_more")]
+        [JsonPropertyName("has_more")]
         public bool HasMore { get; set; } = default!;
 
         /// <summary>
         /// Cursor for fetching the next page of results.
         /// </summary>
-        [JsonProperty("next_cursor", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("next_cursor")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public long? NextCursor { get; set; }
     }
 }

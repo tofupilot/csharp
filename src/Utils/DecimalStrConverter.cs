@@ -11,50 +11,32 @@ namespace TofuPilot.Utils
 {
     using System;
     using System.Globalization;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
-    internal class DecimalStrConverter : JsonConverter
+    internal class DecimalStrConverter : JsonConverter<Decimal>
     {
-        public override bool CanConvert(Type objectType)
+        public override Decimal Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var  nullableType = Nullable.GetUnderlyingType(objectType);
-            if (nullableType != null)
-            {
-                return nullableType == typeof(Decimal);
-            }
-
-            return objectType == typeof(Decimal);
-        }
-
-        public override object? ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object? existingValue,
-            JsonSerializer serializer
-        )
-        {
-            if (reader.Value == null)
-            {
-                return null;
-            }
-
-            try {
-                return Decimal.Parse(reader.Value.ToString()!);
-            } catch (System.FormatException ex) {
-                throw new Newtonsoft.Json.JsonSerializationException("Could not parse Decimal", ex);
-            }
-        }
-
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
+            var value = reader.GetString();
             if (value == null)
             {
-                writer.WriteValue("null");
-                return;
+                return default;
             }
 
-            writer.WriteValue(((Decimal)value).ToString(CultureInfo.InvariantCulture));
+            try
+            {
+                return Decimal.Parse(value);
+            }
+            catch (System.FormatException ex)
+            {
+                throw new JsonException("Could not parse Decimal", ex);
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, Decimal value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

@@ -9,7 +9,7 @@
 #nullable enable
 namespace TofuPilot.Hooks
 {
-    using TofuPilot.Utils;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     using System.Net.Http;

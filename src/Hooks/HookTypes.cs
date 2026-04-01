@@ -13,7 +13,7 @@ namespace TofuPilot.Hooks
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Threading.Tasks;
-    using TofuPilot.Utils;
+    using global::TofuPilot.Utils;
 
     public class HookContext
     {

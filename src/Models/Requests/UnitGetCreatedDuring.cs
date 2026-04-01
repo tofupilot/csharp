@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     
     public class UnitGetCreatedDuring
@@ -20,43 +20,43 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Run ID.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run was created.
         /// </summary>
-        [JsonProperty("created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run started.
         /// </summary>
-        [JsonProperty("started_at")]
+        [JsonPropertyName("started_at")]
         public DateTime StartedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the run ended.
         /// </summary>
-        [JsonProperty("ended_at")]
+        [JsonPropertyName("ended_at")]
         public DateTime EndedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 duration of the run (computed from started_at and ended_at).
         /// </summary>
-        [JsonProperty("duration")]
+        [JsonPropertyName("duration")]
         public string Duration { get; set; } = default!;
 
         /// <summary>
         /// Final result of the run execution.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public UnitGetOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// Procedure information.
         /// </summary>
-        [JsonProperty("procedure")]
+        [JsonPropertyName("procedure")]
         public UnitGetProcedure Procedure { get; set; } = default!;
     }
 }

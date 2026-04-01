@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
-    using TofuPilot.Utils;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     using System.Numerics;
@@ -136,16 +136,20 @@ namespace TofuPilot.Models.Requests
             return new RunCreateExpectedValue(typ);
         }
 
-        public class RunCreateExpectedValueConverter : JsonConverter
+        public class RunCreateExpectedValueConverter : JsonConverter<RunCreateExpectedValue>
         {
 
-            public override bool CanConvert(System.Type objectType) => objectType == typeof(RunCreateExpectedValue);
-
-            public override bool CanRead => true;
-
-            public override object? ReadJson(JsonReader reader, System.Type objectType, object? existingValue, JsonSerializer serializer)
+            public override RunCreateExpectedValue? Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
             {
-                var json = JRaw.Create(reader).ToString();
+                if (reader.TokenType == JsonTokenType.Null)
+                {
+                    reader.Read();
+                    return null;
+                }
+
+                using var doc = JsonDocument.ParseValue(ref reader);
+                var json = doc.RootElement.GetRawText();
+
                 if (json == "null")
                 {
                     return null;
@@ -233,7 +237,7 @@ namespace TofuPilot.Models.Requests
                     {
                         try
                         {
-                            return ResponseBodyDeserializer.DeserializeUndiscriminatedUnionFallback(deserializationType, returnObject, propertyName, json);
+                            return (RunCreateExpectedValue)ResponseBodyDeserializer.DeserializeUndiscriminatedUnionFallback(deserializationType, returnObject, propertyName, json);
                         }
                         catch (ResponseBodyDeserializer.DeserializationException)
                         {
@@ -249,41 +253,40 @@ namespace TofuPilot.Models.Requests
                 throw new InvalidOperationException("Could not deserialize into any supported types.");
             }
 
-            public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
+            public override void Write(Utf8JsonWriter writer, RunCreateExpectedValue? value, JsonSerializerOptions options)
             {
                 if (value == null) {
-                    writer.WriteRawValue("null");
+                    writer.WriteNullValue();
                     return;
                 }
-                RunCreateExpectedValue res = (RunCreateExpectedValue)value;
-                if (RunCreateExpectedValueType.FromString(res.Type).Equals(RunCreateExpectedValueType.Null))
+                if (RunCreateExpectedValueType.FromString(value.Type).Equals(RunCreateExpectedValueType.Null))
                 {
-                    writer.WriteRawValue("null");
+                    writer.WriteNullValue();
                     return;
                 }
-                if (res.Boolean != null)
+                if (value.Boolean != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.Boolean));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.Boolean));
                     return;
                 }
-                if (res.Number != null)
+                if (value.Number != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.Number));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.Number));
                     return;
                 }
-                if (res.Str != null)
+                if (value.Str != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.Str));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.Str));
                     return;
                 }
-                if (res.ArrayOfNumber != null)
+                if (value.ArrayOfNumber != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.ArrayOfNumber));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.ArrayOfNumber));
                     return;
                 }
-                if (res.ArrayOfStr != null)
+                if (value.ArrayOfStr != null)
                 {
-                    writer.WriteRawValue(Utilities.SerializeJSON(res.ArrayOfStr));
+                    writer.WriteRawValue(Utilities.SerializeJSON(value.ArrayOfStr));
                     return;
                 }
 

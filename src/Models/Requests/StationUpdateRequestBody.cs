@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class StationUpdateRequestBody
     {
@@ -18,19 +18,19 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// New name for the station
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
 
         /// <summary>
         /// Upload ID for the station image, or empty string to remove image
         /// </summary>
-        [JsonProperty("image_id")]
+        [JsonPropertyName("image_id")]
         public string? ImageId { get; set; }
 
         /// <summary>
         /// Team ID to assign this station to, or null to unassign
         /// </summary>
-        [JsonProperty("team_id")]
+        [JsonPropertyName("team_id")]
         public string? TeamId { get; set; } = null;
     }
 }

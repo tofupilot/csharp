@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     
     public class ProcedureListLinkedRepository
     {
@@ -19,22 +19,22 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the linked repository.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Name of the repository.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Full name of the repository (owner/repo).
         /// </summary>
-        [JsonProperty("fullName")]
+        [JsonPropertyName("fullName")]
         public string FullName { get; set; } = default!;
 
-        [JsonProperty("provider")]
+        [JsonPropertyName("provider")]
         public ProcedureListProvider Provider { get; set; } = default!;
     }
 }

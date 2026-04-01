@@ -12,14 +12,14 @@ namespace TofuPilot.Models.Errors
     using System;
     using System.Net.Http;
 
-    public class APIException : Exception
+    public class ApiException : Exception
     {
 
         public override string Message { get; }
         public int StatusCode { get; set; }
         public string Body { get; set; }
         public HttpResponseMessage RawResponse { get; set; } = default!;
-        public APIException(string message, int statusCode, string body, HttpResponseMessage rawResponse)
+        public ApiException(string message, int statusCode, string body, HttpResponseMessage rawResponse)
         {
             Message = message;
             this.StatusCode = statusCode;

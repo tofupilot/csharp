@@ -8,55 +8,69 @@
 //------------------------------------------------------------------------------
 #nullable enable
 using System;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace TofuPilot.Utils
 {
-    internal class OpenEnumConverter : JsonConverter
+    internal class OpenEnumConverter : JsonConverter<object>
     {
-        public override bool CanConvert(System.Type objectType)
+        public override bool CanConvert(System.Type typeToConvert)
         {
-            return objectType.GetMethod("Of") != null && objectType.GetMethod("ToString") != null;
+            return typeToConvert.GetMethod("Of") != null && typeToConvert.GetMethod("ToString") != null;
         }
 
-        public override object? ReadJson(
-            JsonReader reader,
-            System.Type objectType,
-            object? existingValue,
-            JsonSerializer serializer
-        )
+        public override object? Read(ref Utf8JsonReader reader, System.Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.Value == null)
+            if (reader.TokenType == JsonTokenType.Null)
             {
                 return null;
             }
 
-            var method = objectType.GetMethod("Of");
+            var value = reader.GetString();
+            if (value == null)
+            {
+                return null;
+            }
+
+            var method = typeToConvert.GetMethod("Of");
             if (method == null)
             {
-                throw new Exception($"Unable to find Of method on {objectType}");
+                throw new Exception($"Unable to find Of method on {typeToConvert}");
             }
-            try {
-                return method.Invoke(null, new[] { reader.Value });
-            } catch(System.Reflection.TargetInvocationException e) {
-                throw new Newtonsoft.Json.JsonSerializationException("Unable to convert value to open enum", e);
+            try
+            {
+                return method.Invoke(null, new object[] { value });
+            }
+            catch (System.Reflection.TargetInvocationException e)
+            {
+                throw new JsonException("Unable to convert value to open enum", e);
             }
         }
 
-        public override void WriteJson(JsonWriter writer, object? obj, JsonSerializer serializer)
+        public override void Write(Utf8JsonWriter writer, object? value, JsonSerializerOptions options)
         {
-            if (obj == null)
+            if (value == null)
             {
-                writer.WriteValue("null");
+                writer.WriteNullValue();
                 return;
             }
 
-            var valueProp = obj.GetType().GetProperty("Value");
+            var valueProp = value.GetType().GetProperty("Value");
             if (valueProp == null)
             {
-                throw new Exception($"{obj.GetType()} does not have a Value property");
+                throw new Exception($"{value.GetType()} does not have a Value property");
             }
 
-            writer.WriteValue(valueProp.GetValue(obj));
+            var propValue = valueProp.GetValue(value);
+            if (propValue is string strValue)
+            {
+                writer.WriteStringValue(strValue);
+            }
+            else
+            {
+                writer.WriteStringValue(propValue?.ToString());
+            }
         }
     }
 }

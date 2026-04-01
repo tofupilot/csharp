@@ -57,7 +57,7 @@ public class AttachmentsTests
     [Fact]
     public async Task Finalize_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Attachments.FinalizeAsync(Guid.NewGuid().ToString()));
     }
 

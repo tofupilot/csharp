@@ -13,103 +13,56 @@ namespace TofuPilot.Utils
     using System.Linq;
     using System.Net.Http.Headers;
     using System.Collections.Generic;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
     using System.Text.RegularExpressions;
     using System.Numerics;
-    using Newtonsoft.Json;
     using NodaTime;
     using System.Collections;
 
     public class Utilities
     {
-        public static JsonConverter[] GetDefaultJsonSerializers()
+        public static JsonSerializerOptions CreateJsonSerializerOptions(string format = "")
         {
-            return new JsonConverter[]
+            var options = new JsonSerializerOptions
             {
-                new IsoDateTimeSerializer(),
-                new EnumConverter()
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             };
-        }
+            options.Converters.Add(new IsoDateTimeSerializer());
+            options.Converters.Add(new EnumConverter());
 
-        public static JsonConverter[] GetDefaultJsonDeserializers()
-        {
-            return new JsonConverter[] {
-                new FlexibleObjectDeserializer(),
-                new EnumConverter(),
-                new AnyDeserializer()
-            };
-        }
-
-        public static JsonSerializerSettings GetDefaultJsonSerializerSettings()
-        {
-            return new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                Converters = GetDefaultJsonSerializers()
-            };
-        }
-
-        public static JsonSerializerSettings GetDefaultJsonDeserializerSettings()
-        {
-            return new JsonSerializerSettings()
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                Converters = GetDefaultJsonDeserializers()
-            };
-        }
-
-        public static JsonConverter[] GetJsonSerializers(Type type, string format = "")
-        {
             if (format == "string")
             {
-                if (type == typeof(BigInteger))
-                {
-                    return new JsonConverter[] { new BigIntStrConverter() };
-                }
-
-                if (type == typeof(Decimal))
-                {
-                    return new JsonConverter[] { new DecimalStrConverter() };
-                }
+                options.Converters.Add(new BigIntStrConverter());
+                options.Converters.Add(new DecimalStrConverter());
             }
 
-            return GetDefaultJsonSerializers();
+            return options;
         }
 
-        public static JsonConverter[] GetJsonDeserializers(Type type)
+        public static JsonSerializerOptions CreateJsonDeserializerOptions(bool includeNulls = false, bool allowUnmappedMembers = true)
         {
-            if (type == typeof(BigInteger))
+            var options = new JsonSerializerOptions
             {
-                return new JsonConverter[] { new BigIntStrConverter() };
+                DefaultIgnoreCondition = includeNulls ? JsonIgnoreCondition.Never : JsonIgnoreCondition.WhenWritingNull
+            };
+
+            if (!allowUnmappedMembers)
+            {
+                options.UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow;
             }
 
-            if (type == typeof(Decimal))
-            {
-                return new JsonConverter[] { new DecimalStrConverter() };
-            }
+            options.Converters.Add(new FlexibleObjectDeserializer());
+            options.Converters.Add(new EnumConverter());
+            options.Converters.Add(new AnyDeserializer());
 
-            return GetDefaultJsonDeserializers();
+            return options;
         }
 
         public static string SerializeJSON(object obj, string format = "")
         {
-            var type = obj.GetType();
-            if (IsList(obj))
-            {
-                type = type.GetGenericArguments().Single();
-            }
-            else if (IsDictionary(obj))
-            {
-                type = type.GetGenericArguments().Last();
-            }
-
-            return JsonConvert.SerializeObject(
-                obj,
-                new JsonSerializerSettings()
-                {
-                    NullValueHandling = NullValueHandling.Ignore,
-                    Converters = GetJsonSerializers(type, format)
-                }
-            );
+            var options = CreateJsonSerializerOptions(format);
+            return JsonSerializer.Serialize(obj, obj.GetType(), options);
         }
 
         public static bool IsDictionary(object? o)
@@ -210,7 +163,7 @@ namespace TofuPilot.Utils
             }
             else if (IsDictionary(value))
             {
-                return JsonConvert.SerializeObject(value, GetDefaultJsonSerializerSettings());
+                return SerializeJSON(value);
             }
 
             return value.ToString() ?? "";
@@ -230,7 +183,7 @@ namespace TofuPilot.Utils
 
             if (IsPrimitive(obj))
             {
-                return JsonConvert.SerializeObject(obj);
+                return JsonSerializer.Serialize(obj);
             }
 
             if (IsEnum(obj))
@@ -238,25 +191,23 @@ namespace TofuPilot.Utils
                 var attributes = obj.GetType().GetMember(obj.ToString() ?? "").First().CustomAttributes;
                 if (attributes.Count() == 0)
                 {
-                    return JsonConvert.SerializeObject(obj);
+                    return JsonSerializer.Serialize(obj);
                 }
 
                 var args = attributes.First().ConstructorArguments;
                 if (args.Count() == 0)
                 {
-                    return JsonConvert.SerializeObject(obj);
+                    return JsonSerializer.Serialize(obj);
                 }
                 return StripSurroundingQuotes(args.First().ToString());
             }
 
             if (IsDate(obj))
             {
-                return StripSurroundingQuotes(
-                    JsonConvert.SerializeObject(obj, GetDefaultJsonSerializerSettings())
-                );
+                return StripSurroundingQuotes(SerializeJSON(obj));
             }
 
-            return JsonConvert.SerializeObject(obj, GetDefaultJsonSerializerSettings());
+            return SerializeJSON(obj);
         }
 
         public static bool IsContentTypeMatch(string expected, string? actual)

@@ -75,7 +75,7 @@ public class UnitsTests
     [Fact]
     public async Task GetUnit_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Units.GetAsync($"NONEXISTENT-{Uid()}"));
     }
 
@@ -171,7 +171,7 @@ public class UnitsTests
     [Fact]
     public async Task DeleteUnit_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Units.DeleteAsync(new List<string> { $"NONEXISTENT-{Uid()}" }));
     }
 
@@ -216,7 +216,7 @@ public class UnitsTests
     {
         var (_, serial1) = await CreatePartAndUnit("DUP1");
         var (_, serial2) = await CreatePartAndUnit("DUP2");
-        await Assert.ThrowsAsync<ErrorCONFLICT>(() =>
+        await Assert.ThrowsAsync<ConflictException>(() =>
             _client.Units.UpdateAsync(serial1, new UnitUpdateRequestBody
             {
                 NewSerialNumber = serial2,
@@ -232,7 +232,7 @@ public class UnitsTests
         {
             Number = revNumber,
         });
-        await Assert.ThrowsAsync<ErrorCONFLICT>(() =>
+        await Assert.ThrowsAsync<ConflictException>(() =>
             _client.Units.CreateAsync(new UnitCreateRequest
             {
                 SerialNumber = serial, PartNumber = partNumber, RevisionNumber = revNumber,

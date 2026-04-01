@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>TofuPilot</PackageId>
-    <Version>2.1.0</Version>
+    <Version>2.2.0</Version>
     <TargetFramework>net8.0</TargetFramework>
     <Authors>TofuPilot</Authors>
     <Copyright>Copyright (c) TofuPilot 2026</Copyright>
@@ -27,7 +27,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="newtonsoft.json" Version="13.0.3" />
     <PackageReference Include="nodatime" Version="3.1.9" />
   </ItemGroup>
 

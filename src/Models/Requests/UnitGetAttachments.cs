@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class UnitGetAttachments
     {
@@ -18,31 +18,34 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Attachment ID.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// File name.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// File size in bytes.
         /// </summary>
-        [JsonProperty("size", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("size")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public double? Size { get; set; }
 
         /// <summary>
         /// MIME type of the file.
         /// </summary>
-        [JsonProperty("content_type", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("content_type")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? ContentType { get; set; }
 
         /// <summary>
         /// Presigned URL for downloading the file. This URL is temporary and will expire.
         /// </summary>
-        [JsonProperty("download_url", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("download_url")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? DownloadUrl { get; set; }
     }
 }

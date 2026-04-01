@@ -155,7 +155,7 @@ public class UnitChildrenTests
     public async Task AddChild_ParentNotFound_ThrowsNotFound()
     {
         var child = await CreateUnit("ACPNF");
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Units.AddChildAsync($"NONEXISTENT-{Uid()}", new UnitAddChildRequestBody
             {
                 ChildSerialNumber = child,
@@ -166,7 +166,7 @@ public class UnitChildrenTests
     public async Task AddChild_ChildNotFound_ThrowsNotFound()
     {
         var parent = await CreateUnit("ACCNF");
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Units.AddChildAsync(parent, new UnitAddChildRequestBody
             {
                 ChildSerialNumber = $"NONEXISTENT-{Uid()}",
@@ -186,7 +186,7 @@ public class UnitChildrenTests
     [Fact]
     public async Task RemoveChild_ParentNotFound_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(() =>
+        await Assert.ThrowsAsync<NotFoundException>(() =>
             _client.Units.RemoveChildAsync($"NONEXISTENT-{Uid()}", $"WHATEVER-{Uid()}"));
     }
 

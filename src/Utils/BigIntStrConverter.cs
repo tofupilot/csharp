@@ -12,50 +12,32 @@ namespace TofuPilot.Utils
     using System;
     using System.Globalization;
     using System.Numerics;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
-    internal class BigIntStrConverter : JsonConverter
+    internal class BigIntStrConverter : JsonConverter<BigInteger>
     {
-        public override bool CanConvert(Type objectType)
+        public override BigInteger Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var nullableType = Nullable.GetUnderlyingType(objectType);
-            if (nullableType != null)
-            {
-                return nullableType == typeof(BigInteger);
-            }
-
-            return objectType == typeof(BigInteger);
-        }
-
-        public override object? ReadJson(
-            JsonReader reader,
-            Type objectType,
-            object? existingValue,
-            JsonSerializer serializer
-        )
-        {
-            if (reader.Value == null)
-            {
-                return null;
-            }
-
-            try {
-                return BigInteger.Parse(reader.Value.ToString()!);
-            } catch (System.FormatException ex) {
-                throw new Newtonsoft.Json.JsonSerializationException("Could not parse BigInteger", ex);
-            }
-        }
-
-        public override void WriteJson(JsonWriter writer, object? value, JsonSerializer serializer)
-        {
+            var value = reader.GetString();
             if (value == null)
             {
-                writer.WriteValue("null");
-                return;
+                return default;
             }
 
-            writer.WriteValue(((BigInteger)value).ToString(CultureInfo.InvariantCulture));
+            try
+            {
+                return BigInteger.Parse(value);
+            }
+            catch (System.FormatException ex)
+            {
+                throw new JsonException("Could not parse BigInteger", ex);
+            }
+        }
+
+        public override void Write(Utf8JsonWriter writer, BigInteger value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString(CultureInfo.InvariantCulture));
         }
     }
 }

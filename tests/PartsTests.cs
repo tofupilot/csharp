@@ -52,7 +52,7 @@ public class PartsTests
     [Fact]
     public async Task GetPart_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Parts.GetAsync($"PART-NONE-{Uid()}"));
     }
 
@@ -126,7 +126,7 @@ public class PartsTests
     [Fact]
     public async Task DeletePart_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Parts.DeleteAsync($"PART-NONE-{Uid()}"));
     }
 
@@ -172,7 +172,7 @@ public class PartsTests
         var fetched = await _client.Parts.GetAsync(newNumber);
         Assert.Equal(newNumber, fetched.Number);
 
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Parts.GetAsync(oldNumber));
     }
 
@@ -185,7 +185,7 @@ public class PartsTests
         await _client.Parts.CreateAsync(new PartCreateRequest { Number = number1, Name = "Dup1" });
         await _client.Parts.CreateAsync(new PartCreateRequest { Number = number2, Name = "Dup2" });
 
-        await Assert.ThrowsAsync<ErrorCONFLICT>(
+        await Assert.ThrowsAsync<ConflictException>(
             () => _client.Parts.UpdateAsync(number2, new PartUpdateRequestBody
             {
                 NewNumber = number1,
@@ -203,7 +203,7 @@ public class PartsTests
             Name = "First",
         });
 
-        await Assert.ThrowsAsync<ErrorCONFLICT>(
+        await Assert.ThrowsAsync<ConflictException>(
             () => _client.Parts.CreateAsync(new PartCreateRequest
             {
                 Number = partNumber,

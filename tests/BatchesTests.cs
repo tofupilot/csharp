@@ -47,7 +47,7 @@ public class BatchesTests
     [Fact]
     public async Task GetBatch_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Batches.GetAsync($"BATCH-NONE-{Uid()}"));
     }
 
@@ -156,7 +156,7 @@ public class BatchesTests
     [Fact]
     public async Task DeleteBatch_Nonexistent_ThrowsNotFound()
     {
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Batches.DeleteAsync($"BATCH-NONE-{Uid()}"));
     }
 
@@ -179,7 +179,7 @@ public class BatchesTests
         var fetched = await _client.Batches.GetAsync(newNumber);
         Assert.Equal(newNumber, fetched.Number);
 
-        await Assert.ThrowsAsync<ErrorNOTFOUND>(
+        await Assert.ThrowsAsync<NotFoundException>(
             () => _client.Batches.GetAsync(oldNumber));
     }
 
@@ -192,7 +192,7 @@ public class BatchesTests
         await _client.Batches.CreateAsync(new BatchCreateRequest { Number = number1 });
         await _client.Batches.CreateAsync(new BatchCreateRequest { Number = number2 });
 
-        await Assert.ThrowsAsync<ErrorCONFLICT>(
+        await Assert.ThrowsAsync<ConflictException>(
             () => _client.Batches.UpdateAsync(number2, new BatchUpdateRequestBody
             {
                 NewNumber = number1,

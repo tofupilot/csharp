@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     
     public class PartUpdateRequest
     {

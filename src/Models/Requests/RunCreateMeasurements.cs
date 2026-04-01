@@ -9,10 +9,10 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Components;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -22,57 +22,57 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Name identifier for the measurement. Each measurement should have a descriptive name that identifies the specific data point being captured. Analytics at measurement level are computed using this name as unique identifier.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Result of the measurement validation. Use PASS when measurement meets all criteria, FAIL when measurement is outside acceptable limits or validation fails, UNSET when no validation was performed.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public RunCreateMeasurementsOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// X-axis data series for multi-dimensional measurements. Use with y_axis for structured multi-dimensional data with per-axis validators/aggregations.
         /// </summary>
-        [JsonProperty("x_axis")]
+        [JsonPropertyName("x_axis")]
         public RunCreateXAxis? XAxis { get; set; } = null;
 
         /// <summary>
         /// Y-axis data series (one or more) for multi-dimensional measurements. Each series can have its own validators and aggregations.
         /// </summary>
-        [JsonProperty("y_axis")]
+        [JsonPropertyName("y_axis")]
         public List<RunCreateYAxis>? YAxis { get; set; } = null;
 
-        [JsonProperty("measured_value")]
+        [JsonPropertyName("measured_value")]
         public object? MeasuredValue { get; set; } = null;
 
         /// <summary>
         /// [LEGACY for multi-dim] Units of measurement. For structured multi-dimensional, use units within x_axis/y_axis instead.
         /// </summary>
-        [JsonProperty("units")]
+        [JsonPropertyName("units")]
         public RunCreateUnits? Units { get; set; } = null;
 
         /// <summary>
         /// Use validators with operator &quot;&gt;=&quot; instead. Will be converted to a validator automatically.
         /// </summary>
         [Obsolete("This field will be removed in a future release, please migrate away from it as soon as possible")]
-        [JsonProperty("lower_limit")]
+        [JsonPropertyName("lower_limit")]
         public double? LowerLimit { get; set; }
 
         /// <summary>
         /// Use validators with operator &quot;&lt;=&quot; instead. Will be converted to a validator automatically.
         /// </summary>
         [Obsolete("This field will be removed in a future release, please migrate away from it as soon as possible")]
-        [JsonProperty("upper_limit")]
+        [JsonPropertyName("upper_limit")]
         public double? UpperLimit { get; set; }
 
-        [JsonProperty("validators")]
+        [JsonPropertyName("validators")]
         public object? Validators { get; set; } = null;
 
-        [JsonProperty("aggregations")]
+        [JsonPropertyName("aggregations")]
         public List<RunCreateMeasurementsAggregations>? Aggregations { get; set; } = null;
 
-        [JsonProperty("docstring")]
+        [JsonPropertyName("docstring")]
         public string? Docstring { get; set; } = null;
     }
 }

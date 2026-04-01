@@ -9,7 +9,7 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using TofuPilot.Utils;
+    using global::TofuPilot.Utils;
     
     public class PartDeleteRequest
     {

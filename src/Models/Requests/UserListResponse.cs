@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Users retrieved successfully
@@ -21,31 +21,33 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier for the user.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Email address of the user.
         /// </summary>
-        [JsonProperty("email")]
+        [JsonPropertyName("email")]
         public string Email { get; set; } = default!;
 
         /// <summary>
         /// Display name of the user.
         /// </summary>
-        [JsonProperty("name", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("name")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Name { get; set; }
 
         /// <summary>
         /// Profile image URL for the user.
         /// </summary>
-        [JsonProperty("image", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("image")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Image { get; set; }
 
         /// <summary>
         /// Whether the user is banned.
         /// </summary>
-        [JsonProperty("banned")]
+        [JsonPropertyName("banned")]
         public bool Banned { get; set; } = default!;
     }
 }

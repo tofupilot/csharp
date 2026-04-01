@@ -16,16 +16,17 @@ namespace TofuPilot.Utils
     using System.Net.Http;
     using System.Reflection;
     using System.Text;
-    using Newtonsoft.Json;
-    using Newtonsoft.Json.Linq;
+    using System.Text.Json;
+    using System.Text.Json.Serialization;
 
 
     internal class ResponseBodyDeserializer
     {
 
-        public static T? Deserialize<T>(string json, NullValueHandling nullValueHandling=NullValueHandling.Ignore, MissingMemberHandling missingMemberHandling=MissingMemberHandling.Ignore)
+        public static T? Deserialize<T>(string json, bool includeNulls = false, bool allowUnmappedMembers = true)
         {
-            return JsonConvert.DeserializeObject<T>(json, new JsonSerializerSettings(){ NullValueHandling = nullValueHandling, MissingMemberHandling = missingMemberHandling, Converters = Utilities.GetJsonDeserializers(typeof(T))});
+            var options = Utilities.CreateJsonDeserializerOptions(includeNulls, allowUnmappedMembers);
+            return JsonSerializer.Deserialize<T>(json, options);
         }
 
         public sealed class MissingMemberException : Exception
@@ -42,24 +43,17 @@ namespace TofuPilot.Utils
         {
             try
             {
-                return Deserialize<T>(json, missingMemberHandling: MissingMemberHandling.Error);
+                var options = Utilities.CreateJsonDeserializerOptions(includeNulls: false, allowUnmappedMembers: false);
+                return JsonSerializer.Deserialize<T>(json, options);
             }
-            catch (Exception ex)
+            catch (JsonException ex)
             {
-                if (ex is Newtonsoft.Json.JsonSerializationException &&
-                    ex.Source == "Newtonsoft.Json" &&
-                    ex.Message.Contains("Could not find member"))
+                if (ex.Message.Contains("unmapped") || ex.Message.Contains("missing") || ex.Message.Contains("Could not"))
                 {
                     throw new MissingMemberException();
                 }
-                else if (ex is Newtonsoft.Json.JsonReaderException ||
-                         ex is Newtonsoft.Json.JsonSerializationException
-                )
-                {
-                    throw new DeserializationException(typeof(T));
-                }
 
-                throw;
+                throw new DeserializationException(typeof(T));
             }
         }
 
@@ -69,7 +63,7 @@ namespace TofuPilot.Utils
             if (method != null)
             {
                 MethodInfo generic = method!.MakeGenericMethod(type);
-                var args = new object[] { json, NullValueHandling.Ignore, MissingMemberHandling.Ignore };
+                var args = new object[] { json, false, true };
                 var value = generic.Invoke(null, args);
                 PropertyInfo? propertyInfo = obj.GetType().GetProperty(propertyName!);
                 if (propertyInfo != null && value != null)
@@ -86,18 +80,19 @@ namespace TofuPilot.Utils
         {
             int missing = 0;
 
-            JObject jo = JObject.Parse(json);
+            using var doc = JsonDocument.Parse(json);
+            var root = doc.RootElement;
 
             var jsonPropertyAttributes = type.GetProperties()
-                .Where(prop => Attribute.IsDefined(prop, typeof(JsonPropertyAttribute)))
-                .Select(prop => prop.GetCustomAttribute(typeof(JsonPropertyAttribute)) as JsonPropertyAttribute)
-                .Where(attr => attr != null && attr!.PropertyName != null)
+                .Where(prop => Attribute.IsDefined(prop, typeof(JsonPropertyNameAttribute)))
+                .Select(prop => prop.GetCustomAttribute(typeof(JsonPropertyNameAttribute)) as JsonPropertyNameAttribute)
+                .Where(attr => attr != null && attr!.Name != null)
                 .ToList();
 
             foreach (var attr in jsonPropertyAttributes)
             {
-                string propertyName = attr!.PropertyName!;
-                if (!jo.TryGetValue(propertyName, out var _value)){
+                string propName = attr!.Name!;
+                if (!root.TryGetProperty(propName, out var _value)){
                     missing++;
                 }
             }

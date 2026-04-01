@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     using System;
     
     /// <summary>
@@ -22,25 +22,25 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique database identifier of the updated part.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Unique part number identifier.
         /// </summary>
-        [JsonProperty("number")]
+        [JsonPropertyName("number")]
         public string Number { get; set; } = default!;
 
         /// <summary>
         /// Human-readable name of the part.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the part was updated.
         /// </summary>
-        [JsonProperty("updated_at")]
+        [JsonPropertyName("updated_at")]
         public DateTime UpdatedAt { get; set; } = default!;
     }
 }

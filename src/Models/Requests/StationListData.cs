@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
     public class StationListData
@@ -20,31 +20,32 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier of the station
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Name of the station
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Procedures linked to this station
         /// </summary>
-        [JsonProperty("procedures")]
+        [JsonPropertyName("procedures")]
         public List<StationListProcedures> Procedures { get; set; } = default!;
 
         /// <summary>
         /// Total number of procedures linked to this station
         /// </summary>
-        [JsonProperty("procedures_count")]
+        [JsonPropertyName("procedures_count")]
         public double ProceduresCount { get; set; } = default!;
 
         /// <summary>
         /// Team this station belongs to
         /// </summary>
-        [JsonProperty("team", NullValueHandling = NullValueHandling.Include)]
+        [JsonPropertyName("team")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public StationListTeam? Team { get; set; }
     }
 }

@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     public class PartCreateRequest
     {
@@ -18,19 +18,19 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Unique identifier number for the part.
         /// </summary>
-        [JsonProperty("number")]
+        [JsonPropertyName("number")]
         public string Number { get; set; } = default!;
 
         /// <summary>
         /// Human-readable name for the part. If not provided, a default name will be used.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
 
         /// <summary>
         /// Revision identifier for the part version. If not provided, default revision identifier will be used.
         /// </summary>
-        [JsonProperty("revision_number")]
+        [JsonPropertyName("revision_number")]
         public string? RevisionNumber { get; set; }
     }
 }

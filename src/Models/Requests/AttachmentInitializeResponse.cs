@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Utils;
     
     /// <summary>
     /// Upload URL generated successfully
@@ -21,13 +21,13 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// ID of the created upload
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Pre-signed URL to upload the file directly to S3
         /// </summary>
-        [JsonProperty("upload_url")]
+        [JsonPropertyName("upload_url")]
         public string UploadUrl { get; set; } = default!;
     }
 }

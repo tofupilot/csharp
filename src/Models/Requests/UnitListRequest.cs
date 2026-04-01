@@ -9,8 +9,8 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -84,12 +84,12 @@ namespace TofuPilot.Models.Requests
         /// Field to sort results by. last_run_at sorts by most recent test run date. last_run_procedure sorts by procedure name of the last run.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=sort_by")]
-        public UnitListSortBy? SortBy { get; set; } = TofuPilot.Models.Requests.UnitListSortBy.CreatedAt;
+        public UnitListSortBy? SortBy { get; set; } = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt;
 
         /// <summary>
         /// Sort order direction.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=sort_order")]
-        public UnitListSortOrder? SortOrder { get; set; } = TofuPilot.Models.Requests.UnitListSortOrder.Desc;
+        public UnitListSortOrder? SortOrder { get; set; } = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc;
     }
 }

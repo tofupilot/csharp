@@ -9,9 +9,9 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using Newtonsoft.Json;
-    using TofuPilot.Models.Requests;
-    using TofuPilot.Utils;
+    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
+    using global::TofuPilot.Utils;
     using System;
     using System.Collections.Generic;
     
@@ -21,55 +21,55 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Phase ID.
         /// </summary>
-        [JsonProperty("id")]
+        [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
         /// Phase name.
         /// </summary>
-        [JsonProperty("name")]
+        [JsonPropertyName("name")]
         public string Name { get; set; } = default!;
 
         /// <summary>
         /// Phase execution result.
         /// </summary>
-        [JsonProperty("outcome")]
+        [JsonPropertyName("outcome")]
         public RunGetPhasesOutcome Outcome { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the phase started.
         /// </summary>
-        [JsonProperty("started_at")]
+        [JsonPropertyName("started_at")]
         public DateTime StartedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 timestamp when the phase ended.
         /// </summary>
-        [JsonProperty("ended_at")]
+        [JsonPropertyName("ended_at")]
         public DateTime EndedAt { get; set; } = default!;
 
         /// <summary>
         /// ISO 8601 duration of the phase (computed from started_at and ended_at).
         /// </summary>
-        [JsonProperty("duration")]
+        [JsonPropertyName("duration")]
         public string Duration { get; set; } = default!;
 
         /// <summary>
         /// Zero-based retry attempt index. 0 = first attempt, 1 = first retry, etc.
         /// </summary>
-        [JsonProperty("retry_count")]
+        [JsonPropertyName("retry_count")]
         public long RetryCount { get; set; } = default!;
 
         /// <summary>
         /// Phase documentation string.
         /// </summary>
-        [JsonProperty("docstring")]
+        [JsonPropertyName("docstring")]
         public string? Docstring { get; set; } = null;
 
         /// <summary>
         /// Array of measurements taken during this phase.
         /// </summary>
-        [JsonProperty("measurements")]
+        [JsonPropertyName("measurements")]
         public List<RunGetMeasurements> Measurements { get; set; } = default!;
     }
 }
