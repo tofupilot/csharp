@@ -11,7 +11,7 @@ namespace TofuPilot.Tests;
 [Collection("API")]
 public class StationsTests
 {
-    private readonly TofuPilotSDK _client;
+    private readonly TofuPilot _client;
 
     public StationsTests(TestFixture fixture)
     {

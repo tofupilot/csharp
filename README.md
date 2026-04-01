@@ -20,7 +20,7 @@ dotnet add reference path/to/TofuPilot.csproj
 using TofuPilot;
 using TofuPilot.Models.Requests;
 
-var client = new TofuPilotSDK(apiKey: Environment.GetEnvironmentVariable("TOFUPILOT_API_KEY")!);
+var client = new TofuPilot(apiKey: Environment.GetEnvironmentVariable("TOFUPILOT_API_KEY")!);
 
 var run = await client.Runs.CreateAsync(new RunCreateRequest
 {
@@ -46,13 +46,13 @@ export TOFUPILOT_API_KEY="your-api-key"
 Or pass it directly:
 
 ```csharp
-var client = new TofuPilotSDK(apiKey: "your-api-key");
+var client = new TofuPilot(apiKey: "your-api-key");
 ```
 
 To point to a different server (e.g. self-hosted):
 
 ```csharp
-var client = new TofuPilotSDK(
+var client = new TofuPilot(
     apiKey: "your-api-key",
     serverUrl: "https://your-instance.com/api"
 );
@@ -67,7 +67,7 @@ using TofuPilot.Utils;
 var handler = new HttpClientHandler();
 handler.ClientCertificates.Add(new X509Certificate2("client.pfx", "password"));
 
-var client = new TofuPilotSDK(
+var client = new TofuPilot(
     apiKey: "your-api-key",
     client: new TofuPilotHttpClient(handler)
 );

@@ -8,7 +8,7 @@ namespace TofuPilot.Tests;
 
 public class TestFixture : IDisposable
 {
-    public TofuPilotSDK Client { get; }
+    public TofuPilot Client { get; }
     public string ProcedureId { get; private set; } = "";
 
     public TestFixture()
@@ -30,7 +30,7 @@ public class TestFixture : IDisposable
         var apiKey = Environment.GetEnvironmentVariable("TOFUPILOT_API_KEY_USER")
             ?? throw new Exception("TOFUPILOT_API_KEY_USER not set");
 
-        Client = new TofuPilotSDK(apiKey: apiKey, serverUrl: $"{url}/api");
+        Client = new TofuPilot(apiKey: apiKey, serverUrl: $"{url}/api");
 
         var proc = Client.Procedures.CreateAsync(new ProcedureCreateRequest
         {

@@ -15,7 +15,7 @@ namespace TofuPilot.Tests;
 [Collection("API")]
 public class AttachmentsTests
 {
-    private readonly TofuPilotSDK _client;
+    private readonly TofuPilot _client;
 
     public AttachmentsTests(TestFixture fixture)
     {

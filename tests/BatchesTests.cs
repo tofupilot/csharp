@@ -10,7 +10,7 @@ namespace TofuPilot.Tests;
 [Collection("API")]
 public class BatchesTests
 {
-    private readonly TofuPilotSDK _client;
+    private readonly TofuPilot _client;
 
     public BatchesTests(TestFixture fixture)
     {

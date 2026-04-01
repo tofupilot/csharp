@@ -38,7 +38,7 @@ namespace TofuPilot
         /// Delete attachments
         /// 
         /// <remarks>
-        /// Permanently delete attachments by their IDs and unlink them from any associated runs or units.
+        /// Permanently delete attachments by their IDs and unlink them from any associated runs or units. Removes files from storage and clears all references.
         /// </remarks>
         /// </summary>
         Task<AttachmentDeleteResponse> DeleteAsync(List<string> ids);
@@ -47,7 +47,7 @@ namespace TofuPilot
         /// Finalize upload
         /// 
         /// <remarks>
-        /// Finalize a file upload after uploading to the pre-signed URL. Validates the file and records its metadata. Link the attachment to a run or unit using Update Run or Update Unit.
+        /// Finalize a file upload after uploading to the pre-signed URL. Validates the file and records its metadata.
         /// </remarks>
         /// </summary>
         Task<AttachmentFinalizeResponse> FinalizeAsync(string id);

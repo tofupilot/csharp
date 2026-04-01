@@ -25,7 +25,7 @@ namespace TofuPilot
     /// 
     /// <see>https://tofupilot.com/docs/dashboard/api/v2/runs/create}</see>
     /// </summary>
-    public interface ITofuPilotSDK
+    public interface ITofuPilot
     {
         public IProcedures Procedures { get; }
         public IRuns Runs { get; }
@@ -43,12 +43,12 @@ namespace TofuPilot
     /// 
     /// <see>https://tofupilot.com/docs/dashboard/api/v2/runs/create}</see>
     /// </summary>
-    public class TofuPilotSDK: ITofuPilotSDK
+    public class TofuPilot: ITofuPilot
     {
         public SDKConfig SDKConfiguration { get; private set; }
 
         private const string _language = "csharp";
-        private const string _sdkVersion = "2.0.2";
+        private const string _sdkVersion = "2.1.0";
         private const string _sdkGenVersion = "2.657.1";
         private const string _openapiDocVersion = "2.0.0";
         public IProcedures Procedures { get; private set; }
@@ -60,7 +60,7 @@ namespace TofuPilot
         public IStations Stations { get; private set; }
         public IUser User { get; private set; }
 
-        public TofuPilotSDK(SDKConfig config)
+        public TofuPilot(SDKConfig config)
         {
             SDKConfiguration = config;
             InitHooks();
@@ -82,7 +82,7 @@ namespace TofuPilot
             User = new User(SDKConfiguration);
         }
 
-        public TofuPilotSDK(string? apiKey = null, Func<string>? apiKeySource = null, int? serverIndex = null, string? serverUrl = null, Dictionary<string, string>? urlParams = null, ITofuPilotHttpClient? client = null, RetryConfig? retryConfig = null)
+        public TofuPilot(string? apiKey = null, Func<string>? apiKeySource = null, int? serverIndex = null, string? serverUrl = null, Dictionary<string, string>? urlParams = null, ITofuPilotHttpClient? client = null, RetryConfig? retryConfig = null)
         {
             if (serverIndex != null)
             {
@@ -196,12 +196,12 @@ namespace TofuPilot
                 return this;
             }
 
-            public TofuPilotSDK Build()
+            public TofuPilot Build()
             {
               if (_sdkConfig.SecuritySource == null) {
                   throw new Exception("securitySource cannot be null. One of `ApiKey` or `apiKeySource` needs to be defined.");
               }
-              return new TofuPilotSDK(_sdkConfig);
+              return new TofuPilot(_sdkConfig);
             }
 
         }

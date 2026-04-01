@@ -11,7 +11,7 @@ namespace TofuPilot.Tests;
 [Collection("API")]
 public class RunsCreateTests
 {
-    private readonly TofuPilotSDK _client;
+    private readonly TofuPilot _client;
     private readonly string _procedureId;
 
     public RunsCreateTests(TestFixture fixture)
