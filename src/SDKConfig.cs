@@ -42,7 +42,7 @@ namespace TofuPilot
             Client = client ?? new TofuPilotHttpClient();
             ServerUrl = "";
             ServerIndex = 0;
-            UserAgent = "tofupilot-sdk/csharp 2.0.2 2.657.1 2.0.0 TofuPilot";
+            UserAgent = "tofupilot-sdk/csharp 2.0.3 2.657.1 2.0.0 TofuPilot";
             SecuritySource = null;
             Hooks = new SDKHooks();
             RetryConfig = null;
@@ -52,7 +52,10 @@ namespace TofuPilot
         {
             if (!String.IsNullOrEmpty(this.ServerUrl))
             {
-                return Utilities.TemplateUrl(Utilities.RemoveSuffix(this.ServerUrl, "/"), new Dictionary<string, string>());
+                var url = Utilities.RemoveSuffix(this.ServerUrl, "/");
+                if (!url.EndsWith("/api"))
+                    url += "/api";
+                return Utilities.TemplateUrl(url, new Dictionary<string, string>());
             }
             return Utilities.TemplateUrl(SDKConfig.ServerList[this.ServerIndex], new Dictionary<string, string>());
         }
