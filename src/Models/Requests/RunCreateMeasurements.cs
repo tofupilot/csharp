@@ -67,7 +67,7 @@ namespace TofuPilot.Models.Requests
         public double? UpperLimit { get; set; }
 
         [JsonPropertyName("validators")]
-        public object? Validators { get; set; } = null;
+        public List<RunCreateMeasurementsValidators>? Validators { get; set; } = null;
 
         [JsonPropertyName("aggregations")]
         public List<RunCreateMeasurementsAggregations>? Aggregations { get; set; } = null;

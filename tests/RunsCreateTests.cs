@@ -93,17 +93,17 @@ public class RunsCreateTests
                         Name = "output_voltage",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
                         MeasuredValue = 3.3,
-                        Validators = new List<RunCreateValidators>
+                        Validators = new List<RunCreateMeasurementsValidators>
                         {
-                            new RunCreateValidators
+                            new RunCreateMeasurementsValidators
                             {
                                 Operator = ">=",
-                                ExpectedValue = RunCreateExpectedValue.CreateNumber(0),
+                                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(0),
                             },
-                            new RunCreateValidators
+                            new RunCreateMeasurementsValidators
                             {
                                 Operator = "<=",
-                                ExpectedValue = RunCreateExpectedValue.CreateNumber(5),
+                                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(5),
                             },
                         },
                     },
