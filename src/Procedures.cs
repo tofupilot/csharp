@@ -32,7 +32,7 @@ namespace TofuPilot
         /// List and filter procedures
         /// 
         /// <remarks>
-        /// Retrieve procedures with optional filtering and search. Returns all procedure data including creator, recent runs, and FPY (First Pass Yield) statistics.
+        /// Retrieve procedures with optional filtering and search. Returns procedure data including creator and linked repository.
         /// </remarks>
         /// </summary>
         Task<ProcedureListResponse> ListAsync(long? limit = 50, double? cursor = null, string? searchQuery = null, DateTime? createdAfter = null, DateTime? createdBefore = null, CancellationToken cancellationToken = default);

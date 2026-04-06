@@ -13,7 +13,6 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     using System;
-    using System.Collections.Generic;
     
     public class ProcedureListData
     {
@@ -41,12 +40,6 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("created_by_user")]
         public ProcedureListCreatedByUser CreatedByUser { get; set; } = default!;
-
-        /// <summary>
-        /// Recent runs for this procedure.
-        /// </summary>
-        [JsonPropertyName("runs")]
-        public List<ProcedureListRuns> Runs { get; set; } = default!;
 
         /// <summary>
         /// Linked repository for this procedure.
