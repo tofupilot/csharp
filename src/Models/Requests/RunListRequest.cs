@@ -84,7 +84,7 @@ namespace TofuPilot.Models.Requests
         public long? Limit { get; set; } = 50;
 
         [ApiMetadata("queryParam:style=form,explode=true,name=cursor")]
-        public double? Cursor { get; set; }
+        public long? Cursor { get; set; }
 
         /// <summary>
         /// Field to sort results by.

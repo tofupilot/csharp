@@ -33,6 +33,6 @@ namespace TofuPilot.Models.Requests
         public string SourceFile { get; set; } = default!;
 
         [JsonPropertyName("line_number")]
-        public double LineNumber { get; set; } = default!;
+        public long LineNumber { get; set; } = default!;
     }
 }

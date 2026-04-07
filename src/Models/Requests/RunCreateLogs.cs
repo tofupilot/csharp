@@ -45,6 +45,6 @@ namespace TofuPilot.Models.Requests
         /// Line number in the source file where the log message was generated. Used for debugging and tracing log origins.
         /// </summary>
         [JsonPropertyName("line_number")]
-        public double LineNumber { get; set; } = default!;
+        public long LineNumber { get; set; } = default!;
     }
 }

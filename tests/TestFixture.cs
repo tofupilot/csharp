@@ -13,7 +13,8 @@ public class TestFixture : IDisposable
 
     public TestFixture()
     {
-        var envPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", ".env.local");
+        // Load shared env from clients/.env.local
+        var envPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", ".env.local");
         if (File.Exists(envPath))
         {
             foreach (var line in File.ReadAllLines(envPath))
