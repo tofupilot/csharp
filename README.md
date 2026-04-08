@@ -123,11 +123,11 @@ var run = await client.Runs.CreateAsync(new RunCreateRequest
                     Name = "Output Voltage",
                     Outcome = RunCreateMeasurementsOutcome.Pass,
                     MeasuredValue = 3.3,
-                    Units = new RunCreateUnits { Value = "V" },
-                    Validators = new List<RunCreateValidators>
+                    Units = RunCreateUnits.CreateStr("V"),
+                    Validators = new List<RunCreateMeasurementsValidators>
                     {
-                        new() { Operator = ">=", ExpectedValue = RunCreateExpectedValue.CreateNumber(3.0) },
-                        new() { Operator = "<=", ExpectedValue = RunCreateExpectedValue.CreateNumber(3.6) },
+                        new() { Operator = ">=", ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(3.0) },
+                        new() { Operator = "<=", ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(3.6) },
                     },
                 },
             },
