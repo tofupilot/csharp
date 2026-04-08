@@ -136,6 +136,10 @@ namespace TofuPilot.Models.Requests
             return new RunCreateYAxisAggregationsExpectedValue(typ);
         }
 
+        public static implicit operator RunCreateYAxisAggregationsExpectedValue(bool value) => CreateBoolean(value);
+        public static implicit operator RunCreateYAxisAggregationsExpectedValue(double value) => CreateNumber(value);
+        public static implicit operator RunCreateYAxisAggregationsExpectedValue(string value) => CreateStr(value);
+
         public class RunCreateYAxisAggregationsExpectedValueConverter : JsonConverter<RunCreateYAxisAggregationsExpectedValue>
         {
 

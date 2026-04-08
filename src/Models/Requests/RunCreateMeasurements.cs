@@ -44,7 +44,7 @@ namespace TofuPilot.Models.Requests
         public List<RunCreateYAxis>? YAxis { get; set; } = null;
 
         [JsonPropertyName("measured_value")]
-        public object? MeasuredValue { get; set; } = null;
+        public RunCreateMeasuredValue? MeasuredValue { get; set; } = null;
 
         /// <summary>
         /// [LEGACY for multi-dim] Units of measurement. For structured multi-dimensional, use units within x_axis/y_axis instead.

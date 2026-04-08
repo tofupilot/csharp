@@ -10,6 +10,7 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Components;
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     using System.Collections.Generic;
@@ -59,7 +60,7 @@ namespace TofuPilot.Models.Requests
         /// The actual measured value.
         /// </summary>
         [JsonPropertyName("measured_value")]
-        public object? MeasuredValue { get; set; }
+        public RunGetMeasuredValue? MeasuredValue { get; set; }
 
         /// <summary>
         /// Multi-dimensional measurement data series.

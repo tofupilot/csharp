@@ -108,6 +108,10 @@ namespace TofuPilot.Models.Requests
             return new RunCreateValue(typ);
         }
 
+        public static implicit operator RunCreateValue(double value) => CreateNumber(value);
+        public static implicit operator RunCreateValue(string value) => CreateStr(value);
+        public static implicit operator RunCreateValue(bool value) => CreateBoolean(value);
+
         public class RunCreateValueConverter : JsonConverter<RunCreateValue>
         {
 

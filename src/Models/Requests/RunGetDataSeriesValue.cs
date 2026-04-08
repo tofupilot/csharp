@@ -108,6 +108,10 @@ namespace TofuPilot.Models.Requests
             return new RunGetDataSeriesValue(typ);
         }
 
+        public static implicit operator RunGetDataSeriesValue(double value) => CreateNumber(value);
+        public static implicit operator RunGetDataSeriesValue(string value) => CreateStr(value);
+        public static implicit operator RunGetDataSeriesValue(bool value) => CreateBoolean(value);
+
         public class RunGetDataSeriesValueConverter : JsonConverter<RunGetDataSeriesValue>
         {
 

@@ -136,6 +136,10 @@ namespace TofuPilot.Models.Requests
             return new RunCreateMeasurementsAggregationsExpectedValue(typ);
         }
 
+        public static implicit operator RunCreateMeasurementsAggregationsExpectedValue(bool value) => CreateBoolean(value);
+        public static implicit operator RunCreateMeasurementsAggregationsExpectedValue(double value) => CreateNumber(value);
+        public static implicit operator RunCreateMeasurementsAggregationsExpectedValue(string value) => CreateStr(value);
+
         public class RunCreateMeasurementsAggregationsExpectedValueConverter : JsonConverter<RunCreateMeasurementsAggregationsExpectedValue>
         {
 

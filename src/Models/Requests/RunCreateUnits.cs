@@ -94,6 +94,8 @@ namespace TofuPilot.Models.Requests
             return new RunCreateUnits(typ);
         }
 
+        public static implicit operator RunCreateUnits(string value) => CreateStr(value);
+
         public class RunCreateUnitsConverter : JsonConverter<RunCreateUnits>
         {
 
