@@ -85,14 +85,15 @@ var client = new TofuPilot(
 | Resource | Operations |
 |----------|-----------|
 | `client.Runs` | List, Create, Get, Delete, Update |
+| `client.Runs.Attachments()` | UploadAsync, DownloadAsync |
 | `client.Units` | List, Create, Get, Delete, Update, AddChild, RemoveChild |
+| `client.Units.Attachments()` | UploadAsync, DownloadAsync, DeleteAsync |
 | `client.Parts` | List, Create, Get, Delete, Update |
 | `client.Parts.Revisions` | Create, Get, Delete, Update |
 | `client.Procedures` | List, Create, Get, Delete, Update |
 | `client.Procedures.Versions` | Create, Get, Delete |
 | `client.Batches` | List, Create, Get, Delete, Update |
 | `client.Stations` | List, Create, Get, GetCurrent, Remove, Update |
-| `client.Attachments` | Initialize, Finalize, Delete |
 | `client.User` | List |
 
 ## Usage Examples
@@ -177,20 +178,21 @@ await client.Units.AddChildAsync("PARENT-001", new UnitAddChildRequestBody
 });
 ```
 
-### Upload and download attachments
+### Attach files to runs and units
 
 ```csharp
-// Upload a file (one line)
-var attachmentId = await client.Attachments.UploadAsync("report.pdf");
+// Upload a file to a run
+await client.Runs.Attachments().UploadAsync(runId, "report.pdf");
 
-// Link to a run
-await client.Runs.UpdateAsync(runId, new RunUpdateRequestBody
-{
-    Attachments = new List<string> { attachmentId },
-});
+// Upload a file to a unit
+await client.Units.Attachments().UploadAsync("SN-0001", "calibration.pdf");
 
 // Download an attachment
-await client.Attachments.DownloadAsync(downloadUrl, "local-copy.pdf");
+var run = await client.Runs.GetAsync(runId);
+await client.Runs.Attachments().DownloadAsync(run.Attachments[0].DownloadUrl, "local-copy.pdf");
+
+// Delete a unit attachment
+await client.Units.Attachments().DeleteAsync("SN-0001", new List<string> { attachmentId });
 ```
 
 ## Error Handling

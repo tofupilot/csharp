@@ -9,16 +9,19 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
+    using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
-    using System.Collections.Generic;
     
-    public class AttachmentDeleteRequest
+    public class UnitCreateAttachmentRequest
     {
 
         /// <summary>
-        /// Upload IDs to delete
+        /// Serial number of the unit to attach the file to. Matched case-insensitively.
         /// </summary>
-        [ApiMetadata("queryParam:style=form,explode=true,name=ids")]
-        public List<string> Ids { get; set; } = default!;
+        [ApiMetadata("pathParam:style=simple,explode=false,name=serial_number")]
+        public string SerialNumber { get; set; } = default!;
+
+        [ApiMetadata("request:mediaType=application/json")]
+        public UnitCreateAttachmentRequestBody RequestBody { get; set; } = default!;
     }
 }

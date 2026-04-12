@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using TofuPilot.Models.Requests;
@@ -9,50 +10,36 @@ using TofuPilot.Models.Requests;
 namespace TofuPilot
 {
     /// <summary>
-    /// Convenience methods for attachment upload and download.
+    /// Sub-resource for run attachments: client.Runs.Attachments.CreateAsync() / .DownloadAsync()
     /// </summary>
-    public static class AttachmentHelpers
+    public class RunAttachments
     {
+        private readonly IRuns _runs;
+
+        internal RunAttachments(IRuns runs)
+        {
+            _runs = runs;
+        }
+
         /// <summary>
-        /// Upload a file and return its attachment ID.
-        /// Handles the full workflow: initialize → upload to storage → finalize.
+        /// Upload a file and attach it to a run. Returns the attachment ID.
         /// </summary>
-        /// <param name="attachments">The attachments resource.</param>
-        /// <param name="filePath">Path to the file to upload.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>The attachment ID (use with Units.UpdateAsync or Runs.UpdateAsync).</returns>
-        public static async Task<string> UploadAsync(this IAttachments attachments, string filePath, CancellationToken cancellationToken = default)
+        public async Task<string> UploadAsync(string runId, string filePath, CancellationToken cancellationToken = default)
         {
             if (!File.Exists(filePath))
                 throw new FileNotFoundException($"File not found: {filePath}", filePath);
 
             var fileName = Path.GetFileName(filePath);
-            var init = await attachments.InitializeAsync(new AttachmentInitializeRequest { Name = fileName }, cancellationToken);
+            var result = await _runs.CreateAttachmentAsync(runId, new RunCreateAttachmentRequestBody { Name = fileName }, cancellationToken);
 
-            var fileBytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
-            using var httpClient = new HttpClient();
-            var content = new ByteArrayContent(fileBytes);
-
-            var contentType = GetContentType(filePath);
-            content.Headers.ContentType = new MediaTypeHeaderValue(contentType);
-
-            var uploadResponse = await httpClient.PutAsync(init.UploadUrl, content, cancellationToken);
-            if (!uploadResponse.IsSuccessStatusCode)
-                throw new InvalidOperationException($"File upload failed with status {(int)uploadResponse.StatusCode}");
-
-            await attachments.FinalizeAsync(init.Id, cancellationToken);
-            return init.Id;
+            await UploadToPresignedUrl(filePath, result.UploadUrl, cancellationToken);
+            return result.Id;
         }
 
         /// <summary>
         /// Download an attachment to a local file.
         /// </summary>
-        /// <param name="attachments">The attachments resource.</param>
-        /// <param name="downloadUrl">The download URL from an attachment object.</param>
-        /// <param name="destinationPath">Destination file path.</param>
-        /// <param name="cancellationToken">Cancellation token.</param>
-        /// <returns>The path to the downloaded file.</returns>
-        public static async Task<string> DownloadAsync(this IAttachments attachments, string downloadUrl, string destinationPath, CancellationToken cancellationToken = default)
+        public async Task<string> DownloadAsync(string downloadUrl, string destinationPath, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(downloadUrl))
                 throw new ArgumentException("Download URL cannot be null or empty.", nameof(downloadUrl));
@@ -65,6 +52,18 @@ namespace TofuPilot
             var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
             await File.WriteAllBytesAsync(destinationPath, bytes, cancellationToken);
             return destinationPath;
+        }
+
+        private static async Task UploadToPresignedUrl(string filePath, string uploadUrl, CancellationToken cancellationToken)
+        {
+            var fileBytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
+            using var httpClient = new HttpClient();
+            var content = new ByteArrayContent(fileBytes);
+            content.Headers.ContentType = new MediaTypeHeaderValue(GetContentType(filePath));
+
+            var response = await httpClient.PutAsync(uploadUrl, content, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+                throw new InvalidOperationException($"File upload failed with status {(int)response.StatusCode}");
         }
 
         private static string GetContentType(string filePath)
@@ -80,10 +79,126 @@ namespace TofuPilot
                 ".json" => "application/json",
                 ".xml" => "application/xml",
                 ".zip" => "application/zip",
-                ".txt" => "text/plain",
+                ".txt" or ".log" => "text/plain",
                 ".html" or ".htm" => "text/html",
                 _ => "application/octet-stream",
             };
+        }
+    }
+
+    /// <summary>
+    /// Sub-resource for unit attachments: client.Units.Attachments.CreateAsync() / .DownloadAsync() / .DeleteAsync()
+    /// </summary>
+    public class UnitAttachments
+    {
+        private readonly IUnits _units;
+
+        internal UnitAttachments(IUnits units)
+        {
+            _units = units;
+        }
+
+        /// <summary>
+        /// Upload a file and attach it to a unit. Returns the attachment ID.
+        /// </summary>
+        public async Task<string> UploadAsync(string serialNumber, string filePath, CancellationToken cancellationToken = default)
+        {
+            if (!File.Exists(filePath))
+                throw new FileNotFoundException($"File not found: {filePath}", filePath);
+
+            var fileName = Path.GetFileName(filePath);
+            var result = await _units.CreateAttachmentAsync(serialNumber, new UnitCreateAttachmentRequestBody { Name = fileName }, cancellationToken);
+
+            await UploadToPresignedUrl(filePath, result.UploadUrl, cancellationToken);
+            return result.Id;
+        }
+
+        /// <summary>
+        /// Download an attachment to a local file.
+        /// </summary>
+        public async Task<string> DownloadAsync(string downloadUrl, string destinationPath, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(downloadUrl))
+                throw new ArgumentException("Download URL cannot be null or empty.", nameof(downloadUrl));
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetAsync(downloadUrl, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+                throw new InvalidOperationException($"Download failed with status {(int)response.StatusCode}");
+
+            var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
+            await File.WriteAllBytesAsync(destinationPath, bytes, cancellationToken);
+            return destinationPath;
+        }
+
+        /// <summary>
+        /// Delete attachments from a unit by their IDs.
+        /// </summary>
+        public async Task<UnitDeleteAttachmentResponse> DeleteAsync(string serialNumber, List<string> ids, CancellationToken cancellationToken = default)
+        {
+            return await _units.DeleteAttachmentAsync(serialNumber, ids, cancellationToken);
+        }
+
+        private static async Task UploadToPresignedUrl(string filePath, string uploadUrl, CancellationToken cancellationToken)
+        {
+            var fileBytes = await File.ReadAllBytesAsync(filePath, cancellationToken);
+            using var httpClient = new HttpClient();
+            var content = new ByteArrayContent(fileBytes);
+            content.Headers.ContentType = new MediaTypeHeaderValue(GetContentType(filePath));
+
+            var response = await httpClient.PutAsync(uploadUrl, content, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+                throw new InvalidOperationException($"File upload failed with status {(int)response.StatusCode}");
+        }
+
+        private static string GetContentType(string filePath)
+        {
+            var ext = Path.GetExtension(filePath).ToLowerInvariant();
+            return ext switch
+            {
+                ".pdf" => "application/pdf",
+                ".png" => "image/png",
+                ".jpg" or ".jpeg" => "image/jpeg",
+                ".gif" => "image/gif",
+                ".csv" => "text/csv",
+                ".json" => "application/json",
+                ".xml" => "application/xml",
+                ".zip" => "application/zip",
+                ".txt" or ".log" => "text/plain",
+                ".html" or ".htm" => "text/html",
+                _ => "application/octet-stream",
+            };
+        }
+    }
+
+    /// <summary>
+    /// Extension methods to expose Attachments sub-resources on Runs and Units.
+    /// </summary>
+    public static class AttachmentSubResourceExtensions
+    {
+        private static readonly Dictionary<int, RunAttachments> _runAttachments = new();
+        private static readonly Dictionary<int, UnitAttachments> _unitAttachments = new();
+
+        public static RunAttachments Attachments(this IRuns runs)
+        {
+            var key = runs.GetHashCode();
+            if (!_runAttachments.TryGetValue(key, out var attachments))
+            {
+                attachments = new RunAttachments(runs);
+                _runAttachments[key] = attachments;
+            }
+            return attachments;
+        }
+
+        public static UnitAttachments Attachments(this IUnits units)
+        {
+            var key = units.GetHashCode();
+            if (!_unitAttachments.TryGetValue(key, out var attachments))
+            {
+                attachments = new UnitAttachments(units);
+                _unitAttachments[key] = attachments;
+            }
+            return attachments;
         }
     }
 }

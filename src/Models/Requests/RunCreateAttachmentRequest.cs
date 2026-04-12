@@ -9,20 +9,19 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
-    using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
-    using System.Collections.Generic;
     
-    /// <summary>
-    /// Uploads deleted successfully
-    /// </summary>
-    public class AttachmentDeleteResponse
+    public class RunCreateAttachmentRequest
     {
 
         /// <summary>
-        /// IDs of attachments that were successfully deleted
+        /// Unique identifier of the run to attach the file to.
         /// </summary>
-        [JsonPropertyName("id")]
-        public List<string> Id { get; set; } = default!;
+        [ApiMetadata("pathParam:style=simple,explode=false,name=id")]
+        public string Id { get; set; } = default!;
+
+        [ApiMetadata("request:mediaType=application/json")]
+        public RunCreateAttachmentRequestBody RequestBody { get; set; } = default!;
     }
 }

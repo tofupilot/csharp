@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using TofuPilot;
-using TofuPilot.Models.Errors;
 using TofuPilot.Models.Requests;
 using Xunit;
 
@@ -16,61 +15,36 @@ namespace TofuPilot.Tests;
 public class AttachmentsTests
 {
     private readonly TofuPilot _client;
+    private readonly string _procedureId;
 
     public AttachmentsTests(TestFixture fixture)
     {
         _client = fixture.Client;
+        _procedureId = fixture.ProcedureId;
     }
 
     private string Uid() => Guid.NewGuid().ToString("N")[..8];
 
     [Fact]
-    public async Task Initialize_ReturnsIdAndUploadUrl()
+    public async Task RunAttachments_Create_ReturnsId()
     {
-        var result = await _client.Attachments.InitializeAsync(new AttachmentInitializeRequest
+        var run = await _client.Runs.CreateAsync(new RunCreateRequest
         {
-            Name = $"test-{Uid()}.txt",
+            ProcedureId = _procedureId,
+            SerialNumber = $"ATTACH-{Uid()}",
+            PartNumber = "PCB-001",
+            Outcome = RunCreateOutcome.Pass,
+            StartedAt = DateTime.UtcNow.AddMinutes(-1),
+            EndedAt = DateTime.UtcNow,
         });
-        Assert.False(string.IsNullOrEmpty(result.Id));
-        Assert.False(string.IsNullOrEmpty(result.UploadUrl));
-    }
 
-    [Fact]
-    public async Task FullLifecycle_InitUploadFinalize()
-    {
-        var initialized = await _client.Attachments.InitializeAsync(new AttachmentInitializeRequest
-        {
-            Name = $"lifecycle-{Uid()}.txt",
-        });
-        Assert.False(string.IsNullOrEmpty(initialized.UploadUrl));
-
-        using var httpClient = new HttpClient();
-        var content = new ByteArrayContent(Encoding.UTF8.GetBytes("test content"));
-        content.Headers.ContentType = new MediaTypeHeaderValue("text/plain");
-        var uploadResponse = await httpClient.PutAsync(initialized.UploadUrl, content);
-        uploadResponse.EnsureSuccessStatusCode();
-
-        var finalized = await _client.Attachments.FinalizeAsync(initialized.Id);
-        Assert.False(string.IsNullOrEmpty(finalized.Url));
-    }
-
-    [Fact]
-    public async Task Finalize_Nonexistent_ThrowsNotFound()
-    {
-        await Assert.ThrowsAsync<NotFoundException>(() =>
-            _client.Attachments.FinalizeAsync(Guid.NewGuid().ToString()));
-    }
-
-    [Fact]
-    public async Task Upload_ReturnsAttachmentId()
-    {
         var tempFile = Path.GetTempFileName();
         try
         {
-            await File.WriteAllTextAsync(tempFile, "upload helper test content");
-            var attachmentId = await _client.Attachments.UploadAsync(tempFile);
+            await File.WriteAllTextAsync(tempFile, "run attachment test");
+            var attachmentId = await _client.Runs.Attachments().UploadAsync(run.Id, tempFile);
             Assert.False(string.IsNullOrEmpty(attachmentId));
-            Assert.Equal(36, attachmentId.Length); // UUID format
+            Assert.Equal(36, attachmentId.Length);
         }
         finally
         {
@@ -79,58 +53,75 @@ public class AttachmentsTests
     }
 
     [Fact]
-    public async Task Upload_NonexistentFile_ThrowsFileNotFound()
+    public async Task RunAttachments_CreateAndVerify()
     {
-        await Assert.ThrowsAsync<FileNotFoundException>(() =>
-            _client.Attachments.UploadAsync("/nonexistent/file.txt"));
-    }
+        var run = await _client.Runs.CreateAsync(new RunCreateRequest
+        {
+            ProcedureId = _procedureId,
+            SerialNumber = $"ATTACH-{Uid()}",
+            PartNumber = "PCB-001",
+            Outcome = RunCreateOutcome.Pass,
+            StartedAt = DateTime.UtcNow.AddMinutes(-1),
+            EndedAt = DateTime.UtcNow,
+        });
 
-    [Fact]
-    public async Task UploadAndDownload_Roundtrip()
-    {
-        var tempUpload = Path.GetTempFileName();
-        var tempDownload = Path.Combine(Path.GetTempPath(), $"download-{Uid()}.txt");
+        var tempFile = Path.GetTempFileName();
         try
         {
-            var originalContent = $"roundtrip test {Uid()}";
-            await File.WriteAllTextAsync(tempUpload, originalContent);
+            await File.WriteAllTextAsync(tempFile, "verify test");
+            var attachmentId = await _client.Runs.Attachments().UploadAsync(run.Id, tempFile);
 
-            // Upload
-            var attachmentId = await _client.Attachments.UploadAsync(tempUpload);
-            Assert.False(string.IsNullOrEmpty(attachmentId));
-
-            // Get download URL via initialize+finalize (attachment is already finalized)
-            // We need to get the URL — it was returned by finalize during upload
-            // Re-initialize a new file to test download separately
-            var init = await _client.Attachments.InitializeAsync(new AttachmentInitializeRequest
-            {
-                Name = $"download-test-{Uid()}.txt",
-            });
-            using var httpClient = new HttpClient();
-            var content = new ByteArrayContent(Encoding.UTF8.GetBytes(originalContent));
-            content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/plain");
-            await httpClient.PutAsync(init.UploadUrl, content);
-            var finalized = await _client.Attachments.FinalizeAsync(init.Id);
-
-            // Download
-            var downloadedPath = await _client.Attachments.DownloadAsync(finalized.Url, tempDownload);
-            Assert.Equal(tempDownload, downloadedPath);
-            Assert.True(File.Exists(tempDownload));
-
-            var downloadedContent = await File.ReadAllTextAsync(tempDownload);
-            Assert.Equal(originalContent, downloadedContent);
+            var fetched = await _client.Runs.GetAsync(run.Id);
+            Assert.NotNull(fetched.Attachments);
+            Assert.Contains(fetched.Attachments, a => a.Id == attachmentId);
         }
         finally
         {
-            File.Delete(tempUpload);
-            if (File.Exists(tempDownload)) File.Delete(tempDownload);
+            File.Delete(tempFile);
         }
     }
 
     [Fact]
-    public async Task Download_EmptyUrl_ThrowsArgumentException()
+    public async Task RunAttachments_Create_FileNotFound()
+    {
+        await Assert.ThrowsAsync<FileNotFoundException>(() =>
+            _client.Runs.Attachments().UploadAsync("00000000-0000-0000-0000-000000000000", "/nonexistent/file.txt"));
+    }
+
+    [Fact]
+    public async Task UnitAttachments_CreateAndDelete()
+    {
+        var serial = $"DELATT-{Uid()}";
+        var partNumber = $"DELPART-{Uid()}";
+        var revNumber = $"DELREV-{Uid()}";
+
+        await _client.Parts.CreateAsync(new PartCreateRequest { Number = partNumber, Name = $"Part {Uid()}" });
+        await _client.Parts.Revisions.CreateAsync(partNumber, new PartCreateRevisionRequestBody { Number = revNumber });
+        await _client.Units.CreateAsync(new UnitCreateRequest { SerialNumber = serial, PartNumber = partNumber, RevisionNumber = revNumber });
+
+        var tempFile = Path.GetTempFileName();
+        try
+        {
+            await File.WriteAllTextAsync(tempFile, "file to delete");
+            var attachmentId = await _client.Units.Attachments().UploadAsync(serial, tempFile);
+            Assert.False(string.IsNullOrEmpty(attachmentId));
+
+            var result = await _client.Units.Attachments().DeleteAsync(serial, new List<string> { attachmentId });
+            Assert.Contains(attachmentId, result.Ids);
+
+            var fetched = await _client.Units.GetAsync(serial);
+            Assert.DoesNotContain(fetched.Attachments ?? new List<UnitGetAttachments>(), a => a.Id == attachmentId);
+        }
+        finally
+        {
+            File.Delete(tempFile);
+        }
+    }
+
+    [Fact]
+    public async Task RunAttachments_Download_EmptyUrl()
     {
         await Assert.ThrowsAsync<ArgumentException>(() =>
-            _client.Attachments.DownloadAsync("", "/tmp/test.txt"));
+            _client.Runs.Attachments().DownloadAsync("", "/tmp/test.txt"));
     }
 }
