@@ -52,7 +52,12 @@ namespace TofuPilot
         {
             if (!String.IsNullOrEmpty(this.ServerUrl))
             {
-                return Utilities.TemplateUrl(Utilities.RemoveSuffix(this.ServerUrl, "/"), new Dictionary<string, string>());
+                var url = Utilities.RemoveSuffix(this.ServerUrl, "/");
+                if (!url.EndsWith("/api"))
+                {
+                    url += "/api";
+                }
+                return Utilities.TemplateUrl(url, new Dictionary<string, string>());
             }
             return Utilities.TemplateUrl(SDKConfig.ServerList[this.ServerIndex], new Dictionary<string, string>());
         }
