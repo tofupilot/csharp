@@ -30,6 +30,9 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("procedure_id")]
         public string ProcedureId { get; set; } = default!;
 
+        [JsonPropertyName("deployment_id")]
+        public string? DeploymentId { get; set; } = null;
+
         [JsonPropertyName("procedure_version")]
         public string? ProcedureVersion { get; set; } = null;
 

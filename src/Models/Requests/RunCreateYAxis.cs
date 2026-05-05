@@ -33,6 +33,12 @@ namespace TofuPilot.Models.Requests
         public string? Units { get; set; } = null;
 
         /// <summary>
+        /// Name of this data series.
+        /// </summary>
+        [JsonPropertyName("name")]
+        public string? Name { get; set; } = null;
+
+        /// <summary>
         /// Description of this data series.
         /// </summary>
         [JsonPropertyName("description")]

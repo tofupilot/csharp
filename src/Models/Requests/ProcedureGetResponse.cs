@@ -28,13 +28,6 @@ namespace TofuPilot.Models.Requests
         public string Id { get; set; } = default!;
 
         /// <summary>
-        /// Optional unique identifier for the procedure.
-        /// </summary>
-        [JsonPropertyName("identifier")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public string? Identifier { get; set; }
-
-        /// <summary>
         /// Procedure name.
         /// </summary>
         [JsonPropertyName("name")]

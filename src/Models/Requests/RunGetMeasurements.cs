@@ -37,11 +37,10 @@ namespace TofuPilot.Models.Requests
         public RunGetMeasurementsOutcome Outcome { get; set; } = default!;
 
         /// <summary>
-        /// Units of measurement.
+        /// Units of measurement. Not present for multi-dimensional measurements (units are per data series).
         /// </summary>
         [JsonPropertyName("units")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public string? Units { get; set; }
+        public string? Units { get; set; } = null;
 
         /// <summary>
         /// Structured validation rules with outcome and expected values.

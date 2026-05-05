@@ -17,16 +17,40 @@ namespace TofuPilot.Models.Requests
     public class RunGetDataSeries
     {
 
+        /// <summary>
+        /// Array of numeric data points for this series.
+        /// </summary>
         [JsonPropertyName("data")]
         public List<double> Data { get; set; } = default!;
 
+        /// <summary>
+        /// Unit for this data series.
+        /// </summary>
         [JsonPropertyName("units")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Units { get; set; }
 
+        /// <summary>
+        /// Name of this data series.
+        /// </summary>
+        [JsonPropertyName("name")]
+        public string? Name { get; set; } = null;
+
+        /// <summary>
+        /// Description of this data series.
+        /// </summary>
+        [JsonPropertyName("description")]
+        public string? Description { get; set; } = null;
+
+        /// <summary>
+        /// Validators for this data series.
+        /// </summary>
         [JsonPropertyName("validators")]
         public List<RunGetDataSeriesValidators>? Validators { get; set; } = null;
 
+        /// <summary>
+        /// Aggregations computed over this data series.
+        /// </summary>
         [JsonPropertyName("aggregations")]
         public List<RunGetDataSeriesAggregations>? Aggregations { get; set; } = null;
     }

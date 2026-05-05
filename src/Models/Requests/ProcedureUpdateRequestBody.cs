@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class ProcedureUpdateRequestBody
     {
@@ -19,6 +20,30 @@ namespace TofuPilot.Models.Requests
         /// New name for the procedure.
         /// </summary>
         [JsonPropertyName("name")]
-        public string Name { get; set; } = default!;
+        public string? Name { get; set; }
+
+        /// <summary>
+        /// Branch treated as production. Pushes to this branch deploy as production; every other branch deploys as preview. Null = no branch promoted to production.
+        /// </summary>
+        [JsonPropertyName("production_branch")]
+        public string? ProductionBranch { get; set; } = null;
+
+        /// <summary>
+        /// Master switch for auto-pushing builds to linked stations. Build artifacts are always recorded; this only gates the station fan-out.
+        /// </summary>
+        [JsonPropertyName("auto_push_enabled")]
+        public bool? AutoPushEnabled { get; set; }
+
+        /// <summary>
+        /// Branches matching any of these patterns (exact name or minimatch glob, e.g. &quot;renovate/*&quot;) skip preview deployments. Empty array = no exclusions.
+        /// </summary>
+        [JsonPropertyName("excluded_branch_patterns")]
+        public List<string>? ExcludedBranchPatterns { get; set; }
+
+        /// <summary>
+        /// Path within the linked repo to the directory holding this procedure&apos;s `pyproject.toml` (and `procedure.yaml` for framework procedures). Empty/null = repo root.
+        /// </summary>
+        [JsonPropertyName("root_directory")]
+        public string? RootDirectory { get; set; } = null;
     }
 }

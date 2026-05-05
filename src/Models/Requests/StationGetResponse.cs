@@ -52,13 +52,6 @@ namespace TofuPilot.Models.Requests
         public string OrganizationSlug { get; set; } = default!;
 
         /// <summary>
-        /// Current connection status of the station
-        /// </summary>
-        [JsonPropertyName("connection_status")]
-        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public string? ConnectionStatus { get; set; }
-
-        /// <summary>
         /// Team this station is assigned to
         /// </summary>
         [JsonPropertyName("team")]
