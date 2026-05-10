@@ -85,7 +85,7 @@ namespace TofuPilot
         /// Update run metadata
         /// 
         /// <remarks>
-        /// Upsert custom metadata on a run. Plain object of key/value pairs. PATCH semantics by default (omitted keys preserved). Pass `null` as a value to delete a key. Pass `metadata_replace: true` to drop all keys not present.
+        /// Upsert custom metadata on a run. Plain object of key/value pairs. PATCH semantics: omitted keys preserved. Pass `null` as a value to delete a key.
         /// </remarks>
         /// </summary>
         Task<RunUpdateMetadataResponse> UpdateMetadataAsync(string id, RunUpdateMetadataRequestBody requestBody, CancellationToken cancellationToken = default);
