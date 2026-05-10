@@ -100,5 +100,17 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=sort_order")]
         public RunListSortOrder? SortOrder { get; set; } = global::TofuPilot.Models.Requests.RunListSortOrder.Desc;
+
+        /// <summary>
+        /// Filter runs by custom metadata. Supports up to 5 keys per request. Per-key operators: string `{in: [...]}`/`{contains: &quot;...&quot;}`, number `{gte, lte, gt, lt, eq}`, bool `{eq: true|false}`.
+        /// </summary>
+        [ApiMetadata("queryParam:style=form,explode=true,name=metadata")]
+        public object? Metadata { get; set; }
+
+        /// <summary>
+        /// When true, includes the run metadata array in the response. Defaults to false to keep payloads small.
+        /// </summary>
+        [ApiMetadata("queryParam:style=form,explode=true,name=include_metadata")]
+        public bool? IncludeMetadata { get; set; } = false;
     }
 }

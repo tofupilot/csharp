@@ -84,5 +84,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("last_run")]
         public UnitListLastRun? LastRun { get; set; } = null;
+
+        /// <summary>
+        /// Custom metadata key/value pairs on the unit. Only present when the request sets `include_metadata=true`.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

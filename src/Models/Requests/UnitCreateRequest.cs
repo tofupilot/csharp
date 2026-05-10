@@ -38,5 +38,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("sample")]
         public string? Sample { get; set; } = null;
+
+        /// <summary>
+        /// Custom metadata to attach to the unit (max 50 keys per unit). Plain object of key/value pairs; values can be string, number, or boolean. Type is detected from the value.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

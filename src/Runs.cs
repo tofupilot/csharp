@@ -34,7 +34,7 @@ namespace TofuPilot
         /// Retrieve a paginated list of test runs with filtering by unit, procedure, date range, outcome, and station.
         /// </remarks>
         /// </summary>
-        Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<RunListSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, CancellationToken cancellationToken = default);
+        Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<RunListSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, object? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Create run
@@ -80,6 +80,15 @@ namespace TofuPilot
         /// </remarks>
         /// </summary>
         Task<RunCreateAttachmentResponse> CreateAttachmentAsync(string id, RunCreateAttachmentRequestBody requestBody, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Update run metadata
+        /// 
+        /// <remarks>
+        /// Upsert custom metadata on a run. Plain object of key/value pairs. PATCH semantics by default (omitted keys preserved). Pass `null` as a value to delete a key. Pass `metadata_replace: true` to drop all keys not present.
+        /// </remarks>
+        /// </summary>
+        Task<RunUpdateMetadataResponse> UpdateMetadataAsync(string id, RunUpdateMetadataRequestBody requestBody, CancellationToken cancellationToken = default);
     }
 
     public class Runs: IRuns
@@ -95,7 +104,7 @@ namespace TofuPilot
             SDKConfiguration = config;
         }
 
-        public async Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<RunListSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, CancellationToken cancellationToken = default)
+        public async Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<RunListSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, object? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default)
         {
             var request = new RunListRequest()
             {
@@ -124,6 +133,8 @@ namespace TofuPilot
                 Cursor = cursor,
                 SortBy = sortBy,
                 SortOrder = sortOrder,
+                Metadata = metadata,
+                IncludeMetadata = includeMetadata,
             };
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
             var urlString = URLBuilder.Build(baseUrl, "/v2/runs", request);
@@ -771,6 +782,120 @@ namespace TofuPilot
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
                 {
                     var obj = ResponseBodyDeserializer.Deserialize<RunCreateAttachmentResponse>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    return obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 401)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<UnauthorizedException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 404)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<NotFoundException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 500)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<InternalServerErrorException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode >= 500 && responseStatusCode < 600)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+
+            throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+        }
+
+        public async Task<RunUpdateMetadataResponse> UpdateMetadataAsync(string id, RunUpdateMetadataRequestBody requestBody, CancellationToken cancellationToken = default)
+        {
+            var request = new RunUpdateMetadataRequest()
+            {
+                Id = id,
+                RequestBody = requestBody,
+            };
+            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
+            var urlString = URLBuilder.Build(baseUrl, "/v2/runs/{id}/metadata", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Patch, urlString);
+            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+            httpRequest.Headers.Add("x-client-type", "csharp");
+            httpRequest.Headers.Add("x-client-version", _sdkVersion);
+
+            var serializedBody = RequestBodySerializer.Serialize(request, "RequestBody", "json", false, false);
+            if (serializedBody != null)
+            {
+                httpRequest.Content = serializedBody;
+            }
+
+            if (SDKConfiguration.SecuritySource != null)
+            {
+                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
+            }
+
+            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "run-updateMetadata", new List<string> {  }, SDKConfiguration.SecuritySource);
+
+            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
+                int _statusCode = (int)httpResponse.StatusCode;
+
+                if (_statusCode == 401 || _statusCode == 404 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
+                {
+                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
+                    if (_httpResponse != null)
+                    {
+                        httpResponse = _httpResponse;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, error);
+                if (_httpResponse != null)
+                {
+                    httpResponse = _httpResponse;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
+
+            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
+            int responseStatusCode = (int)httpResponse.StatusCode;
+            if(responseStatusCode == 200)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<RunUpdateMetadataResponse>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
                     return obj!;
                 }
 

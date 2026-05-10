@@ -113,5 +113,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("sub_units")]
         public List<RunGetSubUnits>? SubUnits { get; set; }
+
+        /// <summary>
+        /// Custom metadata key/value pairs on the run.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

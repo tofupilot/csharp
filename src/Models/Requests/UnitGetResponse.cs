@@ -94,5 +94,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("attachments")]
         public List<UnitGetAttachments>? Attachments { get; set; }
+
+        /// <summary>
+        /// Custom metadata key/value pairs on the unit.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

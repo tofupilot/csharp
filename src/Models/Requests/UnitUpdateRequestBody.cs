@@ -51,5 +51,17 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("sample")]
         public string? Sample { get; set; } = null;
+
+        /// <summary>
+        /// Custom metadata to upsert on the unit. Plain object of key/value pairs. PATCH semantics: keys not present here are preserved. Pass `null` as a value to delete a key. Pass `metadata_replace: true` to drop all keys not present.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
+
+        /// <summary>
+        /// When true, removes any metadata keys not present in `metadata`. Default: false (PATCH).
+        /// </summary>
+        [JsonPropertyName("metadata_replace")]
+        public bool? MetadataReplace { get; set; }
     }
 }
