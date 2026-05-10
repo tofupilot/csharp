@@ -71,6 +71,9 @@ namespace TofuPilot.Models.Requests
         [ApiMetadata("queryParam:style=form,explode=true,name=exclude_units_with_parent")]
         public bool? ExcludeUnitsWithParent { get; set; } = false;
 
+        [ApiMetadata("queryParam:style=form,explode=true,name=samples")]
+        public List<UnitListSample>? Samples { get; set; }
+
         /// <summary>
         /// Maximum number of units to return.
         /// </summary>

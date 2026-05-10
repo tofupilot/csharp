@@ -32,5 +32,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("revision_number")]
         public string RevisionNumber { get; set; } = default!;
+
+        /// <summary>
+        /// Reference-sample classification. &apos;golden&apos; marks a known-good reference unit; &apos;failing&apos; marks a known-faulty reference unit. Both are excluded from production analytics aggregates (FPY, Cpk, throughput) by default. Omit or null for regular production units.
+        /// </summary>
+        [JsonPropertyName("sample")]
+        public string? Sample { get; set; } = null;
     }
 }

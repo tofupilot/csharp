@@ -35,6 +35,9 @@ namespace TofuPilot.Models.Requests
         [ApiMetadata("queryParam:style=form,explode=true,name=serial_numbers")]
         public List<string>? SerialNumbers { get; set; }
 
+        [ApiMetadata("queryParam:style=form,explode=true,name=samples")]
+        public List<RunListSample>? Samples { get; set; }
+
         [ApiMetadata("queryParam:style=form,explode=true,name=part_numbers")]
         public List<string>? PartNumbers { get; set; }
 

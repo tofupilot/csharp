@@ -45,5 +45,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("root_directory")]
         public string? RootDirectory { get; set; } = null;
+
+        /// <summary>
+        /// Entry-point path inside the procedure&apos;s package dir, relative to it. Forwarded to the CLI through the deployment manifest. Empty/null = use the framework default (openhtf/plain → main.py, pytest → &quot;.&quot;, yaml → procedure.yaml auto-discovery).
+        /// </summary>
+        [JsonPropertyName("entry_point")]
+        public string? EntryPoint { get; set; } = null;
     }
 }

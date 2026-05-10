@@ -30,13 +30,13 @@ namespace TofuPilot.Models.Requests
         public DateTime Timestamp { get; set; } = default!;
 
         /// <summary>
-        /// Content of the log message. Contains the actual log text describing the event, error, or information being logged. Messages longer than 10,000 characters will be truncated.
+        /// Content of the log message. Contains the actual log text describing the event, error, or information being logged. Messages longer than 10,000 characters will be truncated; empty messages become &quot;(empty)&quot;.
         /// </summary>
         [JsonPropertyName("message")]
         public string Message { get; set; } = default!;
 
         /// <summary>
-        /// Name or path of the source file where the log message originated. Helps identify the code location that generated the log entry.
+        /// Name or path of the source file where the log message originated. Helps identify the code location that generated the log entry. Paths longer than 200 characters keep the trailing 200 (leading characters are dropped); empty values become &quot;unknown&quot;.
         /// </summary>
         [JsonPropertyName("source_file")]
         public string SourceFile { get; set; } = default!;

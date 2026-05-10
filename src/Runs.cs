@@ -34,7 +34,7 @@ namespace TofuPilot
         /// Retrieve a paginated list of test runs with filtering by unit, procedure, date range, outcome, and station.
         /// </remarks>
         /// </summary>
-        Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, CancellationToken cancellationToken = default);
+        Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<RunListSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Create run
@@ -95,7 +95,7 @@ namespace TofuPilot
             SDKConfiguration = config;
         }
 
-        public async Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, CancellationToken cancellationToken = default)
+        public async Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? serialNumbers = null, List<RunListSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, CancellationToken cancellationToken = default)
         {
             var request = new RunListRequest()
             {
@@ -105,6 +105,7 @@ namespace TofuPilot
                 ProcedureIds = procedureIds,
                 ProcedureVersions = procedureVersions,
                 SerialNumbers = serialNumbers,
+                Samples = samples,
                 PartNumbers = partNumbers,
                 RevisionNumbers = revisionNumbers,
                 BatchNumbers = batchNumbers,

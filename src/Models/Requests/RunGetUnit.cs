@@ -32,6 +32,13 @@ namespace TofuPilot.Models.Requests
         public string SerialNumber { get; set; } = default!;
 
         /// <summary>
+        /// Reference-sample classification of the unit. &apos;golden&apos; = known-good reference, &apos;failing&apos; = known-faulty reference, null = production unit.
+        /// </summary>
+        [JsonPropertyName("sample")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? Sample { get; set; }
+
+        /// <summary>
         /// Part information with revision details.
         /// </summary>
         [JsonPropertyName("part")]

@@ -34,7 +34,7 @@ namespace TofuPilot
         /// Retrieve a paginated list of units with filtering by serial number, part number, and batch. Uses cursor-based pagination for efficient large dataset traversal.
         /// </remarks>
         /// </summary>
-        Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, CancellationToken cancellationToken = default);
+        Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, List<UnitListSample>? samples = null, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Create unit
@@ -122,7 +122,7 @@ namespace TofuPilot
             SDKConfiguration = config;
         }
 
-        public async Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, CancellationToken cancellationToken = default)
+        public async Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, List<UnitListSample>? samples = null, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, CancellationToken cancellationToken = default)
         {
             var request = new UnitListRequest()
             {
@@ -144,6 +144,7 @@ namespace TofuPilot
                 CreatedByUserIds = createdByUserIds,
                 CreatedByStationIds = createdByStationIds,
                 ExcludeUnitsWithParent = excludeUnitsWithParent,
+                Samples = samples,
                 Limit = limit,
                 Cursor = cursor,
                 SortBy = sortBy,
