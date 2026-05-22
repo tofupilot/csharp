@@ -22,7 +22,7 @@ namespace TofuPilot
     /// <summary>
     /// TofuPilot APIv2: TofuPilot REST API for managing runs, units, procedures, and more.
     /// 
-    /// <see>https://tofupilot.com/docs/dashboard/api/v2/runs/create}</see>
+    /// <see>https://tofupilot.com/docs/api/rest-api/runs/create}</see>
     /// </summary>
     public interface ITofuPilot
     {
@@ -40,7 +40,7 @@ namespace TofuPilot
     /// <summary>
     /// TofuPilot APIv2: TofuPilot REST API for managing runs, units, procedures, and more.
     /// 
-    /// <see>https://tofupilot.com/docs/dashboard/api/v2/runs/create}</see>
+    /// <see>https://tofupilot.com/docs/api/rest-api/runs/create}</see>
     /// </summary>
     public class TofuPilot: ITofuPilot
     {

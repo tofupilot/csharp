@@ -1,10 +1,10 @@
-# TofuPilot C# Client
+# TofuPilot C# SDK
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-8.0-512BD4)](https://dotnet.microsoft.com/)
 [![Tests](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/upview/3c4792a8e7e8e8d0b37e141e95cc885e/raw/csharp-client-tests.json)](https://github.com/tofupilot/csharp)
 
-The official C# client for [TofuPilot](https://tofupilot.com). Integrate your hardware test runs into one app with just a few lines of C#.
+The official C# SDK for [TofuPilot](https://tofupilot.com). Integrate your hardware test runs into one app with just a few lines of C#.
 
 ## Installation
 
@@ -243,13 +243,14 @@ dotnet test
 
 ## Documentation
 
-- [Getting Started](https://tofupilot.com/docs/dashboard)
-- [API Reference](https://tofupilot.com/docs/dashboard/api/v2)
+- [Getting Started](https://tofupilot.com/docs/getting-started-with-tofupilot)
+- [C# SDK Guide](https://tofupilot.com/docs/sdk/csharp)
+- [API Reference](https://tofupilot.com/docs/api/rest-api)
 - [Changelog](https://tofupilot.com/changelog)
 
 ## Acknowledgments
 
-This package builds on the original C# client created by [@Hylaean](https://github.com/Hylaean) (versions 1.x).
+This package builds on the original C# SDK created by [@Hylaean](https://github.com/Hylaean) (versions 1.x).
 
 ## License
 
