@@ -42,7 +42,7 @@ namespace TofuPilot
             Client = client ?? new TofuPilotHttpClient();
             ServerUrl = "";
             ServerIndex = 0;
-            UserAgent = "tofupilot-sdk/csharp 2.10.0 TofuPilot";
+            UserAgent = "tofupilot-sdk/csharp 2.11.1 TofuPilot";
             SecuritySource = null;
             Hooks = new SDKHooks();
             RetryConfig = null;

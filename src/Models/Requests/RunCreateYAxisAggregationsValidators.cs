@@ -10,7 +10,7 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
-    using global::TofuPilot.Models.Components;
+    using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     
     /// <summary>
@@ -23,7 +23,7 @@ namespace TofuPilot.Models.Requests
         /// Pre-computed validation result from test framework. Server stores as-is, does not re-evaluate.
         /// </summary>
         [JsonPropertyName("outcome")]
-        public string? Outcome { get; set; } = null;
+        public RunCreateYAxisAggregationsValidatorsOutcome? Outcome { get; set; } = null;
 
         /// <summary>
         /// Comparison operator: &quot;&gt;&quot;, &quot;&gt;=&quot;, &quot;&lt;&quot;, &quot;&lt;=&quot;, &quot;==&quot;, &quot;!=&quot;, &quot;matches&quot;, &quot;in&quot;, &quot;range&quot;
@@ -35,7 +35,7 @@ namespace TofuPilot.Models.Requests
         /// Expected value for comparison. Type depends on operator.
         /// </summary>
         [JsonPropertyName("expected_value")]
-        public RunCreateYAxisAggregationsExpectedValue? ExpectedValue { get; set; } = null;
+        public RunCreateYAxisAggregationsValidatorsExpectedValue? ExpectedValue { get; set; } = null;
 
         /// <summary>
         /// Original expression string for display/audit purposes.

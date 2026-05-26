@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Batch information for this unit.
+    /// </summary>
     public class RunGetBatch
     {
 

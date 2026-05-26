@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Station whose API key was used to create this run. Only returned if `all` or `created_by` is included.
+    /// </summary>
     public class RunGetCreatedByStation
     {
 
@@ -21,6 +24,9 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
+        /// <summary>
+        /// Station name.
+        /// </summary>
         [JsonPropertyName("name")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Name { get; set; }

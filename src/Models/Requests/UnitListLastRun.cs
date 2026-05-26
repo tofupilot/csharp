@@ -14,6 +14,9 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Utils;
     using System;
     
+    /// <summary>
+    /// Most recent test run performed on this unit. Null if no runs have been executed.
+    /// </summary>
     public class UnitListLastRun
     {
 

@@ -28,28 +28,28 @@ namespace TofuPilot
     {
 
         /// <summary>
-        /// List and filter units
-        /// 
-        /// <remarks>
-        /// Retrieve a paginated list of units with filtering by serial number, part number, and batch. Uses cursor-based pagination for efficient large dataset traversal.
-        /// </remarks>
-        /// </summary>
-        Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, List<UnitListSample>? samples = null, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, object? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default);
-
-        /// <summary>
         /// Create unit
         /// 
         /// <remarks>
-        /// Create a new unit with a serial number and link it to a part revision. Units represent individual hardware items tracked for manufacturing traceability.
+        /// Create a unit with a serial number and link it to a part revision.
         /// </remarks>
         /// </summary>
         Task<UnitCreateResponse> CreateAsync(UnitCreateRequest request, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// List and filter units
+        /// 
+        /// <remarks>
+        /// List units with filtering by serial number, part number, and batch. Cursor-paginated.
+        /// </remarks>
+        /// </summary>
+        Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, List<UnitListQueryParamSample>? samples = null, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, Dictionary<string, UnitListQueryParamMetadataUnion>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Delete units
         /// 
         /// <remarks>
-        /// Permanently delete units by serial number. This action will remove all nested elements and relationships associated with the units.
+        /// Delete units by serial number. Sub-units are unlinked, not deleted. Irreversible.
         /// </remarks>
         /// </summary>
         Task<UnitDeleteResponse> DeleteAsync(List<string> serialNumbers, CancellationToken cancellationToken = default);
@@ -58,7 +58,7 @@ namespace TofuPilot
         /// Get unit
         /// 
         /// <remarks>
-        /// Retrieve a single unit by its serial number. Returns comprehensive unit data including part information, parent/child relationships, and test run history.
+        /// Get a unit by serial number, with its part, parent/child links, and run history.
         /// </remarks>
         /// </summary>
         Task<UnitGetResponse> GetAsync(string serialNumber, CancellationToken cancellationToken = default);
@@ -67,7 +67,7 @@ namespace TofuPilot
         /// Update unit
         /// 
         /// <remarks>
-        /// Update unit properties including serial number, part revision, batch assignment, and file attachments with case-insensitive matching.
+        /// Update a unit: serial number, part revision, batch, and file attachments.
         /// </remarks>
         /// </summary>
         Task<UnitUpdateResponse> UpdateAsync(string serialNumber, UnitUpdateRequestBody requestBody, CancellationToken cancellationToken = default);
@@ -76,7 +76,7 @@ namespace TofuPilot
         /// Add sub-unit
         /// 
         /// <remarks>
-        /// Add a sub-unit to a parent unit to track component assemblies and multi-level hardware traceability.
+        /// Link a sub-unit to a parent unit to track assemblies.
         /// </remarks>
         /// </summary>
         Task<UnitAddChildResponse> AddChildAsync(string serialNumber, UnitAddChildRequestBody requestBody, CancellationToken cancellationToken = default);
@@ -85,7 +85,7 @@ namespace TofuPilot
         /// Remove sub-unit
         /// 
         /// <remarks>
-        /// Remove a sub-unit relationship from a parent unit by serial number. Only unlinks the parent-child relationship; neither unit is deleted from the system.
+        /// Unlink a sub-unit from its parent. Neither unit is deleted.
         /// </remarks>
         /// </summary>
         Task<UnitRemoveChildResponse> RemoveChildAsync(string serialNumber, string childSerialNumber, CancellationToken cancellationToken = default);
@@ -94,7 +94,7 @@ namespace TofuPilot
         /// Attach file to unit
         /// 
         /// <remarks>
-        /// Create an attachment linked to a unit and get a temporary pre-signed URL. Upload the file to the URL with a PUT request to complete the attachment.
+        /// Attach a file to a unit. Returns an upload ID and pre-signed URL; PUT the file to the URL, then call Finalize upload to commit.
         /// </remarks>
         /// </summary>
         Task<UnitCreateAttachmentResponse> CreateAttachmentAsync(string serialNumber, UnitCreateAttachmentRequestBody requestBody, CancellationToken cancellationToken = default);
@@ -103,7 +103,7 @@ namespace TofuPilot
         /// Delete unit attachments
         /// 
         /// <remarks>
-        /// Delete attachments from a unit by their IDs. Removes the files from storage and unlinks them from the unit.
+        /// Delete attachments from a unit by ID. Removes the files from storage and unlinks them.
         /// </remarks>
         /// </summary>
         Task<UnitDeleteAttachmentResponse> DeleteAttachmentAsync(string serialNumber, List<string> ids, CancellationToken cancellationToken = default);
@@ -120,127 +120,6 @@ namespace TofuPilot
         public Units(SDKConfig config)
         {
             SDKConfiguration = config;
-        }
-
-        public async Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, List<UnitListSample>? samples = null, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, object? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default)
-        {
-            var request = new UnitListRequest()
-            {
-                SearchQuery = searchQuery,
-                Ids = ids,
-                SerialNumbers = serialNumbers,
-                PartNumbers = partNumbers,
-                RevisionNumbers = revisionNumbers,
-                BatchNumbers = batchNumbers,
-                ProcedureIds = procedureIds,
-                Outcomes = outcomes,
-                StartedAfter = startedAfter,
-                StartedBefore = startedBefore,
-                LatestOnly = latestOnly,
-                RunCountMin = runCountMin,
-                RunCountMax = runCountMax,
-                CreatedAfter = createdAfter,
-                CreatedBefore = createdBefore,
-                CreatedByUserIds = createdByUserIds,
-                CreatedByStationIds = createdByStationIds,
-                ExcludeUnitsWithParent = excludeUnitsWithParent,
-                Samples = samples,
-                Limit = limit,
-                Cursor = cursor,
-                SortBy = sortBy,
-                SortOrder = sortOrder,
-                Metadata = metadata,
-                IncludeMetadata = includeMetadata,
-            };
-            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v2/units", request);
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlString);
-            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
-            httpRequest.Headers.Add("x-client-type", "csharp");
-            httpRequest.Headers.Add("x-client-version", _sdkVersion);
-
-            if (SDKConfiguration.SecuritySource != null)
-            {
-                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
-            }
-
-            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "unit-list", new List<string> {  }, SDKConfiguration.SecuritySource);
-
-            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
-
-            HttpResponseMessage httpResponse;
-            try
-            {
-                httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
-                int _statusCode = (int)httpResponse.StatusCode;
-
-                if (_statusCode == 401 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
-                {
-                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
-                    if (_httpResponse != null)
-                    {
-                        httpResponse = _httpResponse;
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, error);
-                if (_httpResponse != null)
-                {
-                    httpResponse = _httpResponse;
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
-
-            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
-            int responseStatusCode = (int)httpResponse.StatusCode;
-            if(responseStatusCode == 200)
-            {
-                if(Utilities.IsContentTypeMatch("application/json", contentType))
-                {
-                    var obj = ResponseBodyDeserializer.Deserialize<UnitListResponse>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
-                    return obj!;
-                }
-
-                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode == 401)
-            {
-                if(Utilities.IsContentTypeMatch("application/json", contentType))
-                {
-                    var obj = ResponseBodyDeserializer.Deserialize<UnauthorizedException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
-                    throw obj!;
-                }
-
-                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode == 500)
-            {
-                if(Utilities.IsContentTypeMatch("application/json", contentType))
-                {
-                    var obj = ResponseBodyDeserializer.Deserialize<InternalServerErrorException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
-                    throw obj!;
-                }
-
-                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 500 && responseStatusCode < 600)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-
-            throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
         }
 
         public async Task<UnitCreateResponse> CreateAsync(UnitCreateRequest request, CancellationToken cancellationToken = default)
@@ -341,6 +220,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -351,9 +234,126 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 500 && responseStatusCode < 600)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+
+            throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+        }
+
+        public async Task<UnitListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<string>? serialNumbers = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, List<string>? procedureIds = null, List<UnitListQueryParamOutcome>? outcomes = null, DateTime? startedAfter = null, DateTime? startedBefore = null, bool? latestOnly = false, long? runCountMin = null, long? runCountMax = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, bool? excludeUnitsWithParent = false, List<UnitListQueryParamSample>? samples = null, long? limit = 50, long? cursor = null, UnitListSortBy? sortBy = global::TofuPilot.Models.Requests.UnitListSortBy.CreatedAt, UnitListSortOrder? sortOrder = global::TofuPilot.Models.Requests.UnitListSortOrder.Desc, Dictionary<string, UnitListQueryParamMetadataUnion>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default)
+        {
+            var request = new UnitListRequest()
+            {
+                SearchQuery = searchQuery,
+                Ids = ids,
+                SerialNumbers = serialNumbers,
+                PartNumbers = partNumbers,
+                RevisionNumbers = revisionNumbers,
+                BatchNumbers = batchNumbers,
+                ProcedureIds = procedureIds,
+                Outcomes = outcomes,
+                StartedAfter = startedAfter,
+                StartedBefore = startedBefore,
+                LatestOnly = latestOnly,
+                RunCountMin = runCountMin,
+                RunCountMax = runCountMax,
+                CreatedAfter = createdAfter,
+                CreatedBefore = createdBefore,
+                CreatedByUserIds = createdByUserIds,
+                CreatedByStationIds = createdByStationIds,
+                ExcludeUnitsWithParent = excludeUnitsWithParent,
+                Samples = samples,
+                Limit = limit,
+                Cursor = cursor,
+                SortBy = sortBy,
+                SortOrder = sortOrder,
+                Metadata = metadata,
+                IncludeMetadata = includeMetadata,
+            };
+            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
+            var urlString = URLBuilder.Build(baseUrl, "/v2/units", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlString);
+            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+            httpRequest.Headers.Add("x-client-type", "csharp");
+            httpRequest.Headers.Add("x-client-version", _sdkVersion);
+
+            if (SDKConfiguration.SecuritySource != null)
+            {
+                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
+            }
+
+            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "unit-list", new List<string> {  }, SDKConfiguration.SecuritySource);
+
+            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
+                int _statusCode = (int)httpResponse.StatusCode;
+
+                if (_statusCode == 401 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
+                {
+                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
+                    if (_httpResponse != null)
+                    {
+                        httpResponse = _httpResponse;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, error);
+                if (_httpResponse != null)
+                {
+                    httpResponse = _httpResponse;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
+
+            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
+            int responseStatusCode = (int)httpResponse.StatusCode;
+            if(responseStatusCode == 200)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<UnitListResponse>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
+                    return obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 401)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<UnauthorizedException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode >= 400 && responseStatusCode < 500)
             {
                 throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 500)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<InternalServerErrorException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -448,6 +448,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -457,10 +461,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -565,6 +565,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -574,10 +578,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -689,6 +689,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -698,10 +702,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -813,6 +813,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -822,10 +826,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -931,6 +931,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -940,10 +944,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -1045,6 +1045,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -1054,10 +1058,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -1153,6 +1153,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -1162,10 +1166,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {

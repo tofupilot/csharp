@@ -30,9 +30,15 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("procedure_id")]
         public string ProcedureId { get; set; } = default!;
 
+        /// <summary>
+        /// Deployment ID this run was executed from. Set by the CLI when running a pulled deployment so the run is linked back to the exact build it ran. Validated against the procedure; left null for ad-hoc or local runs.
+        /// </summary>
         [JsonPropertyName("deployment_id")]
         public string? DeploymentId { get; set; } = null;
 
+        /// <summary>
+        /// Specific version of the test procedure used for the run. Matched case-insensitively. If none exist, a procedure with this procedure version will be created. If no procedure version is specified, the run will not be linked to any specific version.
+        /// </summary>
         [JsonPropertyName("procedure_version")]
         public string? ProcedureVersion { get; set; } = null;
 
@@ -106,12 +112,12 @@ namespace TofuPilot.Models.Requests
         /// Custom metadata to attach to the run (max 50 keys). Plain object of key/value pairs; values can be string, number, or boolean. Type is detected from the value.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, object>? Metadata { get; set; }
+        public Dictionary<string, RunCreateMetadata>? Metadata { get; set; }
 
         /// <summary>
         /// Custom metadata to upsert on the unit under test (max 50 keys per unit). PATCH semantics: keys not present here are preserved on the unit.
         /// </summary>
         [JsonPropertyName("unit_metadata")]
-        public Dictionary<string, object>? UnitMetadata { get; set; }
+        public Dictionary<string, UnitMetadata>? UnitMetadata { get; set; }
     }
 }

@@ -13,24 +13,29 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Utils;
     using System;
     
-    public enum RunListSample
+    /// <summary>
+    /// Pre-computed validation result from test framework. Server stores as-is, does not re-evaluate.
+    /// </summary>
+    public enum RunCreateAggregationsValidatorsOutcome
     {
-        [JsonPropertyName("golden")]
-        Golden,
-        [JsonPropertyName("failing")]
-        Failing,
+        [JsonPropertyName("PASS")]
+        Pass,
+        [JsonPropertyName("FAIL")]
+        Fail,
+        [JsonPropertyName("UNSET")]
+        Unset,
     }
 
-    public static class RunListSampleExtension
+    public static class RunCreateAggregationsValidatorsOutcomeExtension
     {
-        public static string Value(this RunListSample value)
+        public static string Value(this RunCreateAggregationsValidatorsOutcome value)
         {
             return ((JsonPropertyNameAttribute)value.GetType().GetMember(value.ToString())[0].GetCustomAttributes(typeof(JsonPropertyNameAttribute), false)[0]).Name ?? value.ToString();
         }
 
-        public static RunListSample ToEnum(this string value)
+        public static RunCreateAggregationsValidatorsOutcome ToEnum(this string value)
         {
-            foreach(var field in typeof(RunListSample).GetFields())
+            foreach(var field in typeof(RunCreateAggregationsValidatorsOutcome).GetFields())
             {
                 var attributes = field.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
                 if (attributes.Length == 0)
@@ -43,14 +48,14 @@ namespace TofuPilot.Models.Requests
                 {
                     var enumVal = field.GetValue(null);
 
-                    if (enumVal is RunListSample)
+                    if (enumVal is RunCreateAggregationsValidatorsOutcome)
                     {
-                        return (RunListSample)enumVal;
+                        return (RunCreateAggregationsValidatorsOutcome)enumVal;
                     }
                 }
             }
 
-            throw new Exception($"Unknown value {value} for enum RunListSample");
+            throw new Exception($"Unknown value {value} for enum RunCreateAggregationsValidatorsOutcome");
         }
     }
 

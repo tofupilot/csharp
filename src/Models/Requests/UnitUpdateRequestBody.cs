@@ -10,6 +10,7 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
@@ -50,12 +51,12 @@ namespace TofuPilot.Models.Requests
         /// Reference-sample classification. &apos;golden&apos; marks a known-good reference unit; &apos;failing&apos; marks a known-faulty reference unit. Both are excluded from production analytics by default. Set to null to clear and treat as a production unit.
         /// </summary>
         [JsonPropertyName("sample")]
-        public string? Sample { get; set; } = null;
+        public UnitUpdateSample? Sample { get; set; } = null;
 
         /// <summary>
         /// Custom metadata to upsert on the unit. Plain object of key/value pairs. PATCH semantics: keys not present here are preserved. Pass `null` as a value to delete a key.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, object>? Metadata { get; set; }
+        public Dictionary<string, UnitUpdateMetadata>? Metadata { get; set; } = null;
     }
 }

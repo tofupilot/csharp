@@ -13,6 +13,9 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Part information for the child unit.
+    /// </summary>
     public class UnitGetChildrenPart
     {
 

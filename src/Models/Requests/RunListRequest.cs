@@ -36,7 +36,7 @@ namespace TofuPilot.Models.Requests
         public List<string>? SerialNumbers { get; set; }
 
         [ApiMetadata("queryParam:style=form,explode=true,name=samples")]
-        public List<RunListSample>? Samples { get; set; }
+        public List<RunListQueryParamSample>? Samples { get; set; }
 
         [ApiMetadata("queryParam:style=form,explode=true,name=part_numbers")]
         public List<string>? PartNumbers { get; set; }
@@ -105,7 +105,7 @@ namespace TofuPilot.Models.Requests
         /// Filter runs by custom metadata. Supports up to 5 keys per request. Per-key operators: string `{in: [...]}`/`{contains: &quot;...&quot;}`, number `{gte, lte, gt, lt, eq}`, bool `{eq: true|false}`.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=metadata")]
-        public object? Metadata { get; set; }
+        public Dictionary<string, RunListQueryParamMetadataUnion>? Metadata { get; set; }
 
         /// <summary>
         /// When true, includes the run metadata array in the response. Defaults to false to keep payloads small.

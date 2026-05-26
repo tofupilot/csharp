@@ -24,20 +24,20 @@ namespace TofuPilot
     using global::TofuPilot.Utils;
     using global::TofuPilot.Utils.Retries;
 
-    public interface IUser
+    public interface IUsers
     {
 
         /// <summary>
         /// List users
         /// 
         /// <remarks>
-        /// Retrieve a list of users in your organization. Use the current parameter to get only the authenticated user profile and permissions.
+        /// List users in your organization. Set `current=true` to return only the authenticated user.
         /// </remarks>
         /// </summary>
         Task<List<UserListResponse>> ListAsync(bool? current = null, CancellationToken cancellationToken = default);
     }
 
-    public class User: IUser
+    public class Users: IUsers
     {
         public SDKConfig SDKConfiguration { get; private set; }
         private const string _language = "csharp";
@@ -45,7 +45,7 @@ namespace TofuPilot
         private const string _sdkGenVersion = "2.657.1";
         private const string _openapiDocVersion = "2.0.0";
 
-        public User(SDKConfig config)
+        public Users(SDKConfig config)
         {
             SDKConfiguration = config;
         }
@@ -125,6 +125,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -134,10 +138,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {

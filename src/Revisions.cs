@@ -31,34 +31,34 @@ namespace TofuPilot
         /// Get part revision
         /// 
         /// <remarks>
-        /// Retrieve a single part revision by its part number and revision number, including revision metadata, configuration details, and linked units.
+        /// Get a part revision by part number and revision number, with its metadata, configuration, and linked units.
         /// </remarks>
         /// </summary>
         Task<PartGetRevisionResponse> GetAsync(string partNumber, string revisionNumber, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Delete part revision
-        /// 
-        /// <remarks>
-        /// Permanently delete a part revision by its part number and revision number. This action removes the revision and all associated data and cannot be undone.
-        /// </remarks>
-        /// </summary>
-        Task<PartDeleteRevisionResponse> DeleteAsync(string partNumber, string revisionNumber, CancellationToken cancellationToken = default);
-
-        /// <summary>
         /// Update part revision
         /// 
         /// <remarks>
-        /// Update a part revision&apos;s number or image. Identifies the revision by part number and revision number in the URL.
+        /// Update a revision&apos;s number or image.
         /// </remarks>
         /// </summary>
         Task<PartUpdateRevisionResponse> UpdateAsync(string partNumber, string revisionNumber, PartUpdateRevisionRequestBody requestBody, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Delete part revision
+        /// 
+        /// <remarks>
+        /// Delete a part revision. Irreversible.
+        /// </remarks>
+        /// </summary>
+        Task<PartDeleteRevisionResponse> DeleteAsync(string partNumber, string revisionNumber, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Create part revision
         /// 
         /// <remarks>
-        /// Create a new part revision for an existing part. Revision numbers are matched case-insensitively (e.g., &quot;REV-A&quot; and &quot;rev-a&quot; are considered the same).
+        /// Create a revision of a part. Revision numbers match case-insensitively (&quot;REV-A&quot; == &quot;rev-a&quot;).
         /// </remarks>
         /// </summary>
         Task<PartCreateRevisionResponse> CreateAsync(string partNumber, PartCreateRevisionRequestBody requestBody, CancellationToken cancellationToken = default);
@@ -163,113 +163,9 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
-            else if(responseStatusCode == 500)
-            {
-                if(Utilities.IsContentTypeMatch("application/json", contentType))
-                {
-                    var obj = ResponseBodyDeserializer.Deserialize<InternalServerErrorException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
-                    throw obj!;
-                }
-
-                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
             else if(responseStatusCode >= 400 && responseStatusCode < 500)
             {
                 throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 500 && responseStatusCode < 600)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-
-            throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-        }
-
-        public async Task<PartDeleteRevisionResponse> DeleteAsync(string partNumber, string revisionNumber, CancellationToken cancellationToken = default)
-        {
-            var request = new PartDeleteRevisionRequest()
-            {
-                PartNumber = partNumber,
-                RevisionNumber = revisionNumber,
-            };
-            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
-            var urlString = URLBuilder.Build(baseUrl, "/v2/parts/{part_number}/revisions/{revision_number}", request);
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Delete, urlString);
-            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
-            httpRequest.Headers.Add("x-client-type", "csharp");
-            httpRequest.Headers.Add("x-client-version", _sdkVersion);
-
-            if (SDKConfiguration.SecuritySource != null)
-            {
-                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
-            }
-
-            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "part-deleteRevision", new List<string> {  }, SDKConfiguration.SecuritySource);
-
-            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
-
-            HttpResponseMessage httpResponse;
-            try
-            {
-                httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
-                int _statusCode = (int)httpResponse.StatusCode;
-
-                if (_statusCode == 401 || _statusCode == 404 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
-                {
-                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
-                    if (_httpResponse != null)
-                    {
-                        httpResponse = _httpResponse;
-                    }
-                }
-            }
-            catch (Exception error)
-            {
-                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, error);
-                if (_httpResponse != null)
-                {
-                    httpResponse = _httpResponse;
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
-
-            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
-            int responseStatusCode = (int)httpResponse.StatusCode;
-            if(responseStatusCode == 200)
-            {
-                if(Utilities.IsContentTypeMatch("application/json", contentType))
-                {
-                    var obj = ResponseBodyDeserializer.Deserialize<PartDeleteRevisionResponse>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
-                    return obj!;
-                }
-
-                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode == 401)
-            {
-                if(Utilities.IsContentTypeMatch("application/json", contentType))
-                {
-                    var obj = ResponseBodyDeserializer.Deserialize<UnauthorizedException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
-                    throw obj!;
-                }
-
-                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode == 404)
-            {
-                if(Utilities.IsContentTypeMatch("application/json", contentType))
-                {
-                    var obj = ResponseBodyDeserializer.Deserialize<NotFoundException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
-                    throw obj!;
-                }
-
-                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode == 500)
             {
@@ -280,10 +176,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -396,6 +288,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -406,9 +302,113 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 500 && responseStatusCode < 600)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+
+            throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+        }
+
+        public async Task<PartDeleteRevisionResponse> DeleteAsync(string partNumber, string revisionNumber, CancellationToken cancellationToken = default)
+        {
+            var request = new PartDeleteRevisionRequest()
+            {
+                PartNumber = partNumber,
+                RevisionNumber = revisionNumber,
+            };
+            string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
+            var urlString = URLBuilder.Build(baseUrl, "/v2/parts/{part_number}/revisions/{revision_number}", request);
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Delete, urlString);
+            httpRequest.Headers.Add("user-agent", SDKConfiguration.UserAgent);
+            httpRequest.Headers.Add("x-client-type", "csharp");
+            httpRequest.Headers.Add("x-client-version", _sdkVersion);
+
+            if (SDKConfiguration.SecuritySource != null)
+            {
+                httpRequest = new SecurityMetadata(SDKConfiguration.SecuritySource).Apply(httpRequest);
+            }
+
+            var hookCtx = new HookContext(SDKConfiguration, baseUrl, "part-deleteRevision", new List<string> {  }, SDKConfiguration.SecuritySource);
+
+            httpRequest = await this.SDKConfiguration.Hooks.BeforeRequestAsync(new BeforeRequestContext(hookCtx), httpRequest);
+
+            HttpResponseMessage httpResponse;
+            try
+            {
+                httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
+                int _statusCode = (int)httpResponse.StatusCode;
+
+                if (_statusCode == 401 || _statusCode == 404 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
+                {
+                    var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
+                    if (_httpResponse != null)
+                    {
+                        httpResponse = _httpResponse;
+                    }
+                }
+            }
+            catch (Exception error)
+            {
+                var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), null, error);
+                if (_httpResponse != null)
+                {
+                    httpResponse = _httpResponse;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            httpResponse = await this.SDKConfiguration.Hooks.AfterSuccessAsync(new AfterSuccessContext(hookCtx), httpResponse);
+
+            var contentType = httpResponse.Content.Headers.ContentType?.MediaType;
+            int responseStatusCode = (int)httpResponse.StatusCode;
+            if(responseStatusCode == 200)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<PartDeleteRevisionResponse>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    return obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 401)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<UnauthorizedException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 404)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<NotFoundException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode >= 400 && responseStatusCode < 500)
             {
                 throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 500)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<InternalServerErrorException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -520,6 +520,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -529,10 +533,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {

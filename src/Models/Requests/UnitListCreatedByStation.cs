@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Station that created this unit. Null if created by a user.
+    /// </summary>
     public class UnitListCreatedByStation
     {
 

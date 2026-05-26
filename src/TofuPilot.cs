@@ -33,7 +33,8 @@ namespace TofuPilot
         public IParts Parts { get; }
         public IBatches Batches { get; }
         public IStations Stations { get; }
-        public IUser User { get; }
+        public IUsers Users { get; }
+        public IImports Imports { get; }
     }
 
 
@@ -57,7 +58,8 @@ namespace TofuPilot
         public IParts Parts { get; private set; }
         public IBatches Batches { get; private set; }
         public IStations Stations { get; private set; }
-        public IUser User { get; private set; }
+        public IUsers Users { get; private set; }
+        public IImports Imports { get; private set; }
 
         public TofuPilot(SDKConfig config)
         {
@@ -78,7 +80,9 @@ namespace TofuPilot
 
             Stations = new Stations(SDKConfiguration);
 
-            User = new User(SDKConfiguration);
+            Users = new Users(SDKConfiguration);
+
+            Imports = new Imports(SDKConfiguration);
         }
 
         public TofuPilot(string? apiKey = null, Func<string>? apiKeySource = null, int? serverIndex = null, string? serverUrl = null, Dictionary<string, string>? urlParams = null, ITofuPilotHttpClient? client = null, RetryConfig? retryConfig = null)
@@ -137,7 +141,9 @@ namespace TofuPilot
 
             Stations = new Stations(SDKConfiguration);
 
-            User = new User(SDKConfiguration);
+            Users = new Users(SDKConfiguration);
+
+            Imports = new Imports(SDKConfiguration);
         }
 
         private void InitHooks()

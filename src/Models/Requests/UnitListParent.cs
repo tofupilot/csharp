@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Parent unit in the assembly hierarchy. Null if this is a top-level unit.
+    /// </summary>
     public class UnitListParent
     {
 

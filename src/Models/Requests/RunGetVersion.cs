@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Version of the procedure used for this run.
+    /// </summary>
     public class RunGetVersion
     {
 

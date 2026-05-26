@@ -13,7 +13,7 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Utils;
     using System;
     
-    public enum UnitListSample
+    public enum RunListQueryParamSample
     {
         [JsonPropertyName("golden")]
         Golden,
@@ -21,16 +21,16 @@ namespace TofuPilot.Models.Requests
         Failing,
     }
 
-    public static class UnitListSampleExtension
+    public static class RunListQueryParamSampleExtension
     {
-        public static string Value(this UnitListSample value)
+        public static string Value(this RunListQueryParamSample value)
         {
             return ((JsonPropertyNameAttribute)value.GetType().GetMember(value.ToString())[0].GetCustomAttributes(typeof(JsonPropertyNameAttribute), false)[0]).Name ?? value.ToString();
         }
 
-        public static UnitListSample ToEnum(this string value)
+        public static RunListQueryParamSample ToEnum(this string value)
         {
-            foreach(var field in typeof(UnitListSample).GetFields())
+            foreach(var field in typeof(RunListQueryParamSample).GetFields())
             {
                 var attributes = field.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
                 if (attributes.Length == 0)
@@ -43,14 +43,14 @@ namespace TofuPilot.Models.Requests
                 {
                     var enumVal = field.GetValue(null);
 
-                    if (enumVal is UnitListSample)
+                    if (enumVal is RunListQueryParamSample)
                     {
-                        return (UnitListSample)enumVal;
+                        return (RunListQueryParamSample)enumVal;
                     }
                 }
             }
 
-            throw new Exception($"Unknown value {value} for enum UnitListSample");
+            throw new Exception($"Unknown value {value} for enum RunListQueryParamSample");
         }
     }
 

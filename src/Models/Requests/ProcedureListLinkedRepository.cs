@@ -13,6 +13,9 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Linked repository for this procedure.
+    /// </summary>
     public class ProcedureListLinkedRepository
     {
 

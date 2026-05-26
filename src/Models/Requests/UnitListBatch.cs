@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Production batch this unit belongs to. Null if not part of a batch.
+    /// </summary>
     public class UnitListBatch
     {
 

@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     /// <summary>
     /// Run created successfully
@@ -19,9 +20,15 @@ namespace TofuPilot.Models.Requests
     {
 
         /// <summary>
-        /// Unique identifier of the created run.
+        /// Unique identifier of the created run. For a file that yields several runs (a multi-part STDF/ATDF datalog or a multi-report WSXF/TestStand document), this is the first run; see `ids` for the full set.
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
+
+        /// <summary>
+        /// All run identifiers created from the file. Present when the import produced more than one run; a single-run import omits it (use `id`).
+        /// </summary>
+        [JsonPropertyName("ids")]
+        public List<string>? Ids { get; set; }
     }
 }

@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Test procedure that was executed. Null if run had no associated procedure.
+    /// </summary>
     public class UnitListProcedure
     {
 

@@ -13,6 +13,9 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Deployment information for this procedure on this station
+    /// </summary>
     public class StationGetCurrentDeployment
     {
 

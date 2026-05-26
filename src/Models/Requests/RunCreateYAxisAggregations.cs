@@ -10,7 +10,6 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
-    using global::TofuPilot.Models.Components;
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     using System.Collections.Generic;
@@ -31,13 +30,13 @@ namespace TofuPilot.Models.Requests
         /// Computed result of aggregation validation. Server stores as-is.
         /// </summary>
         [JsonPropertyName("outcome")]
-        public string? Outcome { get; set; } = null;
+        public RunCreateYAxisAggregationsOutcome? Outcome { get; set; } = null;
 
         /// <summary>
         /// Computed aggregation value.
         /// </summary>
         [JsonPropertyName("value")]
-        public RunCreateYAxisValue? Value { get; set; } = null;
+        public RunCreateYAxisAggregationsValue? Value { get; set; } = null;
 
         /// <summary>
         /// Unit for the aggregated value.

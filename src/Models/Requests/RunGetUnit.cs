@@ -36,7 +36,7 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("sample")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public string? Sample { get; set; }
+        public RunGetSample? Sample { get; set; }
 
         /// <summary>
         /// Part information with revision details.

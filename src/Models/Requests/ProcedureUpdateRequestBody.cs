@@ -25,31 +25,31 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Branch treated as production. Pushes to this branch deploy as production; every other branch deploys as preview. Null = no branch promoted to production.
         /// </summary>
-        [JsonPropertyName("production_branch")]
+        [JsonPropertyName("productionBranch")]
         public string? ProductionBranch { get; set; } = null;
 
         /// <summary>
         /// Master switch for auto-pushing builds to linked stations. Build artifacts are always recorded; this only gates the station fan-out.
         /// </summary>
-        [JsonPropertyName("auto_push_enabled")]
+        [JsonPropertyName("autoPushEnabled")]
         public bool? AutoPushEnabled { get; set; }
 
         /// <summary>
         /// Branches matching any of these patterns (exact name or minimatch glob, e.g. &quot;renovate/*&quot;) skip preview deployments. Empty array = no exclusions.
         /// </summary>
-        [JsonPropertyName("excluded_branch_patterns")]
+        [JsonPropertyName("excludedBranchPatterns")]
         public List<string>? ExcludedBranchPatterns { get; set; }
 
         /// <summary>
         /// Path within the linked repo to the directory holding this procedure&apos;s `pyproject.toml` (and `procedure.yaml` for framework procedures). Empty/null = repo root.
         /// </summary>
-        [JsonPropertyName("root_directory")]
+        [JsonPropertyName("rootDirectory")]
         public string? RootDirectory { get; set; } = null;
 
         /// <summary>
         /// Entry-point path inside the procedure&apos;s package dir, relative to it. Forwarded to the CLI through the deployment manifest. Empty/null = use the framework default (openhtf/plain → main.py, pytest → &quot;.&quot;, yaml → procedure.yaml auto-discovery).
         /// </summary>
-        [JsonPropertyName("entry_point")]
+        [JsonPropertyName("entryPoint")]
         public string? EntryPoint { get; set; } = null;
     }
 }

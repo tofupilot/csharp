@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// User who created the revision.
+    /// </summary>
     public class PartGetRevisionCreatedByUser
     {
 

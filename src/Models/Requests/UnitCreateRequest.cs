@@ -10,6 +10,7 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     
     public class UnitCreateRequest
@@ -37,12 +38,12 @@ namespace TofuPilot.Models.Requests
         /// Reference-sample classification. &apos;golden&apos; marks a known-good reference unit; &apos;failing&apos; marks a known-faulty reference unit. Both are excluded from production analytics aggregates (FPY, Cpk, throughput) by default. Omit or null for regular production units.
         /// </summary>
         [JsonPropertyName("sample")]
-        public string? Sample { get; set; } = null;
+        public UnitCreateSample? Sample { get; set; } = null;
 
         /// <summary>
         /// Custom metadata to attach to the unit (max 50 keys per unit). Plain object of key/value pairs; values can be string, number, or boolean. Type is detected from the value.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, object>? Metadata { get; set; }
+        public Dictionary<string, UnitCreateMetadata>? Metadata { get; set; }
     }
 }

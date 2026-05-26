@@ -44,7 +44,7 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("sample")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public string? Sample { get; set; }
+        public UnitGetSample? Sample { get; set; }
 
         /// <summary>
         /// User who created this unit.
@@ -99,6 +99,6 @@ namespace TofuPilot.Models.Requests
         /// Custom metadata key/value pairs on the unit.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, object>? Metadata { get; set; }
+        public Dictionary<string, UnitGetMetadata>? Metadata { get; set; }
     }
 }

@@ -10,7 +10,6 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
-    using global::TofuPilot.Models.Components;
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     using System;
@@ -32,7 +31,7 @@ namespace TofuPilot.Models.Requests
         public RunCreateMeasurementsOutcome Outcome { get; set; } = default!;
 
         /// <summary>
-        /// X-axis data series for multi-dimensional measurements. Use with y_axis for structured multi-dimensional data with per-axis validators/aggregations.
+        /// Data series with numeric data, unit, and optional validators/aggregations.
         /// </summary>
         [JsonPropertyName("x_axis")]
         public RunCreateXAxis? XAxis { get; set; } = null;
@@ -43,8 +42,11 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("y_axis")]
         public List<RunCreateYAxis>? YAxis { get; set; } = null;
 
+        /// <summary>
+        /// The actual value captured. [LEGACY for multi-dim] For multi-dimensional with per-axis validators/aggregations, use x_axis/y_axis instead.
+        /// </summary>
         [JsonPropertyName("measured_value")]
-        public RunCreateMeasuredValue? MeasuredValue { get; set; } = null;
+        public RunCreateMeasuredValue1? MeasuredValue { get; set; } = null;
 
         /// <summary>
         /// [LEGACY for multi-dim] Units of measurement. For structured multi-dimensional, use units within x_axis/y_axis instead.
@@ -66,12 +68,21 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("upper_limit")]
         public double? UpperLimit { get; set; }
 
+        /// <summary>
+        /// Validators for this measurement. Use structured ValidatorSpec objects with operator and expected_value.
+        /// </summary>
         [JsonPropertyName("validators")]
         public List<RunCreateMeasurementsValidators>? Validators { get; set; } = null;
 
+        /// <summary>
+        /// Aggregations computed over measurement values (min, max, avg, etc.). Each aggregation can have its own validators.
+        /// </summary>
         [JsonPropertyName("aggregations")]
         public List<RunCreateMeasurementsAggregations>? Aggregations { get; set; } = null;
 
+        /// <summary>
+        /// Additional notes or documentation about this measurement.
+        /// </summary>
         [JsonPropertyName("docstring")]
         public string? Docstring { get; set; } = null;
     }

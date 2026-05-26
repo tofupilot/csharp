@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// User who operated this run. Only returned if `all` or `operated_by` is included.
+    /// </summary>
     public class RunGetOperatedBy
     {
 
@@ -21,10 +24,16 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
+        /// <summary>
+        /// Operator display name.
+        /// </summary>
         [JsonPropertyName("name")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Name { get; set; }
 
+        /// <summary>
+        /// Operator email address.
+        /// </summary>
         [JsonPropertyName("email")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Email { get; set; }

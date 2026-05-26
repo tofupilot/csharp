@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Station that created this procedure version.
+    /// </summary>
     public class ProcedureGetVersionCreatedByStation
     {
 

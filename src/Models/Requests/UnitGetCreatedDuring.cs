@@ -14,6 +14,9 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Utils;
     using System;
     
+    /// <summary>
+    /// Run that created this unit.
+    /// </summary>
     public class UnitGetCreatedDuring
     {
 

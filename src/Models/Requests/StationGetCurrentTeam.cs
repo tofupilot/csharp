@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// Team this station is assigned to
+    /// </summary>
     public class StationGetCurrentTeam
     {
 

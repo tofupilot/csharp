@@ -118,6 +118,6 @@ namespace TofuPilot.Models.Requests
         /// Custom metadata key/value pairs on the run.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, object>? Metadata { get; set; }
+        public Dictionary<string, RunGetMetadata>? Metadata { get; set; }
     }
 }

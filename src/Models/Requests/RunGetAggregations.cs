@@ -10,7 +10,6 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
-    using global::TofuPilot.Models.Components;
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     using System.Collections.Generic;
@@ -38,7 +37,7 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("outcome")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public string? Outcome { get; set; }
+        public RunGetAggregationsOutcome? Outcome { get; set; }
 
         /// <summary>
         /// Computed aggregation value. Type depends on aggregation type.

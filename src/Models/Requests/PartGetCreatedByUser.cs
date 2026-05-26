@@ -12,6 +12,9 @@ namespace TofuPilot.Models.Requests
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
+    /// <summary>
+    /// User who created this part.
+    /// </summary>
     public class PartGetCreatedByUser
     {
 
@@ -21,6 +24,9 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
+        /// <summary>
+        /// User display name.
+        /// </summary>
         [JsonPropertyName("name")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Name { get; set; }

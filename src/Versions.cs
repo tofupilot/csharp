@@ -31,7 +31,7 @@ namespace TofuPilot
         /// Get procedure version
         /// 
         /// <remarks>
-        /// Retrieve a single procedure version by its tag, including version metadata and configuration details.
+        /// Get a procedure version by tag, with its metadata and configuration.
         /// </remarks>
         /// </summary>
         Task<ProcedureGetVersionResponse> GetAsync(string procedureId, string tag, CancellationToken cancellationToken = default);
@@ -40,7 +40,7 @@ namespace TofuPilot
         /// Delete procedure version
         /// 
         /// <remarks>
-        /// Permanently delete a procedure version by its tag. This removes the version record and all associated configuration data and cannot be undone.
+        /// Delete a procedure version by tag. Irreversible.
         /// </remarks>
         /// </summary>
         Task<ProcedureDeleteVersionResponse> DeleteAsync(string procedureId, string tag, CancellationToken cancellationToken = default);
@@ -49,7 +49,7 @@ namespace TofuPilot
         /// Create procedure version
         /// 
         /// <remarks>
-        /// Create a new version for an existing test procedure. Versions let you track procedure changes over time and maintain a history of test configurations.
+        /// Create a version of a procedure. Versions snapshot procedure configuration over time.
         /// </remarks>
         /// </summary>
         Task<ProcedureCreateVersionResponse> CreateAsync(string procedureId, ProcedureCreateVersionRequestBody requestBody, CancellationToken cancellationToken = default);
@@ -154,6 +154,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -163,10 +167,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -272,6 +272,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -281,10 +285,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {
@@ -396,6 +396,10 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode >= 400 && responseStatusCode < 500)
+            {
+                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 500)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -405,10 +409,6 @@ namespace TofuPilot
                 }
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
-            }
-            else if(responseStatusCode >= 400 && responseStatusCode < 500)
-            {
-                throw new ApiException("API error occurred", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
             else if(responseStatusCode >= 500 && responseStatusCode < 600)
             {

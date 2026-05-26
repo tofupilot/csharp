@@ -42,9 +42,15 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("ended_at")]
         public DateTime EndedAt { get; set; } = default!;
 
+        /// <summary>
+        /// Additional notes or documentation about this test phase.
+        /// </summary>
         [JsonPropertyName("docstring")]
         public string? Docstring { get; set; } = null;
 
+        /// <summary>
+        /// Array of measurements collected during this phase. Each measurement captures specific test data points with values, limits, and validation results. If no measurements are specified, the phase will be created without measurement data.
+        /// </summary>
         [JsonPropertyName("measurements")]
         public List<RunCreateMeasurements>? Measurements { get; set; } = null;
 
