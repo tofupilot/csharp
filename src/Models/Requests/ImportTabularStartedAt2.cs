@@ -10,17 +10,12 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
-    using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
-    using System.Collections.Generic;
     
-    /// <summary>
-    /// Run imported successfully
-    /// </summary>
-    public class ImportCreateFromFilesResponse
+    public class ImportTabularStartedAt2
     {
 
-        [JsonPropertyName("results")]
-        public List<ImportCreateFromFilesResults> Results { get; set; } = default!;
+        [JsonPropertyName("value")]
+        public string Value { get; set; } = default!;
     }
 }

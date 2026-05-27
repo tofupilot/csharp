@@ -13,7 +13,7 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Utils;
     using System.Collections.Generic;
     
-    public class ImportCreateFromFilesResults
+    public class ImportStructuredResults
     {
 
         /// <summary>

@@ -16,7 +16,7 @@ namespace TofuPilot.Models.Requests
     /// <summary>
     /// Source format of the uploaded file. OPENHTF for OpenHTF JSON logs; WATS for Virinco WATS WSJF (JSON); WSXF for WATS WSXF (XML); ATML for IEEE 1671 ATML Test Results (XML); TESTSTAND for NI TestStand native XML reports; STDF for binary STDF V4 datalogs; ATDF for ATDF (the ASCII text form of STDF). For CSV/tabular files use the dedicated tabular import endpoint.
     /// </summary>
-    public enum ImportCreateFromFilesImporter
+    public enum ImportStructuredImporter
     {
         [JsonPropertyName("OPENHTF")]
         Openhtf,
@@ -34,16 +34,16 @@ namespace TofuPilot.Models.Requests
         Atdf,
     }
 
-    public static class ImportCreateFromFilesImporterExtension
+    public static class ImportStructuredImporterExtension
     {
-        public static string Value(this ImportCreateFromFilesImporter value)
+        public static string Value(this ImportStructuredImporter value)
         {
             return ((JsonPropertyNameAttribute)value.GetType().GetMember(value.ToString())[0].GetCustomAttributes(typeof(JsonPropertyNameAttribute), false)[0]).Name ?? value.ToString();
         }
 
-        public static ImportCreateFromFilesImporter ToEnum(this string value)
+        public static ImportStructuredImporter ToEnum(this string value)
         {
-            foreach(var field in typeof(ImportCreateFromFilesImporter).GetFields())
+            foreach(var field in typeof(ImportStructuredImporter).GetFields())
             {
                 var attributes = field.GetCustomAttributes(typeof(JsonPropertyNameAttribute), false);
                 if (attributes.Length == 0)
@@ -56,14 +56,14 @@ namespace TofuPilot.Models.Requests
                 {
                     var enumVal = field.GetValue(null);
 
-                    if (enumVal is ImportCreateFromFilesImporter)
+                    if (enumVal is ImportStructuredImporter)
                     {
-                        return (ImportCreateFromFilesImporter)enumVal;
+                        return (ImportStructuredImporter)enumVal;
                     }
                 }
             }
 
-            throw new Exception($"Unknown value {value} for enum ImportCreateFromFilesImporter");
+            throw new Exception($"Unknown value {value} for enum ImportStructuredImporter");
         }
     }
 
