@@ -35,7 +35,7 @@ namespace TofuPilot.Models.Requests
         /// Expected value for comparison. Type depends on operator.
         /// </summary>
         [JsonPropertyName("expected_value")]
-        public RunCreateYAxisValidatorsExpectedValue? ExpectedValue { get; set; } = null;
+        public string? ExpectedValue { get; set; } = null;
 
         /// <summary>
         /// Original expression string for display/audit purposes.

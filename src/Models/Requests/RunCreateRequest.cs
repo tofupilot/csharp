@@ -112,12 +112,12 @@ namespace TofuPilot.Models.Requests
         /// Custom metadata to attach to the run (max 50 keys). Plain object of key/value pairs; values can be string, number, or boolean. Type is detected from the value.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, RunCreateMetadata>? Metadata { get; set; }
+        public Dictionary<string, string>? Metadata { get; set; }
 
         /// <summary>
         /// Custom metadata to upsert on the unit under test (max 50 keys per unit). PATCH semantics: keys not present here are preserved on the unit.
         /// </summary>
         [JsonPropertyName("unit_metadata")]
-        public Dictionary<string, UnitMetadata>? UnitMetadata { get; set; }
+        public Dictionary<string, string>? UnitMetadata { get; set; }
     }
 }

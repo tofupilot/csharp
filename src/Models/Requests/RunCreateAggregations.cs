@@ -36,7 +36,7 @@ namespace TofuPilot.Models.Requests
         /// Computed aggregation value.
         /// </summary>
         [JsonPropertyName("value")]
-        public RunCreateValue? Value { get; set; } = null;
+        public string? Value { get; set; } = null;
 
         /// <summary>
         /// Unit for the aggregated value.

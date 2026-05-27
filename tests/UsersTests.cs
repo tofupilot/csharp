@@ -22,7 +22,7 @@ public class UsersTests
     [Fact]
     public async Task ListUsers_ReturnsList()
     {
-        var result = await _client.User.ListAsync();
+        var result = await _client.Users.ListAsync();
         Assert.NotEmpty(result);
         Assert.All(result, u => Assert.False(string.IsNullOrEmpty(u.Id)));
     }
@@ -30,7 +30,7 @@ public class UsersTests
     [Fact]
     public async Task ListUsers_Current()
     {
-        var result = await _client.User.ListAsync(current: true);
+        var result = await _client.Users.ListAsync(current: true);
         Assert.Single(result);
         Assert.False(string.IsNullOrEmpty(result[0].Id));
         Assert.False(string.IsNullOrEmpty(result[0].Email));

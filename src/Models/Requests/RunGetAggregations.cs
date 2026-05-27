@@ -44,7 +44,7 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("value")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public RunGetValue? Value { get; set; }
+        public string? Value { get; set; }
 
         /// <summary>
         /// Unit of measurement for the aggregated value.

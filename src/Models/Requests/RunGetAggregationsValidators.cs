@@ -37,7 +37,7 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("expected_value")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-        public RunGetAggregationsValidatorsExpectedValue? ExpectedValue { get; set; }
+        public string? ExpectedValue { get; set; }
 
         /// <summary>
         /// Human-readable expression string for display.

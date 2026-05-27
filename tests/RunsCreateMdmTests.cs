@@ -173,14 +173,14 @@ public class RunsCreateMdmTests
                                     new RunCreateYAxisValidators
                                     {
                                         Operator = ">=",
-                                        ExpectedValue = RunCreateYAxisExpectedValue.CreateNumber(2.5),
-                                        Outcome = "PASS",
+                                        ExpectedValue = "2.5",
+                                        Outcome = RunCreateYAxisValidatorsOutcome.Pass,
                                     },
                                     new RunCreateYAxisValidators
                                     {
                                         Operator = "<=",
-                                        ExpectedValue = RunCreateYAxisExpectedValue.CreateNumber(4.0),
-                                        Outcome = "PASS",
+                                        ExpectedValue = "4",
+                                        Outcome = RunCreateYAxisValidatorsOutcome.Pass,
                                     },
                                 },
                             },
@@ -233,13 +233,13 @@ public class RunsCreateMdmTests
                                     new RunCreateYAxisAggregations
                                     {
                                         Type = "avg",
-                                        Value = RunCreateYAxisValue.CreateNumber(23.3),
-                                        Outcome = "PASS",
+                                        Value = "23.3",
+                                        Outcome = RunCreateYAxisAggregationsOutcome.Pass,
                                     },
                                     new RunCreateYAxisAggregations
                                     {
                                         Type = "max",
-                                        Value = RunCreateYAxisValue.CreateNumber(24.0),
+                                        Value = "24",
                                     },
                                 },
                             },
@@ -292,15 +292,15 @@ public class RunsCreateMdmTests
                                     new RunCreateYAxisAggregations
                                     {
                                         Type = "avg",
-                                        Value = RunCreateYAxisValue.CreateNumber(95.17),
-                                        Outcome = "PASS",
+                                        Value = "95.17",
+                                        Outcome = RunCreateYAxisAggregationsOutcome.Pass,
                                         Validators = new List<RunCreateYAxisAggregationsValidators>
                                         {
                                             new RunCreateYAxisAggregationsValidators
                                             {
                                                 Operator = ">=",
-                                                ExpectedValue = RunCreateYAxisAggregationsExpectedValue.CreateNumber(90.0),
-                                                Outcome = "PASS",
+                                                ExpectedValue = "90",
+                                                Outcome = RunCreateYAxisAggregationsValidatorsOutcome.Pass,
                                             },
                                         },
                                     },
@@ -344,8 +344,8 @@ public class RunsCreateMdmTests
                                 new RunCreateValidators
                                 {
                                     Operator = ">=",
-                                    ExpectedValue = RunCreateExpectedValue.CreateNumber(0),
-                                    Outcome = "PASS",
+                                    ExpectedValue = "0",
+                                    Outcome = RunCreateValidatorsOutcome.Pass,
                                 },
                             },
                         },
@@ -394,7 +394,7 @@ public class RunsCreateMdmTests
                                 new RunCreateAggregations
                                 {
                                     Type = "max",
-                                    Value = RunCreateValue.CreateNumber(2.0),
+                                    Value = "2",
                                 },
                             },
                         },
@@ -452,8 +452,8 @@ public class RunsCreateMdmTests
                                     new RunCreateYAxisValidators
                                     {
                                         Operator = ">=",
-                                        ExpectedValue = RunCreateYAxisExpectedValue.CreateNumber(-6.0),
-                                        Outcome = "PASS",
+                                        ExpectedValue = "-6",
+                                        Outcome = RunCreateYAxisValidatorsOutcome.Pass,
                                     },
                                 },
                                 Aggregations = new List<RunCreateYAxisAggregations>
@@ -461,15 +461,15 @@ public class RunsCreateMdmTests
                                     new RunCreateYAxisAggregations
                                     {
                                         Type = "min",
-                                        Value = RunCreateYAxisValue.CreateNumber(-3.0),
-                                        Outcome = "PASS",
+                                        Value = "-3",
+                                        Outcome = RunCreateYAxisAggregationsOutcome.Pass,
                                         Validators = new List<RunCreateYAxisAggregationsValidators>
                                         {
                                             new RunCreateYAxisAggregationsValidators
                                             {
                                                 Operator = ">=",
-                                                ExpectedValue = RunCreateYAxisAggregationsExpectedValue.CreateNumber(-6.0),
-                                                Outcome = "PASS",
+                                                ExpectedValue = "-6",
+                                                Outcome = RunCreateYAxisAggregationsValidatorsOutcome.Pass,
                                             },
                                         },
                                     },

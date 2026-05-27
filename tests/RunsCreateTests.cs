@@ -92,18 +92,18 @@ public class RunsCreateTests
                     {
                         Name = "output_voltage",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 3.3,
+                        MeasuredValue = "3.3",
                         Validators = new List<RunCreateMeasurementsValidators>
                         {
                             new RunCreateMeasurementsValidators
                             {
                                 Operator = ">=",
-                                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(0),
+                                ExpectedValue = "0",
                             },
                             new RunCreateMeasurementsValidators
                             {
                                 Operator = "<=",
-                                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(5),
+                                ExpectedValue = "5",
                             },
                         },
                     },
@@ -195,7 +195,7 @@ public class RunsCreateTests
                     {
                         Name = "temperature",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 25.0,
+                        MeasuredValue = "25",
                         LowerLimit = 10.0,
                         UpperLimit = 40.0,
                     },
@@ -233,19 +233,19 @@ public class RunsCreateTests
                     {
                         Name = "signal_strength",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 75.5,
+                        MeasuredValue = "75.5",
                         Aggregations = new List<RunCreateMeasurementsAggregations>
                         {
                             new RunCreateMeasurementsAggregations
                             {
                                 Type = "avg",
-                                Value = RunCreateMeasurementsValue.CreateNumber(72.3),
-                                Outcome = "PASS",
+                                Value = "72.3",
+                                Outcome = RunCreateMeasurementsAggregationsOutcome.Pass,
                             },
                             new RunCreateMeasurementsAggregations
                             {
                                 Type = "max",
-                                Value = RunCreateMeasurementsValue.CreateNumber(80.1),
+                                Value = "80.1",
                             },
                         },
                     },
@@ -321,7 +321,7 @@ public class RunsCreateTests
                     {
                         Name = "voltage",
                         Outcome = RunCreateMeasurementsOutcome.Fail,
-                        MeasuredValue = 2.0,
+                        MeasuredValue = "2",
                     },
                 },
             },
@@ -338,7 +338,7 @@ public class RunsCreateTests
                     {
                         Name = "voltage",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 3.3,
+                        MeasuredValue = "3.3",
                     },
                 },
             },
@@ -372,7 +372,7 @@ public class RunsCreateTests
                     {
                         Name = "test_val",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 1.0,
+                        MeasuredValue = "1",
                     },
                 },
             },
@@ -405,7 +405,7 @@ public class RunsCreateTests
                     {
                         Name = "temp",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 25.0,
+                        MeasuredValue = "25",
                         LowerLimit = 10.0,
                         UpperLimit = 40.0,
                     },
@@ -443,7 +443,7 @@ public class RunsCreateTests
                     {
                         Name = "current",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 0.5,
+                        MeasuredValue = "0.5",
                         LowerLimit = 0.0,
                     },
                 },
@@ -479,7 +479,7 @@ public class RunsCreateTests
                     {
                         Name = "power",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 3.0,
+                        MeasuredValue = "3",
                         UpperLimit = 5.0,
                     },
                 },
@@ -516,7 +516,7 @@ public class RunsCreateTests
                     {
                         Name = "voltage",
                         Outcome = RunCreateMeasurementsOutcome.Fail,
-                        MeasuredValue = 50.0,
+                        MeasuredValue = "50",
                         LowerLimit = 0.0,
                         UpperLimit = 10.0,
                     },
@@ -552,7 +552,7 @@ public class RunsCreateTests
                     {
                         Name = "offset",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = -5.0,
+                        MeasuredValue = "-5",
                         LowerLimit = -10.0,
                         UpperLimit = 0.0,
                     },
@@ -634,8 +634,8 @@ public class RunsCreateTests
                 EndedAt = now.AddMinutes(-7),
                 Measurements = new List<RunCreateMeasurements>
                 {
-                    new RunCreateMeasurements { Name = "v1", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = 3.3 },
-                    new RunCreateMeasurements { Name = "v2", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = 5.0 },
+                    new RunCreateMeasurements { Name = "v1", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = "3.3" },
+                    new RunCreateMeasurements { Name = "v2", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = "5" },
                 },
             },
             new RunCreatePhases
@@ -646,7 +646,7 @@ public class RunsCreateTests
                 EndedAt = now.AddMinutes(-3),
                 Measurements = new List<RunCreateMeasurements>
                 {
-                    new RunCreateMeasurements { Name = "temp", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = 25.0 },
+                    new RunCreateMeasurements { Name = "temp", Outcome = RunCreateMeasurementsOutcome.Pass, MeasuredValue = "25" },
                 },
             },
         };

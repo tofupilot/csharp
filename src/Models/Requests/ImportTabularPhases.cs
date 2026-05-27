@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class ImportTabularPhases
     {

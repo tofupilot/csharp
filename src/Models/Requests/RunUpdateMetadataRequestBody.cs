@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class RunUpdateMetadataRequestBody
     {
@@ -19,6 +20,6 @@ namespace TofuPilot.Models.Requests
         /// Custom metadata to upsert on the run. Plain object of key/value pairs. PATCH semantics: keys not present here are preserved. Pass `null` as a value to delete a key.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, RunUpdateMetadataMetadata>? Metadata { get; set; } = null;
+        public Dictionary<string, string>? Metadata { get; set; } = null;
     }
 }

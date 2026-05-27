@@ -80,13 +80,13 @@ public class RunsGetTests
                         {
                             Name = "boot_time_ms",
                             Outcome = RunCreateMeasurementsOutcome.Pass,
-                            MeasuredValue = 120.5,
+                            MeasuredValue = "120.5",
                         },
                         new RunCreateMeasurements
                         {
                             Name = "memory_mb",
                             Outcome = RunCreateMeasurementsOutcome.Pass,
-                            MeasuredValue = 256,
+                            MeasuredValue = "256",
                         },
                     },
                 },
@@ -102,7 +102,7 @@ public class RunsGetTests
                         {
                             Name = "cpu_temp",
                             Outcome = RunCreateMeasurementsOutcome.Pass,
-                            MeasuredValue = 65.2,
+                            MeasuredValue = "65.2",
                         },
                     },
                 },

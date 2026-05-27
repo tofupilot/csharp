@@ -54,7 +54,7 @@ public class RunsCreateValidatorsTests
                     {
                         Name = name,
                         Outcome = outcome,
-                        MeasuredValue = measuredValue,
+                        MeasuredValue = measuredValue.ToString(System.Globalization.CultureInfo.InvariantCulture),
                         Validators = validators,
                     },
                 },
@@ -78,8 +78,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = op,
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(expected),
-                Outcome = "PASS",
+                ExpectedValue = expected.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var req = WithMeasurement(uid, $"test_{op}", measured, RunCreateMeasurementsOutcome.Pass, validators);
@@ -102,8 +102,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = "==",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateStr("PASS"),
-                Outcome = "PASS",
+                ExpectedValue = "PASS",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var now = DateTime.UtcNow;
@@ -144,8 +144,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = "==",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateBoolean(true),
-                Outcome = "PASS",
+                ExpectedValue = "true",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var now = DateTime.UtcNow;
@@ -164,7 +164,7 @@ public class RunsCreateValidatorsTests
                     {
                         Name = "is_calibrated",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = true,
+                        MeasuredValue = "true",
                         Validators = validators,
                     },
                 },
@@ -183,14 +183,14 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = ">=",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(0),
-                Outcome = "PASS",
+                ExpectedValue = "0",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
             new RunCreateMeasurementsValidators
             {
                 Operator = "<=",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(100),
-                Outcome = "PASS",
+                ExpectedValue = "100",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var req = WithMeasurement(uid, "range_value", 50.0, RunCreateMeasurementsOutcome.Pass, validators);
@@ -212,8 +212,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = ">=",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(90),
-                Outcome = "FAIL",
+                ExpectedValue = "90",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Fail,
                 IsDecisive = false,
             },
         };
@@ -234,8 +234,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = ">=",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(0),
-                Outcome = "PASS",
+                ExpectedValue = "0",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
                 IsDecisive = true,
             },
         };
@@ -256,7 +256,7 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Expression = "value > threshold && value < max_threshold",
-                Outcome = "PASS",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var req = WithMeasurement(uid, "expr_check", 50.0, RunCreateMeasurementsOutcome.Pass, validators);
@@ -277,9 +277,9 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = ">=",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(0),
+                ExpectedValue = "0",
                 Expression = "voltage within safe range",
-                Outcome = "PASS",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var req = WithMeasurement(uid, "custom_expr", 3.3, RunCreateMeasurementsOutcome.Pass, validators);
@@ -300,8 +300,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = "<=",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(5),
-                Outcome = "FAIL",
+                ExpectedValue = "5",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Fail,
             },
         };
         var now = DateTime.UtcNow;
@@ -321,7 +321,7 @@ public class RunsCreateValidatorsTests
                     {
                         Name = "over_limit",
                         Outcome = RunCreateMeasurementsOutcome.Fail,
-                        MeasuredValue = 10.0,
+                        MeasuredValue = "10",
                         Validators = validators,
                     },
                 },
@@ -343,8 +343,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = "in",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateArrayOfStr(new List<string> { "A", "B", "C" }),
-                Outcome = "PASS",
+                ExpectedValue = "[\"A\",\"B\",\"C\"]",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var now = DateTime.UtcNow;
@@ -385,8 +385,8 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = "range",
-                ExpectedValue = RunCreateMeasurementsExpectedValue.CreateArrayOfNumber(new List<double> { 10.0, 50.0 }),
-                Outcome = "PASS",
+                ExpectedValue = "[10,50]",
+                Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };
         var req = WithMeasurement(uid, "range_check", 25.0, RunCreateMeasurementsOutcome.Pass, validators);
@@ -417,21 +417,21 @@ public class RunsCreateValidatorsTests
                     {
                         Name = "voltage",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 3.3,
+                        MeasuredValue = "3.3",
                         Validators = new List<RunCreateMeasurementsValidators>
                         {
-                            new RunCreateMeasurementsValidators { Operator = ">=", ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(3.0), Outcome = "PASS" },
-                            new RunCreateMeasurementsValidators { Operator = "<=", ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(3.6), Outcome = "PASS" },
+                            new RunCreateMeasurementsValidators { Operator = ">=", ExpectedValue = "3", Outcome = RunCreateMeasurementsValidatorsOutcome.Pass },
+                            new RunCreateMeasurementsValidators { Operator = "<=", ExpectedValue = "3.6", Outcome = RunCreateMeasurementsValidatorsOutcome.Pass },
                         },
                     },
                     new RunCreateMeasurements
                     {
                         Name = "current",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = 0.5,
+                        MeasuredValue = "0.5",
                         Validators = new List<RunCreateMeasurementsValidators>
                         {
-                            new RunCreateMeasurementsValidators { Operator = "<", ExpectedValue = RunCreateMeasurementsExpectedValue.CreateNumber(1.0), Outcome = "PASS" },
+                            new RunCreateMeasurementsValidators { Operator = "<", ExpectedValue = "1", Outcome = RunCreateMeasurementsValidatorsOutcome.Pass },
                         },
                     },
                 },

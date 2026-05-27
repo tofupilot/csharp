@@ -54,7 +54,7 @@ public class RunsCreateAggregationsTests
                     {
                         Name = measName,
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = measuredValue,
+                        MeasuredValue = measuredValue.ToString(System.Globalization.CultureInfo.InvariantCulture),
                         Aggregations = aggregations,
                     },
                 },
@@ -79,8 +79,8 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = aggType,
-                Value = RunCreateMeasurementsValue.CreateNumber(42.0),
-                Outcome = "PASS",
+                Value = "42",
+                Outcome = RunCreateMeasurementsAggregationsOutcome.Pass,
             },
         };
         var req = WithAggregations(uid, $"test_{aggType}", 50.0, aggs);
@@ -103,18 +103,18 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "avg",
-                Value = RunCreateMeasurementsValue.CreateNumber(72.3),
-                Outcome = "PASS",
+                Value = "72.3",
+                Outcome = RunCreateMeasurementsAggregationsOutcome.Pass,
             },
             new RunCreateMeasurementsAggregations
             {
                 Type = "max",
-                Value = RunCreateMeasurementsValue.CreateNumber(80.1),
+                Value = "80.1",
             },
             new RunCreateMeasurementsAggregations
             {
                 Type = "min",
-                Value = RunCreateMeasurementsValue.CreateNumber(65.0),
+                Value = "65",
             },
         };
         var req = WithAggregations(uid, "multi_agg", 75.5, aggs);
@@ -133,7 +133,7 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "mode",
-                Value = RunCreateMeasurementsValue.CreateStr("nominal"),
+                Value = "nominal",
             },
         };
         var now = DateTime.UtcNow;
@@ -171,7 +171,7 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "all",
-                Value = RunCreateMeasurementsValue.CreateBoolean(true),
+                Value = "true",
             },
         };
         var now = DateTime.UtcNow;
@@ -190,7 +190,7 @@ public class RunsCreateAggregationsTests
                     {
                         Name = "all_pass",
                         Outcome = RunCreateMeasurementsOutcome.Pass,
-                        MeasuredValue = true,
+                        MeasuredValue = "true",
                         Aggregations = aggs,
                     },
                 },
@@ -209,21 +209,21 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "avg",
-                Value = RunCreateMeasurementsValue.CreateNumber(72.3),
-                Outcome = "PASS",
+                Value = "72.3",
+                Outcome = RunCreateMeasurementsAggregationsOutcome.Pass,
                 Validators = new List<RunCreateMeasurementsAggregationsValidators>
                 {
                     new RunCreateMeasurementsAggregationsValidators
                     {
                         Operator = ">=",
-                        ExpectedValue = RunCreateMeasurementsAggregationsExpectedValue.CreateNumber(60.0),
-                        Outcome = "PASS",
+                        ExpectedValue = "60",
+                        Outcome = RunCreateMeasurementsAggregationsValidatorsOutcome.Pass,
                     },
                     new RunCreateMeasurementsAggregationsValidators
                     {
                         Operator = "<=",
-                        ExpectedValue = RunCreateMeasurementsAggregationsExpectedValue.CreateNumber(90.0),
-                        Outcome = "PASS",
+                        ExpectedValue = "90",
+                        Outcome = RunCreateMeasurementsAggregationsValidatorsOutcome.Pass,
                     },
                 },
             },
@@ -246,15 +246,15 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "avg",
-                Value = RunCreateMeasurementsValue.CreateNumber(50.0),
-                Outcome = "PASS",
+                Value = "50",
+                Outcome = RunCreateMeasurementsAggregationsOutcome.Pass,
             },
         };
         var req = WithAggregations(uid, "agg_pass", 50.0, aggs);
         var created = await _client.Runs.CreateAsync(req);
         var fetched = await _client.Runs.GetAsync(created.Id);
 
-        Assert.Equal("PASS", fetched.Phases![0].Measurements[0].Aggregations![0].Outcome);
+        Assert.Equal(RunGetAggregationsOutcome.Pass, fetched.Phases![0].Measurements[0].Aggregations![0].Outcome);
     }
 
     [Fact]
@@ -266,8 +266,8 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "avg",
-                Value = RunCreateMeasurementsValue.CreateNumber(50.0),
-                Outcome = "FAIL",
+                Value = "50",
+                Outcome = RunCreateMeasurementsAggregationsOutcome.Fail,
             },
         };
         var now = DateTime.UtcNow;
@@ -287,7 +287,7 @@ public class RunsCreateAggregationsTests
                     {
                         Name = "agg_fail",
                         Outcome = RunCreateMeasurementsOutcome.Fail,
-                        MeasuredValue = 50.0,
+                        MeasuredValue = "50",
                         Aggregations = aggs,
                     },
                 },
@@ -296,7 +296,7 @@ public class RunsCreateAggregationsTests
         var created = await _client.Runs.CreateAsync(req);
         var fetched = await _client.Runs.GetAsync(created.Id);
 
-        Assert.Equal("FAIL", fetched.Phases![0].Measurements[0].Aggregations![0].Outcome);
+        Assert.Equal(RunGetAggregationsOutcome.Fail, fetched.Phases![0].Measurements[0].Aggregations![0].Outcome);
     }
 
     [Fact]
@@ -308,7 +308,7 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "percentile_95",
-                Value = RunCreateMeasurementsValue.CreateNumber(95.0),
+                Value = "95",
             },
         };
         var req = WithAggregations(uid, "special_type", 90.0, aggs);
@@ -327,7 +327,7 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "min",
-                Value = RunCreateMeasurementsValue.CreateNumber(-15.5),
+                Value = "-15.5",
             },
         };
         var req = WithAggregations(uid, "neg_agg", -10.0, aggs);
@@ -344,15 +344,15 @@ public class RunsCreateAggregationsTests
             new RunCreateMeasurementsAggregations
             {
                 Type = "avg",
-                Value = RunCreateMeasurementsValue.CreateNumber(72.0),
-                Outcome = "FAIL",
+                Value = "72",
+                Outcome = RunCreateMeasurementsAggregationsOutcome.Fail,
                 Validators = new List<RunCreateMeasurementsAggregationsValidators>
                 {
                     new RunCreateMeasurementsAggregationsValidators
                     {
                         Operator = ">=",
-                        ExpectedValue = RunCreateMeasurementsAggregationsExpectedValue.CreateNumber(80.0),
-                        Outcome = "FAIL",
+                        ExpectedValue = "80",
+                        Outcome = RunCreateMeasurementsAggregationsValidatorsOutcome.Fail,
                         IsDecisive = false,
                     },
                 },
