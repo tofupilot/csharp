@@ -104,8 +104,8 @@ namespace TofuPilot.Models.Requests
         /// <summary>
         /// Filter runs by custom metadata. Supports up to 5 keys per request. Per-key operators: string `{in: [...]}`/`{contains: &quot;...&quot;}`, number `{gte, lte, gt, lt, eq}`, bool `{eq: true|false}`.
         /// </summary>
-        [ApiMetadata("queryParam:style=form,explode=true,name=metadata")]
-        public Dictionary<string, string>? Metadata { get; set; }
+        [ApiMetadata("queryParam:serialization=json,name=metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
 
         /// <summary>
         /// When true, includes the run metadata array in the response. Defaults to false to keep payloads small.
