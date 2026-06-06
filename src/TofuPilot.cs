@@ -35,6 +35,10 @@ namespace TofuPilot
         public IStations Stations { get; }
         public IUsers Users { get; }
         public IImports Imports { get; }
+        public ILogs Logs { get; }
+        public IPhases Phases { get; }
+        public IMeasurements Measurements { get; }
+        public IDeployments Deployments { get; }
     }
 
 
@@ -60,6 +64,10 @@ namespace TofuPilot
         public IStations Stations { get; private set; }
         public IUsers Users { get; private set; }
         public IImports Imports { get; private set; }
+        public ILogs Logs { get; private set; }
+        public IPhases Phases { get; private set; }
+        public IMeasurements Measurements { get; private set; }
+        public IDeployments Deployments { get; private set; }
 
         public TofuPilot(SDKConfig config)
         {
@@ -83,6 +91,14 @@ namespace TofuPilot
             Users = new Users(SDKConfiguration);
 
             Imports = new Imports(SDKConfiguration);
+
+            Logs = new Logs(SDKConfiguration);
+
+            Phases = new Phases(SDKConfiguration);
+
+            Measurements = new Measurements(SDKConfiguration);
+
+            Deployments = new Deployments(SDKConfiguration);
         }
 
         public TofuPilot(string? apiKey = null, Func<string>? apiKeySource = null, int? serverIndex = null, string? serverUrl = null, Dictionary<string, string>? urlParams = null, ITofuPilotHttpClient? client = null, RetryConfig? retryConfig = null)
@@ -144,6 +160,14 @@ namespace TofuPilot
             Users = new Users(SDKConfiguration);
 
             Imports = new Imports(SDKConfiguration);
+
+            Logs = new Logs(SDKConfiguration);
+
+            Phases = new Phases(SDKConfiguration);
+
+            Measurements = new Measurements(SDKConfiguration);
+
+            Deployments = new Deployments(SDKConfiguration);
         }
 
         private void InitHooks()

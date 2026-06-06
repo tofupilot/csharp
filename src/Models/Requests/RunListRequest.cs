@@ -32,6 +32,12 @@ namespace TofuPilot.Models.Requests
         [ApiMetadata("queryParam:style=form,explode=true,name=procedure_versions")]
         public List<string>? ProcedureVersions { get; set; }
 
+        [ApiMetadata("queryParam:style=form,explode=true,name=deployment_ids")]
+        public List<string>? DeploymentIds { get; set; }
+
+        [ApiMetadata("queryParam:style=form,explode=true,name=environments")]
+        public List<RunListEnvironment>? Environments { get; set; }
+
         [ApiMetadata("queryParam:style=form,explode=true,name=serial_numbers")]
         public List<string>? SerialNumbers { get; set; }
 

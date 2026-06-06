@@ -3,7 +3,7 @@
   <PropertyGroup>
     <IsPackable>true</IsPackable>
     <PackageId>TofuPilot</PackageId>
-    <Version>2.11.4</Version>
+    <Version>2.12.0</Version>
     <TargetFramework>net8.0</TargetFramework>
     <Authors>TofuPilot</Authors>
     <Copyright>Copyright (c) TofuPilot 2026</Copyright>
