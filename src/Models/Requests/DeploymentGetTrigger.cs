@@ -22,6 +22,8 @@ namespace TofuPilot.Models.Requests
         Auto,
         [JsonPropertyName("manual")]
         Manual,
+        [JsonPropertyName("cli")]
+        Cli,
     }
 
     public static class DeploymentGetTriggerExtension
