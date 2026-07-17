@@ -37,7 +37,7 @@ namespace TofuPilot.Models.Requests
         public DateTime CreatedAt { get; set; } = default!;
 
         /// <summary>
-        /// Reference-sample classification. &apos;golden&apos; = known-good reference, &apos;failing&apos; = known-faulty reference, null = production unit.
+        /// Reference-sample classification. &apos;golden&apos; = known-good reference, &apos;failing&apos; = known-faulty reference, &apos;ignored&apos; = bench-check unit excluded from analytics and alerts, null = production unit.
         /// </summary>
         [JsonPropertyName("sample")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]

@@ -14,7 +14,7 @@ namespace TofuPilot.Models.Requests
     using System;
     
     /// <summary>
-    /// Reference-sample classification. &apos;golden&apos; = known-good reference, &apos;failing&apos; = known-faulty reference, null = production unit.
+    /// Reference-sample classification. &apos;golden&apos; = known-good reference, &apos;failing&apos; = known-faulty reference, &apos;ignored&apos; = bench-check unit excluded from analytics and alerts, null = production unit.
     /// </summary>
     public enum UnitListDataSample
     {
@@ -22,6 +22,8 @@ namespace TofuPilot.Models.Requests
         Golden,
         [JsonPropertyName("failing")]
         Failing,
+        [JsonPropertyName("ignored")]
+        Ignored,
     }
 
     public static class UnitListDataSampleExtension

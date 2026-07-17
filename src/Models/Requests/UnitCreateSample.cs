@@ -14,7 +14,7 @@ namespace TofuPilot.Models.Requests
     using System;
     
     /// <summary>
-    /// Reference-sample classification. &apos;golden&apos; marks a known-good reference unit; &apos;failing&apos; marks a known-faulty reference unit. Both are excluded from production analytics aggregates (FPY, Cpk, throughput) by default. Omit or null for regular production units.
+    /// Sample classification. &apos;golden&apos; marks a known-good reference unit; &apos;failing&apos; marks a known-faulty reference unit; &apos;ignored&apos; marks a bench-check unit excluded from analytics and alerts. All are excluded from production analytics aggregates (FPY, Cpk, throughput) by default. Omit or null for regular production units.
     /// </summary>
     public enum UnitCreateSample
     {
@@ -22,6 +22,8 @@ namespace TofuPilot.Models.Requests
         Golden,
         [JsonPropertyName("failing")]
         Failing,
+        [JsonPropertyName("ignored")]
+        Ignored,
     }
 
     public static class UnitCreateSampleExtension

@@ -19,6 +19,8 @@ namespace TofuPilot.Models.Requests
         Golden,
         [JsonPropertyName("failing")]
         Failing,
+        [JsonPropertyName("ignored")]
+        Ignored,
     }
 
     public static class RunListQueryParamSampleExtension
