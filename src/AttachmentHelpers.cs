@@ -21,12 +21,9 @@ namespace TofuPilot
         {
             _runs = runs;
             // Finalize lives on the attachments API; the concrete Runs shares
-            // its config. A wrapped or mocked IRuns cannot reach it, so warn
-            // once here rather than silently reverting to size-0 metadata.
+            // its config. A wrapped or mocked IRuns cannot reach it — the
+            // upload path warns when it actually needs finalize.
             _attachments = runs is Runs concrete ? new Attachments(concrete.SDKConfiguration) : null;
-            if (_attachments == null)
-                Console.Error.WriteLine(
-                    "tofupilot: IRuns is not the SDK's Runs client; uploads cannot be finalized and will show size 0.");
         }
 
         /// <summary>
@@ -73,12 +70,21 @@ namespace TofuPilot
         internal static async Task FinalizeBestEffort(IAttachments? attachments, string uploadId, CancellationToken cancellationToken)
         {
             if (attachments == null)
+            {
+                // Warned here, not in the constructor: only uploads need
+                // finalize, so download-only use of a wrapped client stays
+                // quiet, and the CWT factory re-running can't duplicate it.
+                Console.Error.WriteLine(
+                    $"tofupilot: attachment {uploadId} cannot be finalized (client is not the SDK's concrete Runs/Units) and will show size 0.");
                 return;
+            }
             try
             {
                 await attachments.FinalizeAsync(uploadId, cancellationToken);
             }
-            catch (Exception e)
+            // Cancellation is the caller's request, not a finalize failure —
+            // it must keep its normal semantics and propagate.
+            catch (Exception e) when (e is not OperationCanceledException)
             {
                 Console.Error.WriteLine(
                     $"tofupilot: attachment {uploadId} uploaded but not finalized (size will read 0): {e.Message}");
@@ -130,9 +136,6 @@ namespace TofuPilot
             _units = units;
             // See RunAttachments: finalize needs the attachments API.
             _attachments = units is Units concrete ? new Attachments(concrete.SDKConfiguration) : null;
-            if (_attachments == null)
-                Console.Error.WriteLine(
-                    "tofupilot: IUnits is not the SDK's Units client; uploads cannot be finalized and will show size 0.");
         }
 
         /// <summary>
