@@ -15,10 +15,18 @@ namespace TofuPilot
     public class RunAttachments
     {
         private readonly IRuns _runs;
+        private readonly IAttachments? _attachments;
 
         internal RunAttachments(IRuns runs)
         {
             _runs = runs;
+            // Finalize lives on the attachments API; the concrete Runs shares
+            // its config. A wrapped or mocked IRuns cannot reach it, so warn
+            // once here rather than silently reverting to size-0 metadata.
+            _attachments = runs is Runs concrete ? new Attachments(concrete.SDKConfiguration) : null;
+            if (_attachments == null)
+                Console.Error.WriteLine(
+                    "tofupilot: IRuns is not the SDK's Runs client; uploads cannot be finalized and will show size 0.");
         }
 
         /// <summary>
@@ -33,6 +41,7 @@ namespace TofuPilot
             var result = await _runs.CreateAttachmentAsync(runId, new RunCreateAttachmentRequestBody { Name = fileName }, cancellationToken);
 
             await UploadToPresignedUrl(filePath, result.UploadUrl, cancellationToken);
+            await FinalizeBestEffort(_attachments, result.Id, cancellationToken);
             return result.Id;
         }
 
@@ -52,6 +61,28 @@ namespace TofuPilot
             var bytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
             await File.WriteAllBytesAsync(destinationPath, bytes, cancellationToken);
             return destinationPath;
+        }
+
+        /// <summary>
+        /// The PUT stores the bytes but records no metadata; finalize stamps
+        /// size and content type from the stored object. Best-effort: the
+        /// attachment is already stored and linked, so a metadata failure
+        /// must not fail the upload — the caller would retry and duplicate
+        /// it. The warning is the signal that size will read 0.
+        /// </summary>
+        internal static async Task FinalizeBestEffort(IAttachments? attachments, string uploadId, CancellationToken cancellationToken)
+        {
+            if (attachments == null)
+                return;
+            try
+            {
+                await attachments.FinalizeAsync(uploadId, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                Console.Error.WriteLine(
+                    $"tofupilot: attachment {uploadId} uploaded but not finalized (size will read 0): {e.Message}");
+            }
         }
 
         private static async Task UploadToPresignedUrl(string filePath, string uploadUrl, CancellationToken cancellationToken)
@@ -92,10 +123,16 @@ namespace TofuPilot
     public class UnitAttachments
     {
         private readonly IUnits _units;
+        private readonly IAttachments? _attachments;
 
         internal UnitAttachments(IUnits units)
         {
             _units = units;
+            // See RunAttachments: finalize needs the attachments API.
+            _attachments = units is Units concrete ? new Attachments(concrete.SDKConfiguration) : null;
+            if (_attachments == null)
+                Console.Error.WriteLine(
+                    "tofupilot: IUnits is not the SDK's Units client; uploads cannot be finalized and will show size 0.");
         }
 
         /// <summary>
@@ -110,6 +147,7 @@ namespace TofuPilot
             var result = await _units.CreateAttachmentAsync(serialNumber, new UnitCreateAttachmentRequestBody { Name = fileName }, cancellationToken);
 
             await UploadToPresignedUrl(filePath, result.UploadUrl, cancellationToken);
+            await RunAttachments.FinalizeBestEffort(_attachments, result.Id, cancellationToken);
             return result.Id;
         }
 
@@ -176,29 +214,21 @@ namespace TofuPilot
     /// </summary>
     public static class AttachmentSubResourceExtensions
     {
-        private static readonly Dictionary<int, RunAttachments> _runAttachments = new();
-        private static readonly Dictionary<int, UnitAttachments> _unitAttachments = new();
+        // Keyed on object identity, not GetHashCode: a 32-bit identity hash
+        // can collide across clients, which would hand one tenant's cached
+        // sub-resource (and its credentials) to another. ConditionalWeakTable
+        // is also thread-safe and lets entries die with their client.
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<IRuns, RunAttachments> _runAttachments = new();
+        private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<IUnits, UnitAttachments> _unitAttachments = new();
 
         public static RunAttachments Attachments(this IRuns runs)
         {
-            var key = runs.GetHashCode();
-            if (!_runAttachments.TryGetValue(key, out var attachments))
-            {
-                attachments = new RunAttachments(runs);
-                _runAttachments[key] = attachments;
-            }
-            return attachments;
+            return _runAttachments.GetValue(runs, static r => new RunAttachments(r));
         }
 
         public static UnitAttachments Attachments(this IUnits units)
         {
-            var key = units.GetHashCode();
-            if (!_unitAttachments.TryGetValue(key, out var attachments))
-            {
-                attachments = new UnitAttachments(units);
-                _unitAttachments[key] = attachments;
-            }
-            return attachments;
+            return _unitAttachments.GetValue(units, static u => new UnitAttachments(u));
         }
     }
 }
