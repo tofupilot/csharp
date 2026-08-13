@@ -19,6 +19,8 @@ namespace TofuPilot.Models.Requests
         Github,
         [JsonPropertyName("gitlab")]
         Gitlab,
+        [JsonPropertyName("bitbucket")]
+        Bitbucket,
     }
 
     public static class DeploymentGetProviderExtension

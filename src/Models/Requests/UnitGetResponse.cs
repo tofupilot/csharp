@@ -99,6 +99,6 @@ namespace TofuPilot.Models.Requests
         /// Custom metadata key/value pairs on the unit.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, string>? Metadata { get; set; }
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

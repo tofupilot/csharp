@@ -18,7 +18,7 @@ public class StationsTests
         _client = fixture.Client;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     [Fact]
     public async Task CreateStation_ReturnsId()
@@ -77,20 +77,23 @@ public class StationsTests
     [Fact]
     public async Task ListStations_Pagination()
     {
+        // Paginate only within this test's stations, so concurrent suites can't shift pages
+        var uid = Uid();
         for (int i = 0; i < 3; i++)
         {
             await _client.Stations.CreateAsync(new StationCreateRequest
             {
-                Name = $"Station-PAG{i}-{Uid()}",
+                Name = $"Station-PAG-{uid}-{i}",
             });
         }
 
-        var page1 = await _client.Stations.ListAsync(limit: 1);
+        var search = $"Station-PAG-{uid}";
+        var page1 = await _client.Stations.ListAsync(searchQuery: search, limit: 1);
         Assert.Single(page1.Data);
         Assert.True(page1.Meta.HasMore);
         Assert.NotNull(page1.Meta.NextCursor);
 
-        var page2 = await _client.Stations.ListAsync(limit: 1, cursor: page1.Meta.NextCursor);
+        var page2 = await _client.Stations.ListAsync(searchQuery: search, limit: 1, cursor: page1.Meta.NextCursor);
         Assert.Single(page2.Data);
         Assert.NotEqual(page1.Data[0].Id, page2.Data[0].Id);
     }
@@ -152,18 +155,19 @@ public class StationsTests
     }
 
     [Fact]
-    public async Task CreateStation_DuplicateName_ThrowsConflict()
+    public async Task CreateStation_DuplicateName_CreatesDistinctStation()
     {
+        // Names are not unique — stations are identified by id.
         var name = $"Station-DUPE-{Uid()}";
-        await _client.Stations.CreateAsync(new StationCreateRequest
+        var first = await _client.Stations.CreateAsync(new StationCreateRequest
         {
             Name = name,
         });
-        await Assert.ThrowsAsync<ConflictException>(() =>
-            _client.Stations.CreateAsync(new StationCreateRequest
-            {
-                Name = name,
-            }));
+        var second = await _client.Stations.CreateAsync(new StationCreateRequest
+        {
+            Name = name,
+        });
+        Assert.NotEqual(first.Id, second.Id);
     }
 
     [Fact]

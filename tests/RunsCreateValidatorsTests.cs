@@ -19,7 +19,7 @@ public class RunsCreateValidatorsTests
         _procedureId = fixture.ProcedureId;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     private RunCreateRequest BaseRequest(string? uid = null)
     {
@@ -54,7 +54,7 @@ public class RunsCreateValidatorsTests
                     {
                         Name = name,
                         Outcome = outcome,
-                        MeasuredValue = measuredValue.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                        MeasuredValue = measuredValue,
                         Validators = validators,
                     },
                 },
@@ -78,7 +78,7 @@ public class RunsCreateValidatorsTests
             new RunCreateMeasurementsValidators
             {
                 Operator = op,
-                ExpectedValue = expected.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                ExpectedValue = expected,
                 Outcome = RunCreateMeasurementsValidatorsOutcome.Pass,
             },
         };

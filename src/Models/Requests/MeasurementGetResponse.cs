@@ -40,7 +40,7 @@ namespace TofuPilot.Models.Requests
         public List<MeasurementGetAggregations>? Aggregations { get; set; } = null;
 
         [JsonPropertyName("measured_value")]
-        public string? MeasuredValue { get; set; }
+        public object? MeasuredValue { get; set; }
 
         [JsonPropertyName("data_series")]
         public List<MeasurementGetDataSeries>? DataSeries { get; set; }

@@ -20,7 +20,7 @@ public class ProceduresTests
         _procedureId = fixture.ProcedureId;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     [Fact]
     public async Task CreateProcedure_ReturnsId()
@@ -101,23 +101,24 @@ public class ProceduresTests
     [Fact]
     public async Task ListProcedures_Pagination()
     {
+        // Paginate only within this test's procedures, so concurrent suites can't shift pages
+        var uid = Uid();
         for (int i = 0; i < 3; i++)
         {
             await _client.Procedures.CreateAsync(new ProcedureCreateRequest
             {
-                Name = $"Proc Pg {Uid()}",
+                Name = $"Proc Pg {uid} {i}",
             });
         }
 
-        var page1 = await _client.Procedures.ListAsync(limit: 1);
+        var search = $"Proc Pg {uid}";
+        var page1 = await _client.Procedures.ListAsync(searchQuery: search, limit: 1);
         Assert.Single(page1.Data);
+        Assert.True(page1.Meta.HasMore);
 
-        if (page1.Meta.HasMore)
-        {
-            var page2 = await _client.Procedures.ListAsync(limit: 1, cursor: page1.Meta.NextCursor);
-            Assert.Single(page2.Data);
-            Assert.NotEqual(page1.Data[0].Id, page2.Data[0].Id);
-        }
+        var page2 = await _client.Procedures.ListAsync(searchQuery: search, limit: 1, cursor: page1.Meta.NextCursor);
+        Assert.Single(page2.Data);
+        Assert.NotEqual(page1.Data[0].Id, page2.Data[0].Id);
     }
 
     [Fact]

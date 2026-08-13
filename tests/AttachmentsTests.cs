@@ -23,7 +23,7 @@ public class AttachmentsTests
         _procedureId = fixture.ProcedureId;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     [Fact]
     public async Task RunAttachments_Create_ReturnsId()
@@ -32,7 +32,7 @@ public class AttachmentsTests
         {
             ProcedureId = _procedureId,
             SerialNumber = $"ATTACH-{Uid()}",
-            PartNumber = "PCB-001",
+            PartNumber = $"PCB-{Uid()}",
             Outcome = RunCreateOutcome.Pass,
             StartedAt = DateTime.UtcNow.AddMinutes(-1),
             EndedAt = DateTime.UtcNow,
@@ -59,7 +59,7 @@ public class AttachmentsTests
         {
             ProcedureId = _procedureId,
             SerialNumber = $"ATTACH-{Uid()}",
-            PartNumber = "PCB-001",
+            PartNumber = $"PCB-{Uid()}",
             Outcome = RunCreateOutcome.Pass,
             StartedAt = DateTime.UtcNow.AddMinutes(-1),
             EndedAt = DateTime.UtcNow,

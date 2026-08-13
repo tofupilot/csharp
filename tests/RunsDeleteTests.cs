@@ -20,7 +20,7 @@ public class RunsDeleteTests
         _procedureId = fixture.ProcedureId;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     private async Task<RunCreateResponse> CreateTestRun(string? uid = null)
     {

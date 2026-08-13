@@ -17,7 +17,7 @@ public class PartsTests
         _client = fixture.Client;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     [Fact]
     public async Task CreatePart_ReturnsId()
@@ -88,24 +88,25 @@ public class PartsTests
     [Fact]
     public async Task ListParts_Pagination()
     {
+        // Paginate only within this test's parts, so concurrent suites can't shift pages
+        var uid = Uid();
         for (int i = 0; i < 3; i++)
         {
             await _client.Parts.CreateAsync(new PartCreateRequest
             {
-                Number = $"PART-PG-{Uid()}",
+                Number = $"PART-PG-{uid}-{i}",
                 Name = $"Paginated Part {i}",
             });
         }
 
-        var page1 = await _client.Parts.ListAsync(limit: 1);
+        var search = $"PART-PG-{uid}";
+        var page1 = await _client.Parts.ListAsync(searchQuery: search, limit: 1);
         Assert.Single(page1.Data);
+        Assert.True(page1.Meta.HasMore);
 
-        if (page1.Meta.HasMore)
-        {
-            var page2 = await _client.Parts.ListAsync(limit: 1, cursor: page1.Meta.NextCursor);
-            Assert.Single(page2.Data);
-            Assert.NotEqual(page1.Data[0].Id, page2.Data[0].Id);
-        }
+        var page2 = await _client.Parts.ListAsync(searchQuery: search, limit: 1, cursor: page1.Meta.NextCursor);
+        Assert.Single(page2.Data);
+        Assert.NotEqual(page1.Data[0].Id, page2.Data[0].Id);
     }
 
     [Fact]

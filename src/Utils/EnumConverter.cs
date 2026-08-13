@@ -17,19 +17,16 @@ namespace TofuPilot.Utils
     {
         public override bool CanConvert(System.Type typeToConvert)
         {
-            var nullableType = Nullable.GetUnderlyingType(typeToConvert);
-            if (nullableType != null)
-            {
-                return nullableType.IsEnum;
-            }
-
+            // Nullable<TEnum> must be left to the built-in NullableConverterFactory,
+            // which unwraps it and comes back here for TEnum. Claiming it while
+            // CreateConverter returns a JsonConverter<TEnum> makes System.Text.Json
+            // throw on every nullable enum property.
             return typeToConvert.IsEnum;
         }
 
         public override JsonConverter CreateConverter(System.Type typeToConvert, JsonSerializerOptions options)
         {
-            var enumType = Nullable.GetUnderlyingType(typeToConvert) ?? typeToConvert;
-            var converterType = typeof(EnumConverterInner<>).MakeGenericType(enumType);
+            var converterType = typeof(EnumConverterInner<>).MakeGenericType(typeToConvert);
             return (JsonConverter)Activator.CreateInstance(converterType)!;
         }
 
@@ -48,14 +45,7 @@ namespace TofuPilot.Utils
                     return default;
                 }
 
-                var objectType = typeToConvert;
-                var extensionType = System.Type.GetType(objectType.FullName + "Extension");
-
-                if (Nullable.GetUnderlyingType(objectType) != null)
-                {
-                    objectType = Nullable.GetUnderlyingType(objectType)!;
-                    extensionType = System.Type.GetType(objectType!.FullName + "Extension");
-                }
+                var extensionType = System.Type.GetType(typeToConvert.FullName + "Extension");
 
                 if (extensionType == null)
                 {

@@ -46,13 +46,13 @@ namespace TofuPilot.Models.Requests
         /// The actual value captured. [LEGACY for multi-dim] For multi-dimensional with per-axis validators/aggregations, use x_axis/y_axis instead.
         /// </summary>
         [JsonPropertyName("measured_value")]
-        public string? MeasuredValue { get; set; } = null;
+        public object? MeasuredValue { get; set; } = null;
 
         /// <summary>
         /// [LEGACY for multi-dim] Units of measurement. For structured multi-dimensional, use units within x_axis/y_axis instead.
         /// </summary>
         [JsonPropertyName("units")]
-        public string? Units { get; set; } = null;
+        public object? Units { get; set; } = null;
 
         /// <summary>
         /// Use validators with operator &quot;&gt;=&quot; instead. Will be converted to a validator automatically.

@@ -17,7 +17,7 @@ public class UsersTests
         _client = fixture.Client;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     [Fact]
     public async Task ListUsers_ReturnsList()

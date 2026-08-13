@@ -94,7 +94,7 @@ namespace TofuPilot.Models.Requests
         public RunGetUnit Unit { get; set; } = default!;
 
         /// <summary>
-        /// Array of execution phases in this run. Only returned if `all` or `phases` is included.
+        /// Array of execution phases in this run, ordered by start time, then by name and retry attempt for phases that share one. Retry attempts of a phase therefore always appear in attempt order. Only returned if `all` or `phases` is included.
         /// </summary>
         [JsonPropertyName("phases")]
         public List<RunGetPhases>? Phases { get; set; }
@@ -118,6 +118,6 @@ namespace TofuPilot.Models.Requests
         /// Custom metadata key/value pairs on the run.
         /// </summary>
         [JsonPropertyName("metadata")]
-        public Dictionary<string, string>? Metadata { get; set; }
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

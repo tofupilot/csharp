@@ -20,7 +20,7 @@ public class RunsListTests
         _procedureId = fixture.ProcedureId;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     private async Task<RunCreateResponse> CreateTestRun(string? uid = null, string? partNumber = null, string? serialNumber = null, RunCreateOutcome outcome = RunCreateOutcome.Pass, DateTime? startedAt = null)
     {

@@ -21,7 +21,7 @@ public class UnitsTests
         _procedureId = fixture.ProcedureId;
     }
 
-    private string Uid() => Guid.NewGuid().ToString("N")[..8];
+    private string Uid() => E2E.Uid();
 
     private async Task<(string partNumber, string serial)> CreatePartAndUnit(string? prefix = null)
     {
@@ -119,16 +119,20 @@ public class UnitsTests
     [Fact]
     public async Task ListUnits_Pagination()
     {
-        // Create 3 units to ensure we have enough for pagination
+        // Paginate only within this test's units, so concurrent suites can't shift pages
+        var serials = new List<string>();
         for (int i = 0; i < 3; i++)
-            await CreatePartAndUnit($"PAG{i}");
+        {
+            var (_, serial) = await CreatePartAndUnit($"PAG{i}");
+            serials.Add(serial);
+        }
 
-        var page1 = await _client.Units.ListAsync(limit: 1);
+        var page1 = await _client.Units.ListAsync(serialNumbers: serials, limit: 1);
         Assert.Single(page1.Data);
         Assert.True(page1.Meta.HasMore);
         Assert.NotNull(page1.Meta.NextCursor);
 
-        var page2 = await _client.Units.ListAsync(limit: 1, cursor: page1.Meta.NextCursor);
+        var page2 = await _client.Units.ListAsync(serialNumbers: serials, limit: 1, cursor: page1.Meta.NextCursor);
         Assert.Single(page2.Data);
         Assert.NotEqual(page1.Data[0].Id, page2.Data[0].Id);
     }

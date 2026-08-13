@@ -58,7 +58,7 @@ namespace TofuPilot.Models.Requests
         /// The actual measured value.
         /// </summary>
         [JsonPropertyName("measured_value")]
-        public string? MeasuredValue { get; set; }
+        public object? MeasuredValue { get; set; }
 
         /// <summary>
         /// Multi-dimensional measurement data series.
