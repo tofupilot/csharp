@@ -43,7 +43,7 @@ namespace TofuPilot.Models.Requests
         public string? ProcedureVersion { get; set; } = null;
 
         /// <summary>
-        /// Email address of the operator who executed the test run. Honored only for API-key callers (user keys and station keys); browser session callers are auto-stamped with the session user and this field is ignored. If the email does not match a member of the calling organization, it is silently dropped and the run is recorded with no operator. The run is linked to this user (when resolved) to track who performed the test.
+        /// Operator who executed the test run: an email address or a free-text name. Honored only for API-key callers (user keys and station keys); browser session callers are auto-stamped with the session user and this field is ignored. An email matching a member of the calling organization links the run to that user account; any other value (a name, or an unrecognized email) is recorded verbatim as a declared operator name. Declared names are informative only — they are not verified identities.
         /// </summary>
         [JsonPropertyName("operated_by")]
         public string? OperatedBy { get; set; }

@@ -13,26 +13,27 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Utils;
     
     /// <summary>
-    /// User who operated this run. Only returned if `all` or `operated_by` is included.
+    /// Operator of this run: a linked organization member (id/email set) or a declared free-text name (id/email null). Only returned if `all` or `operated_by` is included.
     /// </summary>
     public class RunListOperatedBy
     {
 
         /// <summary>
-        /// Operator ID.
+        /// Operator user ID. Null when the operator is a declared name without a TofuPilot account.
         /// </summary>
         [JsonPropertyName("id")]
-        public string Id { get; set; } = default!;
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? Id { get; set; }
 
         /// <summary>
-        /// Operator display name.
+        /// Operator display name: the account name for linked operators, the declared free-text value otherwise.
         /// </summary>
         [JsonPropertyName("name")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public string? Name { get; set; }
 
         /// <summary>
-        /// Operator email address.
+        /// Operator email address. Null for declared names (unverified operators have no account email).
         /// </summary>
         [JsonPropertyName("email")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]

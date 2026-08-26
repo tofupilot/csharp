@@ -62,6 +62,9 @@ namespace TofuPilot.Models.Requests
         [ApiMetadata("queryParam:style=form,explode=true,name=operated_by_ids")]
         public List<string>? OperatedByIds { get; set; }
 
+        [ApiMetadata("queryParam:style=form,explode=true,name=operated_by_names")]
+        public List<string>? OperatedByNames { get; set; }
+
         [ApiMetadata("queryParam:style=form,explode=true,name=created_by_station_ids")]
         public List<string>? CreatedByStationIds { get; set; }
 

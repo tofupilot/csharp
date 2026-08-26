@@ -86,6 +86,9 @@ namespace TofuPilot.Models.Requests
         [ApiMetadata("queryParam:style=form,explode=true,name=operated_by_ids")]
         public List<string>? OperatedByIds { get; set; }
 
+        [ApiMetadata("queryParam:style=form,explode=true,name=operated_by_names")]
+        public List<string>? OperatedByNames { get; set; }
+
         /// <summary>
         /// Maximum number of runs to return per page.
         /// </summary>

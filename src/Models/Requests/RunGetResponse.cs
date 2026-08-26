@@ -76,7 +76,7 @@ namespace TofuPilot.Models.Requests
         public RunGetCreatedByStation? CreatedByStation { get; set; } = null;
 
         /// <summary>
-        /// User who operated this run. Only returned if `all` or `operated_by` is included.
+        /// Operator of this run: a linked organization member (id/email set) or a declared free-text name (id/email null). Only returned if `all` or `operated_by` is included.
         /// </summary>
         [JsonPropertyName("operated_by")]
         public RunGetOperatedBy? OperatedBy { get; set; } = null;
