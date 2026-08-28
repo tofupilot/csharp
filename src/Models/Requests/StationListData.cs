@@ -47,5 +47,11 @@ namespace TofuPilot.Models.Requests
         [JsonPropertyName("team")]
         [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
         public StationListTeam? Team { get; set; }
+
+        /// <summary>
+        /// Custom metadata key/value pairs on the station. Only present when the request sets `include_metadata=true`.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

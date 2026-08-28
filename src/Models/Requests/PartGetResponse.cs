@@ -62,5 +62,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("revisions")]
         public List<PartGetRevisions> Revisions { get; set; } = default!;
+
+        /// <summary>
+        /// Custom metadata key/value pairs on the part.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

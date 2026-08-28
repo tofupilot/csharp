@@ -65,5 +65,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("units")]
         public List<PartGetRevisionUnits> Units { get; set; } = default!;
+
+        /// <summary>
+        /// Custom metadata key/value pairs on the revision.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

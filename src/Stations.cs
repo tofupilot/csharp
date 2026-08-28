@@ -43,7 +43,7 @@ namespace TofuPilot
         /// List stations. Search by name and filter by status. Cursor-paginated.
         /// </remarks>
         /// </summary>
-        Task<StationListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, CancellationToken cancellationToken = default);
+        Task<StationListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get current station
@@ -205,7 +205,7 @@ namespace TofuPilot
             throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
         }
 
-        public async Task<StationListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, CancellationToken cancellationToken = default)
+        public async Task<StationListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default)
         {
             var request = new StationListRequest()
             {
@@ -213,6 +213,8 @@ namespace TofuPilot
                 Cursor = cursor,
                 SearchQuery = searchQuery,
                 ProcedureIds = procedureIds,
+                Metadata = metadata,
+                IncludeMetadata = includeMetadata,
             };
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
             var urlString = URLBuilder.Build(baseUrl, "/v2/stations", request);

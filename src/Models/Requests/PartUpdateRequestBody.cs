@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class PartUpdateRequestBody
     {
@@ -26,5 +27,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("name")]
         public string? Name { get; set; }
+
+        /// <summary>
+        /// Custom metadata to upsert on the part. Plain object of key/value pairs. PATCH semantics: keys not present here are preserved. Pass `null` as a value to delete a key.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; } = null;
     }
 }

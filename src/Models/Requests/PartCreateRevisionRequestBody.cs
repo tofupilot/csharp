@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class PartCreateRevisionRequestBody
     {
@@ -20,5 +21,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("number")]
         public string Number { get; set; } = default!;
+
+        /// <summary>
+        /// Custom metadata to attach to the revision (max 50 keys per revision). Plain object of key/value pairs; values can be string, number, or boolean. Type is detected from the value.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

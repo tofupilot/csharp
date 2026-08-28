@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class StationUpdateRequestBody
     {
@@ -32,5 +33,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("team_id")]
         public string? TeamId { get; set; } = null;
+
+        /// <summary>
+        /// Custom metadata to upsert on the station. Plain object of key/value pairs. PATCH semantics: keys not present here are preserved. Pass `null` as a value to delete a key.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; } = null;
     }
 }

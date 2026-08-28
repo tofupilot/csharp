@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class StationCreateRequest
     {
@@ -26,5 +27,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("procedure_id")]
         public string? ProcedureId { get; set; }
+
+        /// <summary>
+        /// Custom metadata to attach to the station (max 50 keys per station). Plain object of key/value pairs; values can be string, number, or boolean. Type is detected from the value. Use it for descriptive fields such as location or asset tag — not for procedure configuration, which belongs to station config.
+        /// </summary>
+        [JsonPropertyName("metadata")]
+        public Dictionary<string, object>? Metadata { get; set; }
     }
 }

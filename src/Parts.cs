@@ -44,7 +44,7 @@ namespace TofuPilot
         /// List parts. Filter and search by name, number, or revision number. Cursor-paginated.
         /// </remarks>
         /// </summary>
-        Task<PartListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, PartListSortBy? sortBy = global::TofuPilot.Models.Requests.PartListSortBy.CreatedAt, PartListSortOrder? sortOrder = global::TofuPilot.Models.Requests.PartListSortOrder.Desc, CancellationToken cancellationToken = default);
+        Task<PartListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, PartListSortBy? sortBy = global::TofuPilot.Models.Requests.PartListSortBy.CreatedAt, PartListSortOrder? sortOrder = global::TofuPilot.Models.Requests.PartListSortOrder.Desc, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get part
@@ -199,7 +199,7 @@ namespace TofuPilot
             throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
         }
 
-        public async Task<PartListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, PartListSortBy? sortBy = global::TofuPilot.Models.Requests.PartListSortBy.CreatedAt, PartListSortOrder? sortOrder = global::TofuPilot.Models.Requests.PartListSortOrder.Desc, CancellationToken cancellationToken = default)
+        public async Task<PartListResponse> ListAsync(long? limit = 50, long? cursor = null, string? searchQuery = null, List<string>? procedureIds = null, PartListSortBy? sortBy = global::TofuPilot.Models.Requests.PartListSortBy.CreatedAt, PartListSortOrder? sortOrder = global::TofuPilot.Models.Requests.PartListSortOrder.Desc, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default)
         {
             var request = new PartListRequest()
             {
@@ -209,6 +209,8 @@ namespace TofuPilot
                 ProcedureIds = procedureIds,
                 SortBy = sortBy,
                 SortOrder = sortOrder,
+                Metadata = metadata,
+                IncludeMetadata = includeMetadata,
             };
             string baseUrl = this.SDKConfiguration.GetTemplatedServerUrl();
             var urlString = URLBuilder.Build(baseUrl, "/v2/parts", request);
