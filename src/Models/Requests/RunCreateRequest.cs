@@ -37,6 +37,12 @@ namespace TofuPilot.Models.Requests
         public string? DeploymentId { get; set; } = null;
 
         /// <summary>
+        /// Idempotency reference for this upload, minted and persisted by the caller BEFORE the request is sent. When a second request carries the same reference, it is recognised as a retry of the first and returns the run already created rather than creating another one. That is what makes an upload safe to retry after a lost or timed-out response. The reference must be unique per organization and must never be reused for different data: derive it from the credential id returned at login plus a counter persisted locally (the CLI sends `&lt;credential id&gt;_&lt;counter&gt;`), never from a timestamp alone, since a clock can go backwards. Omit the field and every request creates a new run, exactly as before.
+        /// </summary>
+        [JsonPropertyName("client_run_ref")]
+        public string? ClientRunRef { get; set; }
+
+        /// <summary>
         /// Specific version of the test procedure used for the run. Matched case-insensitively. If none exist, a procedure with this procedure version will be created. If no procedure version is specified, the run will not be linked to any specific version.
         /// </summary>
         [JsonPropertyName("procedure_version")]
