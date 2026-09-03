@@ -43,7 +43,7 @@ namespace TofuPilot
         /// List runs with filtering by unit, procedure, date range, outcome, and station. Cursor-paginated.
         /// </remarks>
         /// </summary>
-        Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? deploymentIds = null, List<RunListEnvironment>? environments = null, List<string>? serialNumbers = null, List<RunListQueryParamSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, List<string>? operatedByNames = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default);
+        Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? deploymentIds = null, List<string>? executionIds = null, List<string>? slotKeys = null, List<RunListEnvironment>? environments = null, List<string>? serialNumbers = null, List<RunListQueryParamSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, List<string>? operatedByNames = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Delete runs
@@ -136,7 +136,7 @@ namespace TofuPilot
                 httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
                 int _statusCode = (int)httpResponse.StatusCode;
 
-                if (_statusCode == 400 || _statusCode == 401 || _statusCode == 403 || _statusCode == 404 || _statusCode == 422 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
+                if (_statusCode == 400 || _statusCode == 401 || _statusCode == 403 || _statusCode == 404 || _statusCode == 409 || _statusCode == 422 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
                 {
                     var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
                     if (_httpResponse != null)
@@ -212,6 +212,16 @@ namespace TofuPilot
 
                 throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
             }
+            else if(responseStatusCode == 409)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<ConflictException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
             else if(responseStatusCode == 422)
             {
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
@@ -244,7 +254,7 @@ namespace TofuPilot
             throw new ApiException("Unknown status code received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
         }
 
-        public async Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? deploymentIds = null, List<RunListEnvironment>? environments = null, List<string>? serialNumbers = null, List<RunListQueryParamSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, List<string>? operatedByNames = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default)
+        public async Task<RunListResponse> ListAsync(string? searchQuery = null, List<string>? ids = null, List<RunListQueryParamOutcome>? outcomes = null, List<string>? procedureIds = null, List<string>? procedureVersions = null, List<string>? deploymentIds = null, List<string>? executionIds = null, List<string>? slotKeys = null, List<RunListEnvironment>? environments = null, List<string>? serialNumbers = null, List<RunListQueryParamSample>? samples = null, List<string>? partNumbers = null, List<string>? revisionNumbers = null, List<string>? batchNumbers = null, string? durationMin = null, string? durationMax = null, DateTime? startedAfter = null, DateTime? startedBefore = null, DateTime? endedAfter = null, DateTime? endedBefore = null, DateTime? createdAfter = null, DateTime? createdBefore = null, List<string>? createdByUserIds = null, List<string>? createdByStationIds = null, List<string>? operatedByIds = null, List<string>? operatedByNames = null, long? limit = 50, long? cursor = null, RunListSortBy? sortBy = global::TofuPilot.Models.Requests.RunListSortBy.StartedAt, RunListSortOrder? sortOrder = global::TofuPilot.Models.Requests.RunListSortOrder.Desc, Dictionary<string, object>? metadata = null, bool? includeMetadata = false, CancellationToken cancellationToken = default)
         {
             var request = new RunListRequest()
             {
@@ -254,6 +264,8 @@ namespace TofuPilot
                 ProcedureIds = procedureIds,
                 ProcedureVersions = procedureVersions,
                 DeploymentIds = deploymentIds,
+                ExecutionIds = executionIds,
+                SlotKeys = slotKeys,
                 Environments = environments,
                 SerialNumbers = serialNumbers,
                 Samples = samples,

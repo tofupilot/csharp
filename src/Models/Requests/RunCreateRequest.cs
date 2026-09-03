@@ -43,6 +43,24 @@ namespace TofuPilot.Models.Requests
         public string? ClientRunRef { get; set; }
 
         /// <summary>
+        /// Groups the runs produced by one multi-slot execution, one run per slot. Minted by the client once per start and shared by every slot run of that start. Omit for single-slot runs.
+        /// </summary>
+        [JsonPropertyName("execution_id")]
+        public string? ExecutionId { get; set; } = null;
+
+        /// <summary>
+        /// Key of the fixture slot that produced this run, from the procedure execution.slots config. Requires execution_id. One run per slot per execution.
+        /// </summary>
+        [JsonPropertyName("slot_key")]
+        public string? SlotKey { get; set; } = null;
+
+        /// <summary>
+        /// Display name of the slot as declared at run time. Requires slot_key. Stored as-is so later fixture renames do not rewrite old runs.
+        /// </summary>
+        [JsonPropertyName("slot_name")]
+        public string? SlotName { get; set; } = null;
+
+        /// <summary>
         /// Specific version of the test procedure used for the run. Matched case-insensitively. If none exist, a procedure with this procedure version will be created. If no procedure version is specified, the run will not be linked to any specific version.
         /// </summary>
         [JsonPropertyName("procedure_version")]

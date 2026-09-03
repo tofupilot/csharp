@@ -61,6 +61,27 @@ namespace TofuPilot.Models.Requests
         public string? Docstring { get; set; } = null;
 
         /// <summary>
+        /// Groups the runs produced by one multi-slot execution, one run per slot. Null for single-slot runs.
+        /// </summary>
+        [JsonPropertyName("execution_id")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? ExecutionId { get; set; }
+
+        /// <summary>
+        /// Key of the fixture slot that produced this run. Null for single-slot runs.
+        /// </summary>
+        [JsonPropertyName("slot_key")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? SlotKey { get; set; }
+
+        /// <summary>
+        /// Display name of the slot as declared at run time. Null when absent.
+        /// </summary>
+        [JsonPropertyName("slot_name")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? SlotName { get; set; }
+
+        /// <summary>
         /// User whose API key was used to create this run. Only returned if `all` or `created_by` is included.
         /// </summary>
         [JsonPropertyName("created_by_user")]
