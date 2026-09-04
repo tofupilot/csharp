@@ -41,6 +41,9 @@ namespace TofuPilot.Models.Requests
         [ApiMetadata("queryParam:style=form,explode=true,name=slot_keys")]
         public List<string>? SlotKeys { get; set; }
 
+        [ApiMetadata("queryParam:style=form,explode=true,name=slot_names")]
+        public List<string>? SlotNames { get; set; }
+
         [ApiMetadata("queryParam:style=form,explode=true,name=environments")]
         public List<RunListEnvironment>? Environments { get; set; }
 
