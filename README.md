@@ -214,6 +214,11 @@ catch (BadRequestException ex)
 {
     Console.WriteLine($"Bad request: {ex.Message}");
 }
+catch (RequestTimeoutException ex)
+{
+    // A read query exceeded the server statement cap: narrow the window and retry
+    Console.WriteLine($"Timeout: {ex.Message}");
+}
 catch (ApiException ex)
 {
     Console.WriteLine($"API error {ex.StatusCode}: {ex.Body}");
@@ -226,9 +231,11 @@ catch (ApiException ex)
 | `UnauthorizedException` | 401 |
 | `ForbiddenException` | 403 |
 | `NotFoundException` | 404 |
+| `RequestTimeoutException` | 408 |
 | `ConflictException` | 409 |
 | `UnprocessableContentException` | 422 |
 | `InternalServerErrorException` | 500 |
+| `BadGatewayException` | 502 |
 | `ApiException` | Any other |
 
 ## Running Tests

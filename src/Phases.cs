@@ -113,7 +113,7 @@ namespace TofuPilot
                 httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
                 int _statusCode = (int)httpResponse.StatusCode;
 
-                if (_statusCode == 400 || _statusCode == 401 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
+                if (_statusCode == 400 || _statusCode == 401 || _statusCode == 408 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
                 {
                     var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
                     if (_httpResponse != null)
@@ -164,6 +164,16 @@ namespace TofuPilot
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
                 {
                     var obj = ResponseBodyDeserializer.Deserialize<UnauthorizedException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 408)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<RequestTimeoutException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: true);
                     throw obj!;
                 }
 
@@ -220,7 +230,7 @@ namespace TofuPilot
                 httpResponse = await SDKConfiguration.Client.SendAsync(httpRequest, cancellationToken);
                 int _statusCode = (int)httpResponse.StatusCode;
 
-                if (_statusCode == 401 || _statusCode == 404 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
+                if (_statusCode == 401 || _statusCode == 404 || _statusCode == 408 || _statusCode >= 400 && _statusCode < 500 || _statusCode == 500 || _statusCode >= 500 && _statusCode < 600)
                 {
                     var _httpResponse = await this.SDKConfiguration.Hooks.AfterErrorAsync(new AfterErrorContext(hookCtx), httpResponse, null);
                     if (_httpResponse != null)
@@ -271,6 +281,16 @@ namespace TofuPilot
                 if(Utilities.IsContentTypeMatch("application/json", contentType))
                 {
                     var obj = ResponseBodyDeserializer.Deserialize<NotFoundException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
+                    throw obj!;
+                }
+
+                throw new ApiException("Unknown content type received", responseStatusCode, await httpResponse.Content.ReadAsStringAsync(cancellationToken), httpResponse);
+            }
+            else if(responseStatusCode == 408)
+            {
+                if(Utilities.IsContentTypeMatch("application/json", contentType))
+                {
+                    var obj = ResponseBodyDeserializer.Deserialize<RequestTimeoutException>(await httpResponse.Content.ReadAsStringAsync(cancellationToken), includeNulls: false);
                     throw obj!;
                 }
 
