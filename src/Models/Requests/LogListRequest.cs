@@ -27,13 +27,13 @@ namespace TofuPilot.Models.Requests
         public List<LogListQueryParamLevel>? Levels { get; set; }
 
         /// <summary>
-        /// Filter logs with timestamp after this date (inclusive).
+        /// Filter logs recorded at or after this timestamp.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=timestamp_after")]
         public DateTime? TimestampAfter { get; set; }
 
         /// <summary>
-        /// Filter logs with timestamp before this date (inclusive).
+        /// Filter logs recorded at or before this timestamp.
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=timestamp_before")]
         public DateTime? TimestampBefore { get; set; }

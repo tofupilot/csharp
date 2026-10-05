@@ -14,7 +14,7 @@ namespace TofuPilot.Models.Requests
     using System;
     
     /// <summary>
-    /// Result of the measurement validation. Use PASS when measurement meets all criteria, FAIL when measurement is outside acceptable limits or validation fails, UNSET when no validation was performed.
+    /// Result of the measurement validation, across the validators on the measurement, its aggregations and its axes. Use FAIL when any validator fails, including on an empty value. Otherwise use UNSET when there are no validators or one could not run (for example a numeric limit on a string). Otherwise use PASS.
     /// </summary>
     public enum RunCreateMeasurementsOutcome
     {
