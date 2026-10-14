@@ -32,7 +32,7 @@ namespace TofuPilot.Models.Requests
         public string? Operator { get; set; } = null;
 
         /// <summary>
-        /// Expected value for comparison. Type depends on operator.
+        /// Expected value for comparison. A number, string, boolean, or a list of numbers or strings is stored structurally; an object or a mixed list is stored as the validator expression with the given outcome.
         /// </summary>
         [JsonPropertyName("expected_value")]
         public object? ExpectedValue { get; set; } = null;
