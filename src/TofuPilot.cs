@@ -39,6 +39,7 @@ namespace TofuPilot
         public IPhases Phases { get; }
         public IMeasurements Measurements { get; }
         public IDeployments Deployments { get; }
+        public IIdentity Identity { get; }
     }
 
 
@@ -68,6 +69,7 @@ namespace TofuPilot
         public IPhases Phases { get; private set; }
         public IMeasurements Measurements { get; private set; }
         public IDeployments Deployments { get; private set; }
+        public IIdentity Identity { get; private set; }
 
         public TofuPilot(SDKConfig config)
         {
@@ -99,6 +101,8 @@ namespace TofuPilot
             Measurements = new Measurements(SDKConfiguration);
 
             Deployments = new Deployments(SDKConfiguration);
+
+            Identity = new Identity(SDKConfiguration);
         }
 
         public TofuPilot(string? apiKey = null, Func<string>? apiKeySource = null, int? serverIndex = null, string? serverUrl = null, Dictionary<string, string>? urlParams = null, ITofuPilotHttpClient? client = null, RetryConfig? retryConfig = null)
@@ -168,6 +172,8 @@ namespace TofuPilot
             Measurements = new Measurements(SDKConfiguration);
 
             Deployments = new Deployments(SDKConfiguration);
+
+            Identity = new Identity(SDKConfiguration);
         }
 
         private void InitHooks()

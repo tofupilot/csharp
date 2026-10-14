@@ -28,11 +28,20 @@ public class UsersTests
     }
 
     [Fact]
-    public async Task ListUsers_Current()
+    public async Task GetCurrentUser()
     {
-        var result = await _client.Users.ListAsync(current: true);
-        Assert.Single(result);
-        Assert.False(string.IsNullOrEmpty(result[0].Id));
-        Assert.False(string.IsNullOrEmpty(result[0].Email));
+        var me = await _client.Users.GetCurrentAsync();
+        Assert.False(string.IsNullOrEmpty(me.Id));
+        Assert.False(string.IsNullOrEmpty(me.Email));
+    }
+
+    [Fact]
+    public async Task Whoami_IsAUser()
+    {
+        var me = await _client.Identity.WhoamiAsync();
+        Assert.Equal("user", me.Type);
+        Assert.Null(me.Station);
+        Assert.NotNull(me.User);
+        Assert.False(string.IsNullOrEmpty(me.Organization.Slug));
     }
 }

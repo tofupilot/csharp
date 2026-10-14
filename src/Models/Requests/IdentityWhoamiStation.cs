@@ -9,15 +9,25 @@
 #nullable enable
 namespace TofuPilot.Models.Requests
 {
+    using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
     
-    public class UserListRequest
+    /// <summary>
+    /// The station the request is authenticated as; null for a user key.
+    /// </summary>
+    public class IdentityWhoamiStation
     {
 
         /// <summary>
-        /// If true, returns only the current authenticated user
+        /// Unique identifier for the station.
         /// </summary>
-        [ApiMetadata("queryParam:style=form,explode=true,name=current")]
-        public bool? Current { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = default!;
+
+        /// <summary>
+        /// Display name of the station.
+        /// </summary>
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = default!;
     }
 }
