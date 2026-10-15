@@ -39,7 +39,7 @@ public class UsersTests
     public async Task Whoami_IsAUser()
     {
         var me = await _client.Identity.WhoamiAsync();
-        Assert.Equal("user", me.Type);
+        Assert.Equal(IdentityWhoamiType.User, me.Type);
         Assert.Null(me.Station);
         Assert.NotNull(me.User);
         Assert.False(string.IsNullOrEmpty(me.Organization.Slug));
