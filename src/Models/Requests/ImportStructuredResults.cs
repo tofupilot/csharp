@@ -29,16 +29,28 @@ namespace TofuPilot.Models.Requests
         public bool Success { get; set; } = default!;
 
         /// <summary>
-        /// ID of the created run (present when success is true). For a multi-run file this is the first run; see `ids`.
+        /// ID of the run (present when success is true): the run created, or the existing run when the file was already imported. For a multi-run file this is one of its runs, see `ids`.
         /// </summary>
         [JsonPropertyName("id")]
         public string? Id { get; set; }
 
         /// <summary>
-        /// All run ids created from the file. Present when the file produced more than one run.
+        /// All run ids of the file: the runs created, or the existing runs when the file was already imported. Present when there is more than one.
         /// </summary>
         [JsonPropertyName("ids")]
         public List<string>? Ids { get; set; }
+
+        /// <summary>
+        /// Present when success is true. True when the same file content was already imported in your organization and at least one of its runs still exists: `id` and `ids` are those runs and nothing was created. A file whose earlier import created only some of its runs is not completed: delete its runs, then import it again. For a file with several runs, `ids` comes in no guaranteed order, so `id` may name another run of that file than the first import returned.
+        /// </summary>
+        [JsonPropertyName("already_imported")]
+        public bool? AlreadyImported { get; set; }
+
+        /// <summary>
+        /// Non-fatal notes about this file, present when there are any: runs that failed while the others were imported, and how to create them later. They come only with the import that created the runs: a retry of the same file answers without them, so a client that lost that response should compare `ids` with the units it expects.
+        /// </summary>
+        [JsonPropertyName("warnings")]
+        public List<string>? Warnings { get; set; }
 
         /// <summary>
         /// Error message (present when success is false).
