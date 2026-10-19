@@ -127,6 +127,12 @@ namespace TofuPilot.Models.Requests
         public List<RunCreatePhases>? Phases { get; set; }
 
         /// <summary>
+        /// Sequence calls of the run: the groups of phases the procedure composed with `uses:`, each with its own outcome. A phase joins its call through its `sequence_path` field, which must name one `path` of this array. A nested call (`calibration/dmm`) needs its parent path (`calibration`) in the same array, in any order. Omit for a procedure without sequences.
+        /// </summary>
+        [JsonPropertyName("sequences")]
+        public List<RunCreateSequences>? Sequences { get; set; } = null;
+
+        /// <summary>
         /// Array of log messages generated during the test execution. Each log entry captures events, errors, and diagnostic information with severity levels and source code references. If no logs are specified, the run will be created without log entries.
         /// </summary>
         [JsonPropertyName("logs")]

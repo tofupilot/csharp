@@ -121,6 +121,12 @@ namespace TofuPilot.Models.Requests
         public List<RunGetPhases>? Phases { get; set; }
 
         /// <summary>
+        /// Sequence calls of this run, parents before their nested calls. Each phase names its call through `sequence_path`. Returned together with `phases`, empty for a run without sequences.
+        /// </summary>
+        [JsonPropertyName("sequences")]
+        public List<RunGetSequences>? Sequences { get; set; }
+
+        /// <summary>
         /// Files attached to this run, including both regular attachments and test reports. Only returned if `all` or `attachments` is included.
         /// </summary>
         [JsonPropertyName("attachments")]

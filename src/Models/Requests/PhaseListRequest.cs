@@ -29,6 +29,9 @@ namespace TofuPilot.Models.Requests
         [ApiMetadata("queryParam:style=form,explode=true,name=outcomes")]
         public List<PhaseListQueryParamOutcome>? Outcomes { get; set; }
 
+        [ApiMetadata("queryParam:style=form,explode=true,name=sequence_paths")]
+        public List<string>? SequencePaths { get; set; }
+
         [ApiMetadata("queryParam:style=form,explode=true,name=started_after")]
         public DateTime? StartedAfter { get; set; }
 

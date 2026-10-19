@@ -130,5 +130,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [ApiMetadata("queryParam:style=form,explode=true,name=include_metadata")]
         public bool? IncludeMetadata { get; set; } = false;
+
+        /// <summary>
+        /// When true, includes the top-level sequence calls of each run (the calls made in the procedure itself, not the calls nested in them). Defaults to false to keep payloads small.
+        /// </summary>
+        [ApiMetadata("queryParam:style=form,explode=true,name=include_sequences")]
+        public bool? IncludeSequences { get; set; } = false;
     }
 }

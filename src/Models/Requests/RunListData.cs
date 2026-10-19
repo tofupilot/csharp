@@ -116,5 +116,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("metadata")]
         public Dictionary<string, object>? Metadata { get; set; }
+
+        /// <summary>
+        /// Top-level sequence calls of the run, ordered by start time. Only present when the request sets `include_sequences=true`.
+        /// </summary>
+        [JsonPropertyName("sequences")]
+        public List<RunListSequences>? Sequences { get; set; }
     }
 }

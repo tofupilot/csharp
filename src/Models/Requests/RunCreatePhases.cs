@@ -59,5 +59,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("retry_count")]
         public long? RetryCount { get; set; }
+
+        /// <summary>
+        /// Path of the sequence call this phase ran in, matching the `path` of one entry of the run `sequences` array. Omit for a phase written in the procedure itself. Phase analytics identify a phase by its sequence path and its name together, so the same phase name inside two sequence calls counts as two phases.
+        /// </summary>
+        [JsonPropertyName("sequence_path")]
+        public string? SequencePath { get; set; } = null;
     }
 }

@@ -63,6 +63,13 @@ namespace TofuPilot.Models.Requests
         public long RetryCount { get; set; } = default!;
 
         /// <summary>
+        /// Path of the sequence call the phase ran in. Null for a phase written in the procedure itself.
+        /// </summary>
+        [JsonPropertyName("sequence_path")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? SequencePath { get; set; }
+
+        /// <summary>
         /// True when this is the final attempt of the phase.
         /// </summary>
         [JsonPropertyName("is_final_attempt")]
