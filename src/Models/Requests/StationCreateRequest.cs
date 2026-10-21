@@ -29,6 +29,12 @@ namespace TofuPilot.Models.Requests
         public string? ProcedureId { get; set; }
 
         /// <summary>
+        /// Optional team to assign the station to. A user restricted to access groups must name one of their teams; with a single team it defaults to that team.
+        /// </summary>
+        [JsonPropertyName("team_id")]
+        public string? TeamId { get; set; }
+
+        /// <summary>
         /// Custom metadata to attach to the station (max 50 keys per station). Plain object of key/value pairs; values can be string, number, or boolean. Type is detected from the value. Use it for descriptive fields such as location or asset tag — not for procedure configuration, which belongs to station config.
         /// </summary>
         [JsonPropertyName("metadata")]

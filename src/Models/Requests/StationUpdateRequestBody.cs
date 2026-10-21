@@ -29,7 +29,7 @@ namespace TofuPilot.Models.Requests
         public string? ImageId { get; set; }
 
         /// <summary>
-        /// Team ID to assign this station to, or null to unassign
+        /// Team ID to assign this station to, or null to unassign. Unassigning a station or moving it to another team requires the Admin or Owner role: the team decides who may deploy to the station.
         /// </summary>
         [JsonPropertyName("team_id")]
         public string? TeamId { get; set; } = null;

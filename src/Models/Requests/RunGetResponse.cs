@@ -146,5 +146,17 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("metadata")]
         public Dictionary<string, object>? Metadata { get; set; }
+
+        /// <summary>
+        /// Vars the run used, with their values. Empty when the run recorded none.
+        /// </summary>
+        [JsonPropertyName("vars")]
+        public List<RunGetVars> Vars { get; set; } = default!;
+
+        /// <summary>
+        /// Secrets the run used, by stored value and version. Never carries a value. Empty when the run recorded none.
+        /// </summary>
+        [JsonPropertyName("secrets")]
+        public List<RunGetSecrets> Secrets { get; set; } = default!;
     }
 }

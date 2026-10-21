@@ -149,5 +149,17 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("unit_metadata")]
         public Dictionary<string, object>? UnitMetadata { get; set; }
+
+        /// <summary>
+        /// Vars the run used, with their values. Recorded with the run; identical sets are stored once. Any client can send them, e.g. a calibration offset.
+        /// </summary>
+        [JsonPropertyName("vars")]
+        public List<RunCreateVars>? Vars { get; set; }
+
+        /// <summary>
+        /// Secrets the run used, identified by the stored value and version they came from. Never send a secret value: a `value` field is rejected.
+        /// </summary>
+        [JsonPropertyName("secrets")]
+        public List<RunCreateSecrets>? Secrets { get; set; }
     }
 }
