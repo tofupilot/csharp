@@ -13,7 +13,7 @@ namespace TofuPilot.Models.Requests
     using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
     
-    public class RunGetVars
+    public class RunGetConfig
     {
 
         [JsonPropertyName("key")]

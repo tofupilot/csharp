@@ -148,10 +148,10 @@ namespace TofuPilot.Models.Requests
         public Dictionary<string, object>? Metadata { get; set; }
 
         /// <summary>
-        /// Vars the run used, with their values. Empty when the run recorded none.
+        /// Config values the run used (declared under `config:` in procedure.yaml), with their values. Empty when the run recorded none.
         /// </summary>
-        [JsonPropertyName("vars")]
-        public List<RunGetVars> Vars { get; set; } = default!;
+        [JsonPropertyName("config")]
+        public List<RunGetConfig> Config { get; set; } = default!;
 
         /// <summary>
         /// Secrets the run used, by stored value and version. Never carries a value. Empty when the run recorded none.

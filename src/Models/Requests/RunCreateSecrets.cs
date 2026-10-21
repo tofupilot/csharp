@@ -17,7 +17,7 @@ namespace TofuPilot.Models.Requests
     {
 
         /// <summary>
-        /// Key as declared under `vars:` or `secrets:` in procedure.yaml.
+        /// Key as declared under `config:` or `secrets:` in procedure.yaml.
         /// </summary>
         [JsonPropertyName("key")]
         public string Key { get; set; } = default!;
