@@ -25,10 +25,11 @@ namespace TofuPilot.Models.Requests
         public string Id { get; set; } = default!;
 
         /// <summary>
-        /// Email address of the user.
+        /// Email address of the user. Null for another member when the key belongs to a viewer restricted to access groups.
         /// </summary>
         [JsonPropertyName("email")]
-        public string Email { get; set; } = default!;
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? Email { get; set; }
 
         /// <summary>
         /// Display name of the user.

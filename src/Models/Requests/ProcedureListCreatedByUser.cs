@@ -32,9 +32,10 @@ namespace TofuPilot.Models.Requests
         public string? Name { get; set; }
 
         /// <summary>
-        /// Email of the user who created the procedure.
+        /// Email of the user who created the procedure. Null when the caller is a viewer restricted to access groups.
         /// </summary>
         [JsonPropertyName("email")]
-        public string Email { get; set; } = default!;
+        [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+        public string? Email { get; set; }
     }
 }
