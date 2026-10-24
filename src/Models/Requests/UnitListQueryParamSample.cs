@@ -15,6 +15,8 @@ namespace TofuPilot.Models.Requests
     
     public enum UnitListQueryParamSample
     {
+        [JsonPropertyName("production")]
+        Production,
         [JsonPropertyName("golden")]
         Golden,
         [JsonPropertyName("failing")]
