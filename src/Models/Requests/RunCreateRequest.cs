@@ -37,6 +37,12 @@ namespace TofuPilot.Models.Requests
         public string? DeploymentId { get; set; } = null;
 
         /// <summary>
+        /// SHA-256 digest of the deployed sources the station checked before this run. Set by the CLI with `deployment_id` when it ran a pulled deployment whose files it verified against their install. The server compares it with the digest of that deployment&apos;s build and records whether they match. Read only from a station key; ignored otherwise. Omit it for ad-hoc or local runs.
+        /// </summary>
+        [JsonPropertyName("deployment_digest")]
+        public string? DeploymentDigest { get; set; }
+
+        /// <summary>
         /// Idempotency reference for this upload, minted and persisted by the caller BEFORE the request is sent. When a second request carries the same reference, it is recognised as a retry of the first and returns the run already created rather than creating another one. That is what makes an upload safe to retry after a lost or timed-out response. The reference must be unique per organization and must never be reused for different data: derive it from the credential id returned at login plus a counter persisted locally (the CLI sends `&lt;credential id&gt;_&lt;counter&gt;`), never from a timestamp alone, since a clock can go backwards. Omit the field and every request creates a new run, exactly as before.
         /// </summary>
         [JsonPropertyName("client_run_ref")]
