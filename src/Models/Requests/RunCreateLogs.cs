@@ -46,5 +46,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("line_number")]
         public long LineNumber { get; set; } = default!;
+
+        /// <summary>
+        /// Key of the plug that wrote this line, one of the run `plugs`. Omit for a line of a phase or of the procedure.
+        /// </summary>
+        [JsonPropertyName("plug_key")]
+        public string? PlugKey { get; set; } = null;
     }
 }

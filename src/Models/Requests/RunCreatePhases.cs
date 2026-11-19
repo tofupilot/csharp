@@ -61,6 +61,12 @@ namespace TofuPilot.Models.Requests
         public long? RetryCount { get; set; }
 
         /// <summary>
+        /// Keys of the run `plugs` this phase received. Ties each of its measurements to the instruments that took them. Omit when unknown.
+        /// </summary>
+        [JsonPropertyName("plug_keys")]
+        public List<string>? PlugKeys { get; set; } = null;
+
+        /// <summary>
         /// Path of the sequence call this phase ran in, matching the `path` of one entry of the run `sequences` array. Omit for a phase written in the procedure itself. Phase analytics identify a phase by its sequence path and its name together, so the same phase name inside two sequence calls counts as two phases.
         /// </summary>
         [JsonPropertyName("sequence_path")]

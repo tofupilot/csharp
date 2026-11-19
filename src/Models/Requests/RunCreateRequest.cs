@@ -139,6 +139,12 @@ namespace TofuPilot.Models.Requests
         public List<RunCreateSequences>? Sequences { get; set; } = null;
 
         /// <summary>
+        /// Plugs the run used: each instrument abstraction of the procedure, with the instrument it opened as the plug reported it (manufacturer, model, serial number, firmware). The TofuPilot CLI fills it from the plugs it opened. Omit for a run without plugs.
+        /// </summary>
+        [JsonPropertyName("plugs")]
+        public List<RunCreatePlugs>? Plugs { get; set; } = null;
+
+        /// <summary>
         /// Array of log messages generated during the test execution. Each log entry captures events, errors, and diagnostic information with severity levels and source code references. If no logs are specified, the run will be created without log entries.
         /// </summary>
         [JsonPropertyName("logs")]

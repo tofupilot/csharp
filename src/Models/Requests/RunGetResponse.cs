@@ -127,6 +127,12 @@ namespace TofuPilot.Models.Requests
         public List<RunGetSequences>? Sequences { get; set; }
 
         /// <summary>
+        /// Plugs the run used, ordered by key: each instrument abstraction of the procedure with the instrument it opened, as the plug reported it. Empty for a run without plugs.
+        /// </summary>
+        [JsonPropertyName("plugs")]
+        public List<RunGetPlugs>? Plugs { get; set; }
+
+        /// <summary>
         /// Files attached to this run, including both regular attachments and test reports. Only returned if `all` or `attachments` is included.
         /// </summary>
         [JsonPropertyName("attachments")]
