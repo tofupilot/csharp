@@ -40,6 +40,7 @@ namespace TofuPilot
         public IMeasurements Measurements { get; }
         public IDeployments Deployments { get; }
         public IIdentity Identity { get; }
+        public IAuditLog AuditLog { get; }
     }
 
 
@@ -53,7 +54,7 @@ namespace TofuPilot
         public SDKConfig SDKConfiguration { get; private set; }
 
         private const string _language = "csharp";
-        private const string _sdkVersion = "2.26.0";
+        private const string _sdkVersion = "2.27.0";
         private const string _sdkGenVersion = "2.657.1";
         private const string _openapiDocVersion = "2.0.0";
         public IProcedures Procedures { get; private set; }
@@ -70,6 +71,7 @@ namespace TofuPilot
         public IMeasurements Measurements { get; private set; }
         public IDeployments Deployments { get; private set; }
         public IIdentity Identity { get; private set; }
+        public IAuditLog AuditLog { get; private set; }
 
         public TofuPilot(SDKConfig config)
         {
@@ -103,6 +105,8 @@ namespace TofuPilot
             Deployments = new Deployments(SDKConfiguration);
 
             Identity = new Identity(SDKConfiguration);
+
+            AuditLog = new AuditLog(SDKConfiguration);
         }
 
         public TofuPilot(string? apiKey = null, Func<string>? apiKeySource = null, int? serverIndex = null, string? serverUrl = null, Dictionary<string, string>? urlParams = null, ITofuPilotHttpClient? client = null, RetryConfig? retryConfig = null)
@@ -174,6 +178,8 @@ namespace TofuPilot
             Deployments = new Deployments(SDKConfiguration);
 
             Identity = new Identity(SDKConfiguration);
+
+            AuditLog = new AuditLog(SDKConfiguration);
         }
 
         private void InitHooks()
