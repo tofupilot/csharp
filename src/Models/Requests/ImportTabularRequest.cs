@@ -41,7 +41,7 @@ namespace TofuPilot.Models.Requests
         public string? TemplateId { get; set; }
 
         /// <summary>
-        /// With a mapping that makes several runs (`runsPer` `row` or `serial`): the position, in the file’s run order, of the first run to import. One request creates at most 1000 runs; when runs remain, the response carries `next_run_offset`: send the same request again with it until it is absent. Defaults to 0.
+        /// With a mapping that makes several runs (`runsPer` `row` or `serial`): the position, in the file’s run order, of the first run to import. One request creates at most 100 runs; when runs remain, the response carries `next_run_offset`: send the same request again with it until it is absent. Defaults to 0.
         /// </summary>
         [JsonPropertyName("run_offset")]
         public long? RunOffset { get; set; }
