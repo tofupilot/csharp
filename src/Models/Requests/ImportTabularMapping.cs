@@ -34,5 +34,23 @@ namespace TofuPilot.Models.Requests
 
         [JsonPropertyName("unitMetadata")]
         public List<ImportTabularUnitMetadata>? UnitMetadata { get; set; }
+
+        /// <summary>
+        /// How rows become runs. `file` (default): one run for the whole file, which must hold a single serial number. `row`: one run per row, for a log that appends a row per test (retests of a serial give several runs); needs the wide or none measurement layout. `serial`: one run per distinct serial number, its rows grouped together.
+        /// </summary>
+        [JsonPropertyName("runsPer")]
+        public ImportTabularRunsPer? RunsPer { get; set; }
+
+        /// <summary>
+        /// Columns holding sub-unit serial numbers, linked to the run’s unit like `sub_units` on run creation. Empty cells are skipped. Each sub-unit must already exist: import its own runs first, or the row fails with `Sub-unit not found`.
+        /// </summary>
+        [JsonPropertyName("subUnitColumns")]
+        public List<string>? SubUnitColumns { get; set; }
+
+        /// <summary>
+        /// IANA time zone for timestamps without an offset, such as `2026-07-08T15:49:48.349659`, `2026-07-08 15:49:48` or the date-only `2025-03-10` (read as midnight). Defaults to UTC. Timestamps with an offset or `Z`, and epoch numbers, are read as written.
+        /// </summary>
+        [JsonPropertyName("timeZone")]
+        public string? TimeZone { get; set; }
     }
 }

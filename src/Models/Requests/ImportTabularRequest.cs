@@ -39,5 +39,17 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("template_id")]
         public string? TemplateId { get; set; }
+
+        /// <summary>
+        /// With a mapping that makes several runs (`runsPer` `row` or `serial`): the position, in the file’s run order, of the first run to import. One request creates at most 1000 runs; when runs remain, the response carries `next_run_offset`: send the same request again with it until it is absent. Defaults to 0.
+        /// </summary>
+        [JsonPropertyName("run_offset")]
+        public long? RunOffset { get; set; }
+
+        /// <summary>
+        /// With a mapping that makes several runs (`runsPer` `row` or `serial`): import the file even if the same content was already imported. By default a request with the same file content, `run_offset`, mapping and procedure as an earlier one whose runs still exist is not imported again: the response returns the existing runs with `already_imported: true`, so retrying a request is safe. A one-run-per-file mapping is never deduplicated.
+        /// </summary>
+        [JsonPropertyName("allow_duplicate")]
+        public bool? AllowDuplicate { get; set; }
     }
 }

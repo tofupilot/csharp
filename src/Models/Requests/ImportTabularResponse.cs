@@ -10,7 +10,9 @@
 namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
+    using global::TofuPilot.Models.Requests;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     /// <summary>
     /// Run imported successfully
@@ -19,15 +21,57 @@ namespace TofuPilot.Models.Requests
     {
 
         /// <summary>
-        /// ID of the created run.
+        /// ID of the created run. With a mapping that makes several runs, the first one, see `ids`.
         /// </summary>
         [JsonPropertyName("id")]
         public string Id { get; set; } = default!;
 
         /// <summary>
-        /// ID of the file import record that links this run to the uploaded file.
+        /// ID of the file import record that links the runs to the uploaded file.
         /// </summary>
         [JsonPropertyName("file_import_id")]
         public string FileImportId { get; set; } = default!;
+
+        /// <summary>
+        /// Present with a mapping that makes several runs (`runsPer` `row` or `serial`): every run id created by this request, in file order, rows that failed skipped. When `already_imported` is true, the existing runs in no guaranteed order.
+        /// </summary>
+        [JsonPropertyName("ids")]
+        public List<string>? Ids { get; set; }
+
+        /// <summary>
+        /// Present with a mapping that makes several runs. True when the same file content was already imported in your organization and some of its runs still exist: `id` and `ids` are those runs and nothing was created.
+        /// </summary>
+        [JsonPropertyName("already_imported")]
+        public bool? AlreadyImported { get; set; }
+
+        /// <summary>
+        /// Present with a mapping that makes several runs: the rows of this request that created no run and why, at most 1000 (see `failed_row_count`). The other rows are imported.
+        /// </summary>
+        [JsonPropertyName("row_errors")]
+        public List<ImportTabularRowErrors>? RowErrors { get; set; }
+
+        /// <summary>
+        /// Present with a mapping that makes several runs: how many runs of this request failed, including any not listed in `row_errors`.
+        /// </summary>
+        [JsonPropertyName("failed_row_count")]
+        public long? FailedRowCount { get; set; }
+
+        /// <summary>
+        /// Present with a mapping that makes several runs: how many runs the whole file makes (rows for `runsPer: row`, distinct serials for `runsPer: serial`), failed ones included.
+        /// </summary>
+        [JsonPropertyName("total_runs")]
+        public long? TotalRuns { get; set; }
+
+        /// <summary>
+        /// Present when runs of the file remain after this request: send the same request with `run_offset` set to this value to import the next ones.
+        /// </summary>
+        [JsonPropertyName("next_run_offset")]
+        public long? NextRunOffset { get; set; }
+
+        /// <summary>
+        /// Non-fatal notes about the import, present when there are any.
+        /// </summary>
+        [JsonPropertyName("warnings")]
+        public List<string>? Warnings { get; set; }
     }
 }
