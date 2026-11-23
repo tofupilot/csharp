@@ -52,5 +52,11 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("timeZone")]
         public string? TimeZone { get; set; }
+
+        /// <summary>
+        /// Skip mapped columns the file does not have instead of failing the file, so one mapping covers files whose optional columns vary. The serial number, outcome and time columns, and the name and value columns of the long layout, stay required.
+        /// </summary>
+        [JsonPropertyName("ignoreMissingColumns")]
+        public bool? IgnoreMissingColumns { get; set; }
     }
 }
