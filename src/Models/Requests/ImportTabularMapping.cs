@@ -48,6 +48,12 @@ namespace TofuPilot.Models.Requests
         public List<string>? SubUnitColumns { get; set; }
 
         /// <summary>
+        /// Create the run when a sub-unit serial matches no unit, without that link, instead of failing the row with `Sub-unit not found`. The left-out serials are reported in `warnings`.
+        /// </summary>
+        [JsonPropertyName("skipMissingSubUnits")]
+        public bool? SkipMissingSubUnits { get; set; }
+
+        /// <summary>
         /// Columns that identify a run when the same file is imported again, for a log that grows by appending rows. A run whose key was already imported into the procedure is skipped, and reported as `changed` when its cells differ. Defaults to every cell of the row (`runsPer: row`) or the serial number (`runsPer: serial`). Applies to `row` and `serial` only.
         /// </summary>
         [JsonPropertyName("runKeyColumns")]
