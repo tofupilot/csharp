@@ -48,6 +48,12 @@ namespace TofuPilot.Models.Requests
         public List<string>? SubUnitColumns { get; set; }
 
         /// <summary>
+        /// Columns that identify a run when the same file is imported again, for a log that grows by appending rows. A run whose key was already imported into the procedure is skipped, and reported as `changed` when its cells differ. Defaults to every cell of the row (`runsPer: row`) or the serial number (`runsPer: serial`). Applies to `row` and `serial` only.
+        /// </summary>
+        [JsonPropertyName("runKeyColumns")]
+        public List<string>? RunKeyColumns { get; set; }
+
+        /// <summary>
         /// IANA time zone for timestamps without an offset, such as `2026-07-08T15:49:48.349659`, `2026-07-08 15:49:48` or the date-only `2025-03-10` (read as midnight). Defaults to UTC. Timestamps with an offset or `Z`, and epoch numbers, are read as written.
         /// </summary>
         [JsonPropertyName("timeZone")]

@@ -33,13 +33,13 @@ namespace TofuPilot.Models.Requests
         public string FileImportId { get; set; } = default!;
 
         /// <summary>
-        /// Present with a mapping that makes several runs (`runsPer` `row` or `serial`): every run id created by this request, in file order, rows that failed skipped. When `already_imported` is true, the existing runs in no guaranteed order.
+        /// Present with a mapping that makes several runs (`runsPer` `row` or `serial`): every run id created by this request, in file order, rows that failed or were skipped left out. When `already_imported` is true, the existing runs.
         /// </summary>
         [JsonPropertyName("ids")]
         public List<string>? Ids { get; set; }
 
         /// <summary>
-        /// Present with a mapping that makes several runs. True when the same file content was already imported in your organization and some of its runs still exist: `id` and `ids` are those runs and nothing was created.
+        /// Present with a mapping that makes several runs. True when every run of this request already existed (see `skipped_rows`): `id` and `ids` are those runs and nothing was created.
         /// </summary>
         [JsonPropertyName("already_imported")]
         public bool? AlreadyImported { get; set; }
@@ -55,6 +55,18 @@ namespace TofuPilot.Models.Requests
         /// </summary>
         [JsonPropertyName("failed_row_count")]
         public long? FailedRowCount { get; set; }
+
+        /// <summary>
+        /// Present with a mapping that makes several runs: the rows of this request an earlier import already created, at most 1000 (see `skipped_row_count`). They create no run.
+        /// </summary>
+        [JsonPropertyName("skipped_rows")]
+        public List<ImportTabularSkippedRows>? SkippedRows { get; set; }
+
+        /// <summary>
+        /// Present with a mapping that makes several runs: how many runs of this request were skipped because an earlier import created them.
+        /// </summary>
+        [JsonPropertyName("skipped_row_count")]
+        public long? SkippedRowCount { get; set; }
 
         /// <summary>
         /// Present with a mapping that makes several runs: how many runs the whole file makes (rows for `runsPer: row`, distinct serials for `runsPer: serial`), failed ones included.
