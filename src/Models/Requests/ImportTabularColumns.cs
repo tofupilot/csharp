@@ -11,6 +11,7 @@ namespace TofuPilot.Models.Requests
 {
     using System.Text.Json.Serialization;
     using global::TofuPilot.Utils;
+    using System.Collections.Generic;
     
     public class ImportTabularColumns
     {
@@ -32,5 +33,11 @@ namespace TofuPilot.Models.Requests
 
         [JsonPropertyName("phase")]
         public string? Phase { get; set; }
+
+        /// <summary>
+        /// Turns the column into a step result: each cell value maps to the measurement outcome (`PASS`, `FAIL`, `UNSET`), or to `null` to leave that cell out, such as `NOT_RUN`. A failed measurement fails its phase. A value with no entry fails the row.
+        /// </summary>
+        [JsonPropertyName("outcomeMap")]
+        public Dictionary<string, object>? OutcomeMap { get; set; } = null;
     }
 }
